@@ -32,7 +32,7 @@ like this:
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField('date published')
-    
+
     def __str__(self):
         return self.question_text
 %%%%
@@ -58,10 +58,12 @@ now run migrate to save changes to database:
 
 ##########using shell  02 #######################
 python manage.py shell
->>> import django
->>> django.setup()
->>> from polls.models import Question, Choice
->>>Question.objects.all()
+>>>
+import django
+django.setup()
+from search_in_database.models import *
+<<<
+>>> Question.objects.all()
 
 ###########################################
 

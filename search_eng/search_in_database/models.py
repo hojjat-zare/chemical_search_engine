@@ -20,6 +20,9 @@ class Entities(models.Model):
         managed = False
         db_table = 'entities'
 
+    def __str__(self):
+        return str(self.entid) + "-" + self.mainname
+
 
 class EntitiesAlternateNames(models.Model):
     eid = models.ForeignKey(Entities, models.CASCADE, db_column='eid', primary_key=True)
@@ -33,6 +36,9 @@ class EntitiesAlternateNames(models.Model):
         db_table = 'entities_alternate_names'
         unique_together = (('eid', 'drowid'),)
 
+    def __str__(self):
+        return eid.mainname + "." + str(drowid)+ "=>" + alternatename
+
 
 class Entitiesrelatedphrases(models.Model):
     entid = models.ForeignKey(Entities, models.CASCADE, db_column='entid', primary_key=True)
@@ -43,6 +49,9 @@ class Entitiesrelatedphrases(models.Model):
         managed = False
         db_table = 'entitiesrelatedphrases'
         unique_together = (('entid', 'phraseid'),)
+
+    def __str__(self):
+        return self.entid.mainname + "=>" + self.phraseid
 
 
 class EntityRelationEntity(models.Model):
@@ -55,6 +64,9 @@ class EntityRelationEntity(models.Model):
         managed = False
         db_table = 'entity_relation_entity'
         unique_together = (('eid1', 'relationid', 'eid2'),)
+
+    def __str__(self):
+        return self.eid1.mainname + "<=(" + self.relationid.mainname + ")=>" + self.eid2.mainname
 
 
 class EntsBlobPropsValues(models.Model):
@@ -70,6 +82,9 @@ class EntsBlobPropsValues(models.Model):
         db_table = 'ents_blob_props_values'
         unique_together = (('prop_owner_eid', 'prop_eid', 'drowid'),)
 
+    def __str__(self):
+        return self.prop_owner_eid.mainname + "." + self.prop_eid + "[{}]".format(drowid) + "=" + mimetype
+
 
 class EntsDoublePropsValues(models.Model):
     prop_owner_eid = models.ForeignKey(Entities, models.CASCADE, db_column='prop_owner_eid', primary_key=True,related_name='EntsDoublePropsValues_prop_owner_eid_set')
@@ -83,6 +98,9 @@ class EntsDoublePropsValues(models.Model):
         db_table = 'ents_double_props_values'
         unique_together = (('prop_owner_eid', 'prop_eid', 'drowid'),)
 
+    def __str__(self):
+        return self.prop_owner_eid.mainname + "." + self.prop_eid + "[{}]".format(drowid) + "=" + str(self.dvalue)
+
 
 class EntsIntegerPropsValues(models.Model):
     prop_owner_eid = models.ForeignKey(Entities, models.CASCADE, db_column='prop_owner_eid', primary_key=True,related_name='EntsIntegerPropsValues_prop_owner_eid_set')
@@ -95,6 +113,9 @@ class EntsIntegerPropsValues(models.Model):
         managed = False
         db_table = 'ents_integer_props_values'
         unique_together = (('prop_owner_eid', 'prop_eid', 'drowid'),)
+
+    def __str__(self):
+        return self.prop_owner_eid.mainname + "." + self.prop_eid + "[{}]".format(drowid) + "=" + str(self.dvalue)
 
 
 class EntsStringPropsValues(models.Model):
@@ -110,6 +131,9 @@ class EntsStringPropsValues(models.Model):
         db_table = 'ents_string_props_values'
         unique_together = (('prop_owner_eid', 'prop_eid', 'drowid', 'langid'),)
 
+    def __str__(self):
+        return self.prop_owner_eid.mainname + "." + self.prop_eid + "[{}]".format(drowid) + "=" + self.dvalue
+
 
 class ExistingPhrases(models.Model):
     phraseid = models.BigIntegerField(primary_key=True)
@@ -120,6 +144,9 @@ class ExistingPhrases(models.Model):
     class Meta:
         managed = False
         db_table = 'existing_phrases'
+
+    def __str__(self):
+        return str(self.phraseid) + "-" + phrasestring
 
 
 class Existinglanguages(models.Model):
@@ -132,6 +159,9 @@ class Existinglanguages(models.Model):
         managed = False
         db_table = 'existinglanguages'
 
+    def __str__(self):
+        return str(langid) + "-" + languagenameinenglish
+
 
 class NewTable(models.Model):
     new_table_fld = models.SmallIntegerField(primary_key=True)
@@ -139,6 +169,9 @@ class NewTable(models.Model):
     class Meta:
         managed = False
         db_table = 'new_table'
+
+    def __str__(self):
+        return str(self.new_table_fld)
 
 
 class Typesofentities(models.Model):
@@ -149,3 +182,6 @@ class Typesofentities(models.Model):
     class Meta:
         managed = False
         db_table = 'typesofentities'
+
+    def __str__(self):
+        return str(self.enttypeid) + "-" + self.enttypename
