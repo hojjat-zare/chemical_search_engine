@@ -1,0 +1,188 @@
+%%% scrapy_train\Scripts\activate.bat
+
+%%% python -m django --version
+
+########## create project and app  01##############
+
+%%% django-admin startproject mysite
+
+%%% python manage.py startapp polls
+
+##########################################
+
+########## run server  01 ##############
+%%% python manage.py runserver
+
+%%% python manage.py runserver 0.0.0.0:8000
+
+############################################
+
+########## migrates 02 ###############
+%%% python manage.py migrate
+
+The migrate command looks at the
+INSTALLED_APPS setting and creates any necessary
+database tables according to the database settings
+#################################################
+
+########## create models 02 #######################
+Each model is represented by a class that subclasses django.db.models.Model
+like this:
+%%%%
+class Question(models.Model):
+    question_text = models.CharField(max_length=200)
+    pub_date = models.DateTimeField('date published')
+    
+    def __str__(self):
+        return self.question_text
+%%%%
+It’s important to add __str__() methods to your models,
+not only for your own convenience when dealing with the interactive prompt,
+but also because objects’ representations are used throughout Django’s automatically-generated admin.
+
+befor migrate this the model to database you need
+to tell your project that the polls app is installed:
+so add this to your settings.INSTALLED_APPS:
+%%%% 'polls.apps.PollsConfig' %%%%%%
+
+now create migration:
+%%% python manage.py makemigrations polls
+
+to see sql codes use this:
+%%% python manage.py sqlmigrate polls 0001
+
+now run migrate to save changes to database:
+%%% python manage.py sqlmigrate polls 0001
+
+################################################
+
+##########using shell  02 #######################
+python manage.py shell
+>>> import django
+>>> django.setup()
+>>> from polls.models import Question, Choice
+>>>Question.objects.all()
+
+###########################################
+
+########## admin  02 #########################
+python manage.py createsuperuser
+%%%%%%%
+&&polls/admin.py&&
+from django.contrib import admin
+
+from .models import Question
+
+admin.site.register(Question)
+%%%%%%%%%%
+###########################################
+
+########## templates  03 #####################
+create a template in path: "polls/templates/polls/index.html"
+and then in your view render the html template.
+for example:
+%%%%%  render(request, 'polls/detail.html', {
+        'question': question,
+        'error_message': "You didn't select a choice.",
+    })  %%%%%%%%%
+then add this to your settings.INSTALLED_APPS:
+%%%% 'polls.apps.PollsConfig' %%%%%%
+
+######### hard coded urls:
+if you have a <a> thag and want to set "href" for it, it's
+better to use some thing like:
+first add this line to polls.urls:
+%%% app_name = 'polls' %%%%
+then:
+%%%  href="{% polls:url 'results' 77 %}"  %%%
+it goes to polls.urls and find url whit name 'rsults' and
+replace (?P<question_id>[0-9]+) with 77 and make a url.
+so the href is some thing like:
+http://localhost:8000/polls/77/results/
+############################################
+
+############ form 04 ############################
+1.use post methods when the form changes database
+2. use {% csrf_token %} in form for protection
+
+%%%request.POST['choice']%%% gets you the value of the
+input with name 'choice'.
+
+url of post should be processed in views and the view function
+should return HttpResponse(HttpResponseRedirect) like this:
+%%%%return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))%%%%
+
+"Avoiding race conditions using F()" did not read.
+##################################################
+
+############## test django 05 ########################
+i did not read it;
+######################################################
+
+############## stylesheet 06 #########################
+like template create a directory static/polls and add your
+css files to this then in your template add some code like this:
+%%%
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}" />
+%%%
+#####################################################################
+
+########### changing admin 07 ###################################
+i did'nt read it.
+##################################################################
+
+########### problem on creating model && (fields.E304) Reverse accessor clash  ################################################
+ref: https://www.reddit.com/r/django/comments/76a7uw/related_name_in_modelspy/
+Let's say you have a model named Book and a model named Category.
+Each book has one and only one category, denoted by a foreign key.
+Thus, you'll have the following models:
+
+class Category(models.Model):
+  name = models.CharField(max_length=128)
+
+class Book(models.Model):
+  name = models.CharField(max_length=128)
+  category = models.ForeignKey('Category')
+Now, when you have a Book instance you can refer to its category using the corresponding field.
+Furthermore, if you have a category instance, by default, django adds an attribute to it named
+book_set which returns a queryset with all the books that have this specific category. So you can do something like:
+
+%%%%%%%%%%
+category = Category.objects.get(pk=1)
+print "Books in category {0}".format(category.name)
+for book in category.book_set.all():
+  print book.name
+%%%%%%%%%%%%%
+
+Now, book_set is an attribute that django constructed for us and gave it this name by default.
+Using the related_name attribute of foreign key you can give this attribute whatever name you want
+(for example if I had definited category as this category = models.ForeignKey('Category', related_name='book_collection')
+then instead of category.book_set.all() I'd use category.book_collection.all()).
+
+In any case, you rarely need to change the related_name,
+if at all in usual case (I don't recommend it because it's easy to remember the django default x_set).
+However there's a use case where it is required: When you have multiple foreign keys from a model to another.
+In this case there would be a clash (since django would try to create two x_set attributes to the same model)
+and you need to help by naming the x_set attributes yourself.
+
+For example, if my Book model was like this (had a category and a subcategory):
+
+%%%%%%%%%%%%%
+class Book(models.Model):
+  name = models.CharField(max_length=128)
+  category = models.ForeignKey('Category')
+  sub_category = models.ForeignKey('Category')
+%%%%%%%%%%%%%
+
+then the model would not validate unless you give one (or both) of the ForeignKeys a
+related_name attribute so that the clash will be resolved. For example you could do something like this:
+
+%%%%%%%%%%%%%%
+class Book(models.Model):
+ name = models.CharField(max_length=128)
+  category = models.ForeignKey('Category', related_name='book_category_set')
+  sub_category = models.ForeignKey('Category', related_name='book_sub_category_set')
+%%%%%%%%%%%%%
+
+##############################################################################################################

@@ -1,0 +1,188 @@
+####### starting git #################
+%% git init
+first line create a hidden folder in that directory and 
+store git related files in this folder.
+#################################
+
+####### starting & commit ###########
+firs cd to any directory you want.
+then run:
+%%
+git add .
+git commit -m "message about what you did"
+%%
+first line add all files in this derectory to git ( use
+file name instead "." to add one file).
+second line commit changes.
+###################################
+
+#### help ##########################
+%% git help log %%
+show help for log.
+###################################
+
+##### git log & see commits ############
+%% git log %%
+shows all commits and related information.
+%% git log -n2 %%
+shows 2 last commits.
+%% git log --since=2020-01-01
+%% git log --until=2020-12-01
+%% git log --author="Hojjat"
+
+%% git log --grep
+--grep use regular expression to find commit.
+
+%% git log branch_name
+shows logs on branch_name
+
+%% git status
+shows status
+
+%% git rm myfile.txt
+delete myfile.txt and add deleted file to stage, after 
+that you cat commit changes.
+
+%% git mv firstName.txt renamedName.txt
+change the name.
+
+%% git mv fitstName.txt newdirectory/secondName.txt
+move firstName.txt to newdirectory and rename it 
+to secondName.txt
+
+%% git checkout -- file.txt
+this undo file.txt to last repository file.txt.
+
+%% git reset HEAD file.txt
+this renturn file.txt from stage back to working directory.
+
+%% git commit --amend -m "message"
+this commit new changes instead of last changes that
+commited.
+
+%% about episode 32
+git checkout d8123456 -- file.txt
+git reset head file.txt
+%%%
+this remove a file from d8123456
+
+%% git reset --soft d81234
+this code find comited d81234 and set HEAD/master
+on it and bring it to first commited. and the comiteds 
+on top of it return back to stage.
+!!!! is's better befor you run this code copy latest commites
+and thier checksums to a text file. !!!!!
+###################################
+
+######## git diff && diffrence ###################
+%% git diff
+show changes that are in working directory.
+
+%% git diff d81234
+this show diffrence between corrent file on working 
+directory and repository.
+
+%% git diff HEAD^
+this shows diffrence between last commit and current
+directory. if use HEAD^^ it compars to second last comit.
+
+%% git diff --staged
+show changes that are in stage(added).
+
+%% git diff --color-words file.txt
+show changes more explicite and word by word.
+!!!! if terminal doesn't show text fine, 
+press "-" then press"shift"+"s" and change the look. !!!!
+####################################################
+
+######## git ignore episode 38 ###################
+create a text file with name .gitignore (whithout .txt)
+and write your file names in it.
+after writing it will work and you should add .gitignore 
+file and commit it.
+you can use this site to get help:
+http://www.gitignore.io/
+#####################################################
+
+######## branches && head && master #################
+%% git log --graph --oneline --decorate --all
+this show all your branches and, where head is.
+
+%% git branch
+show all branches
+
+%% git checkout -b branchName
+create a new branch and set HEAD on it.
+after it your commit will add to new branch(beacause
+your HEAD is on it)
+
+%% git checkout anotherBranch
+swich HEAD on anotherBranch.
+
+%% git merge another_branch
+this merge direct branch with another branch.
+
+%% git diff-tree --no-commit-id --name-only -r bd61ad98
+to see commited files on commit bd61ad98
+
+%% git branch -d branch_name
+this deletes branch_name.
+
+###################################################
+
+######## git remote repository from episode66 ####################
+%% git remote
+shows remotes
+
+%% git remote add alias git_url
+create a remote repository with name: alias
+
+%% git remote -v
+shows urls for fetching or pushing
+
+%% git remote rm alias
+to remove a branch from remote
+
+%% git branch -a
+shows all branchs and remote branchs
+
+%% git push -u alias branch_name
+this upload branch_name to the remote repository.
+
+%% git push alias branch_name
+this will push the branch_name to the alias remote but
+does not track it.
+
+%% git branch --track branch_name alias/branch_name
+to track branch_name on alias remote
+
+!!! to see information about remotes and branchs see 
+.git/config file !!!!!
+
+%% git diff alias/branch..another_branch
+show diffrence between alias/branch and anotherBranch
+
+
+%% git clone repository_url (name_of_directory)
+this download remote repository.
+
+%% git fetch alias
+this download last version and store it on 
+remote alias/downloaded_branch
+!!! it just download the files and stores them in 
+remote branch. then you should merge that branch
+with your branch.
+
+%% git push alias new_branch:old_branch
+replace old_branch with new_branch
+
+%% git push alias :to_be_delete_branch
+delete branch from remote:alias
+
+%% git pull
+= git fetch + git merge
+
+%% git log -p master..origin/master
+show diffrences.
+
+
