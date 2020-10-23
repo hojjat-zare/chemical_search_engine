@@ -185,3 +185,32 @@ class Typesofentities(models.Model):
 
     def __str__(self):
         return str(self.enttypeid) + "-" + self.enttypename
+
+
+class Searchs(models.Model):
+    searchid = models.BigIntegerField(primary_key=True)
+    ent_phraseid = models.ForeignKey(Entitiesrelatedphrases, models.DO_NOTHING, db_column='ent_phraseid')
+    reference_address = models.CharField(max_length=2000)
+    search_time = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'searchs'
+
+    def __str__(self):
+        return str(self.searchid) + "- (" + self.ent_phraseid + ")=>" + self.reference_address + "@(" + self.search_time.strftime("%Y.%m.%d, %H:%M:%S") + ")"
+
+
+class Results(models.Model):
+    resultid = models.BigIntegerField(primary_key=True)
+    searchid = models.ForeignKey('Searchs', models.DO_NOTHING, db_column='searchid')
+    result = models.BinaryField(blank=True, null=True)
+    mimetype = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'results'
+
+        ###########  __str__ method is not compeleted (binary field wont be shown) ##########################
+    def __str__(self):
+        return str(self.resultid) + "- (" + self.searchid.ent_phraseid + "&&" + self.reference_address +")=>"

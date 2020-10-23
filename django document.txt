@@ -68,13 +68,11 @@ from search_in_database.models import *
 ###########################################
 
 ########## admin  02 #########################
-python manage.py createsuperuser
+>>> python manage.py createsuperuser
+in polls/admin.py write:
 %%%%%%%
-&&polls/admin.py&&
 from django.contrib import admin
-
 from .models import Question
-
 admin.site.register(Question)
 %%%%%%%%%%
 ###########################################
