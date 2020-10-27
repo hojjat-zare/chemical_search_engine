@@ -21,7 +21,7 @@ class Entities(models.Model):
         db_table = 'entities'
 
     def __str__(self):
-        return str(self.entid) + "-" + self.mainname
+        return str(self.entid) + '-' + self.mainname + '====>' + self.enttypeid.enttypename
 
 
 class EntitiesAlternateNames(models.Model):
@@ -37,7 +37,7 @@ class EntitiesAlternateNames(models.Model):
         unique_together = (('eid', 'drowid'),)
 
     def __str__(self):
-        return eid.mainname + "." + str(drowid)+ "=>" + alternatename
+        return eid.mainname + "." + str(self.drowid)+ "=>" + alternatename
 
 
 class Entitiesrelatedphrases(models.Model):
@@ -51,7 +51,7 @@ class Entitiesrelatedphrases(models.Model):
         unique_together = (('entid', 'phraseid'),)
 
     def __str__(self):
-        return self.entid.mainname + "=>" + self.phraseid
+        return self.entid.mainname + "=>" + self.phraseid.phrasestring
 
 
 class EntityRelationEntity(models.Model):
@@ -83,7 +83,7 @@ class EntsBlobPropsValues(models.Model):
         unique_together = (('prop_owner_eid', 'prop_eid', 'drowid'),)
 
     def __str__(self):
-        return self.prop_owner_eid.mainname + "." + self.prop_eid + "[{}]".format(drowid) + "=" + mimetype
+        return self.prop_owner_eid.mainname + "." + self.prop_eid.mainname + "[{}]".format(self.drowid) + "=" + mimetype
 
 
 class EntsDoublePropsValues(models.Model):
@@ -99,7 +99,7 @@ class EntsDoublePropsValues(models.Model):
         unique_together = (('prop_owner_eid', 'prop_eid', 'drowid'),)
 
     def __str__(self):
-        return self.prop_owner_eid.mainname + "." + self.prop_eid + "[{}]".format(drowid) + "=" + str(self.dvalue)
+        return self.prop_owner_eid.mainname + "." + self.prop_eid.mainname + "[{}]".format(self.drowid) + "=" + str(self.dvalue)
 
 
 class EntsIntegerPropsValues(models.Model):
@@ -115,7 +115,7 @@ class EntsIntegerPropsValues(models.Model):
         unique_together = (('prop_owner_eid', 'prop_eid', 'drowid'),)
 
     def __str__(self):
-        return self.prop_owner_eid.mainname + "." + self.prop_eid + "[{}]".format(drowid) + "=" + str(self.dvalue)
+        return self.prop_owner_eid.mainname + "." + self.prop_eid.mainname + "[{}]".format(self.drowid) + "=" + str(self.dvalue)
 
 
 class EntsStringPropsValues(models.Model):
@@ -132,7 +132,7 @@ class EntsStringPropsValues(models.Model):
         unique_together = (('prop_owner_eid', 'prop_eid', 'drowid', 'langid'),)
 
     def __str__(self):
-        return self.prop_owner_eid.mainname + "." + self.prop_eid + "[{}]".format(drowid) + "=" + self.dvalue
+        return self.prop_owner_eid.mainname + "." + self.prop_eid.mainname + "[{}]".format(self.drowid) + "=" + self.dvalue
 
 
 class ExistingPhrases(models.Model):
@@ -146,7 +146,7 @@ class ExistingPhrases(models.Model):
         db_table = 'existing_phrases'
 
     def __str__(self):
-        return str(self.phraseid) + "-" + phrasestring
+        return str(self.phraseid) + "-" + self.phrasestring
 
 
 class Existinglanguages(models.Model):
@@ -160,7 +160,7 @@ class Existinglanguages(models.Model):
         db_table = 'existinglanguages'
 
     def __str__(self):
-        return str(langid) + "-" + languagenameinenglish
+        return str(self.langid) + "-" + self.languagenameinenglish
 
 
 class NewTable(models.Model):

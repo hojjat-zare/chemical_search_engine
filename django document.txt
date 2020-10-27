@@ -186,3 +186,73 @@ class Book(models.Model):
 %%%%%%%%%%%%%
 
 ##############################################################################################################
+
+############# django template language ########################################
+Variables look like this: {{ variable }}
+
+when the template system encounters a dot({{variable.something}}), it tries the following lookups, in this order:
+Dictionary lookup
+Attribute or method lookup
+Numeric index lookup
+If the resulting value is callable, it is called with no arguments.
+
+Filters look like this: {{ name|lower }}. lower filter convert name to lower case.
+
+Tags look like this: {% tag %}. Tags are more complex than variables: Some create text in the output,
+some control flow by performing loops or logic,
+and some load external information into the template to be used by later variables.
+
+Template inheritance¶
+read the link:
+https://docs.djangoproject.com/en/3.1/ref/templates/language/#template-inheritance
+#################################################################################################################################
+
+########## Automatic HTML escaping ###############################################################################################
+%%% Hello, {{ name }}   ===>  %%% Hello, <script>alert('hello')</script>
+Clearly, user-submitted data shouldn’t be trusted blindly and inserted directly into your Web pages,
+because a malicious user could use this kind of hole to do potentially bad things.
+This type of security exploit is called a Cross Site Scripting (XSS) attack.
+
+By default in Django, every template automatically escapes the output of every variable tag. Specifically, these five characters are escaped:
+
+< is converted to &lt;
+> is converted to &gt;
+' (single quote) is converted to &#x27;
+" (double quote) is converted to &quot;
+& is converted to &amp;
+Again, we stress that this behavior is on by default. If you’re using Django’s template system, you’re protected.
+
+How to turn it off:
+Why would you want to turn it off? Because sometimes,
+template variables contain data that you intend to be rendered as raw HTML,
+For example, you might store a blob of HTML in your database and want to embed that directly into your template
+
+This will be escaped: {{ data }}
+This will not be escaped: {{ data|safe }}
+
+or
+{% autoescape off %}
+    Hello {{ name }}
+{% endautoescape %}
+
+####################################################################################################################
+
+################### work with static files (css , javascript ,images) ############################
+collectstatic:
+
+>>> django-admin collectstatic
+
+Collects the static files into STATIC_ROOT(default: www.example.com/statics).
+(if you are in development phase of project don't need to run this command
+and after runserver command, 'django.contrib.staticfiles' in your installed
+apps(in setting) do it automatically. but in production phase you should
+use this command.)
+
+
+Files are searched by using the enabled finders.
+The default is to look in all locations defined in STATICFILES_DIRS
+and in the 'static' directory of apps specified by the INSTALLED_APPS setting.
+
+#######################################################################################################
+
+
