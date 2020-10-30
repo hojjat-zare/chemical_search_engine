@@ -55,7 +55,8 @@ class Entitiesrelatedphrases(models.Model):
 
 
 class EntityRelationEntity(models.Model):
-    eid1 = models.ForeignKey(Entities, models.CASCADE, db_column='eid1', primary_key=True,related_name='EntityRelationEntity_eid1_set')
+    # eee = models.IntegerField(primary_key=True)
+    eid1 = models.ForeignKey(Entities, models.CASCADE,primary_key=True, db_column='eid1',related_name='EntityRelationEntity_eid1_set')
     relationid = models.ForeignKey(Entities, models.CASCADE, db_column='relationid',related_name='EntityRelationEntity_relationid_set')
     eid2 = models.ForeignKey(Entities, models.CASCADE, db_column='eid2',related_name='EntityRelationEntity_eid2_set')
     comments = models.CharField(max_length=5000, blank=True, null=True)

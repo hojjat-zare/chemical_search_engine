@@ -1,3 +1,8 @@
+"""about project:
+requires: django version 1.11.29,fdb,django-firebird
+"""
+
+
 %%% scrapy_train\Scripts\activate.bat
 
 %%% python -m django --version
@@ -255,4 +260,15 @@ and in the 'static' directory of apps specified by the INSTALLED_APPS setting.
 
 #######################################################################################################
 
+########### debuging & use pdb #########################################
+ref = https://realpython.com/python-debugging-pdb/
+%%%%%
+import pdb; pdb.set_trace()
+breakpoint()
+p print
+n next_line
+c continue
+s step forward
+pp pretty print
 
+!!!!!!!!!!!!!!!!!!!!!! options.py line 1703

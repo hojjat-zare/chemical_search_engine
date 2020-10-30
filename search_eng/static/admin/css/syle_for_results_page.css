@@ -2,9 +2,31 @@
 
 /* FORM ROWS */
 
+
+/* ################# some changes to style ##################################### */
+#second_page_iframe{
+width: 100%;
+height: 100%;
+overflow: scroll;
+}
+
+.module{
+  margin-bottom: 1px;
+}
+
+#second_page{
+background-color: red;
+height: 300px;
+}
+
+#content-main{
+float: none;
+}
+/* ############################################################################### */
+
 .form-row {
     overflow: hidden;
-    padding: 10px;
+    padding: 1px;
     font-size: 13px;
     border-bottom: 1px solid #eee;
 }
@@ -248,8 +270,8 @@ fieldset.monospace textarea {
 /* SUBMIT ROW */
 
 .submit-row {
-    padding: 12px 14px;
-    margin: 0 0 20px;
+    padding: 1px 1px;
+    margin: 0 0 30px;
     background: #f8f8f8;
     border: 1px solid #eee;
     border-radius: 4px;

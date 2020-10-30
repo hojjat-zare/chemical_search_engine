@@ -54,7 +54,7 @@
 
 {% block field_sets %}
 {% for fieldset in adminform %}
-  {% include "admin/includes/fieldset.html" %}
+  {% include "admin\search_in_database\Entities\fieldset.html" %}
 {% endfor %}
 {% endblock %}
 
@@ -85,7 +85,8 @@
 
 </div>
 </form></div>
-<div>
-  <iframe src="/admin/search_in_database/" width="100%" height=""></iframe>
+<div id="second_page">
+  <iframe id="second_page_iframe" src="/admin/search_in_database/" ></iframe>
 </div>
+{% block footer %}<div id="footer"></div>{% endblock %}
 {% endblock %}
