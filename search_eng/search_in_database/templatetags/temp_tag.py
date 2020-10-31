@@ -24,7 +24,10 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.utils.text import capfirst
 from django.utils.translation import ugettext as _
-
+#####################################################################
+from django.contrib.admin.utils import quote
+from django.urls import reverse
+#####################################################################
 register = Library()
 
 DOT = '.'
@@ -40,6 +43,8 @@ def result_list(cl):
     for h in headers:
         if h['sortable'] and h['sorted']:
             num_sorted_fields += 1
+    my_var = list(results(cl))
+    # breakpoint()
     return {'cl': cl,
             'result_hidden_fields': list(result_hidden_fields(cl)),
             'result_headers': headers,
@@ -228,6 +233,7 @@ def items_for_result(cl, result, form):
         return field_name in cl.list_display_links
 
     first = True
+    # breakpoint()
     pk = cl.lookup_opts.pk.attname
     for field_index, field_name in enumerate(cl.list_display):
         empty_value_display = cl.model_admin.get_empty_value_display()
@@ -272,11 +278,30 @@ def items_for_result(cl, result, form):
         if link_in_col(first, field_name, cl):
             table_tag = 'th' if first else 'td'
             first = False
+######################################################################################################
+###### args=(quote(pk),)
+            def create_args(keys_list):
+                    manual_args = ''
+                    for key in keys_list:
+                        manual_args = manual_args + str(key) + '$'
+                    manual_args = manual_args[:-1]
+                    return manual_args
 
+            def Manual_url_for_result(changeList, result):
+                keys = result.get_primary_key()
+                manual_args = create_args(keys)
+                # breakpoint()
+                my_url = reverse('admin:%s_%s_change' % (changeList.opts.app_label,
+                                                       changeList.opts.model_name),
+                               args=(manual_args,),
+                               current_app=changeList.model_admin.admin_site.name)
+                return my_url
             # Display link to the result's change_view if the url exists, else
             # display just the result's representation.
+##########################################################################################################
             try:
-                url = cl.url_for_result(result)
+                url = Manual_url_for_result(cl,result)
+                # breakpoint()
             except NoReverseMatch:
                 link_or_text = result_repr
             else:
@@ -311,8 +336,8 @@ def items_for_result(cl, result, form):
                 bf = form[field_name]
                 result_repr = mark_safe(force_text(bf.errors) + force_text(bf))
             yield format_html('<td{}>{}</td>', row_class, result_repr)
-    if form and not form[cl.model._meta.pk.name].is_hidden:
-        yield format_html('<td>{}</td>', force_text(form[cl.model._meta.pk.name]))
+    # if form and not form[cl.model._meta.pk.name].is_hidden:
+    #     yield format_html('<td>{}</td>', force_text(form[cl.model._meta.pk.name]))
 
 
 class ResultList(list):
