@@ -32,7 +32,7 @@ class Entities(models.Model):
 
 
 class EntitiesAlternateNames(models.Model):
-    eid = models.ForeignKey(Entities, models.CASCADE, db_column='eid', primary_key=True)
+    eid = models.ForeignKey(Entities, models.CASCADE, db_column='eid')
     drowid = models.BigIntegerField()
     langid = models.ForeignKey('Existinglanguages', models.CASCADE, db_column='langid')
     alternatename = models.CharField(max_length=200)
@@ -55,9 +55,10 @@ class EntitiesAlternateNames(models.Model):
 
 
 class Entitiesrelatedphrases(models.Model):
-    entid = models.ForeignKey(Entities, models.CASCADE, db_column='entid', primary_key=True)
+    entid = models.ForeignKey(Entities, models.CASCADE, db_column='entid')
     phraseid = models.ForeignKey('ExistingPhrases', models.CASCADE, db_column='phraseid')
     comments = models.CharField(max_length=5000, blank=True, null=True)
+    drowid = models.BigIntegerField(unique=True, primary_key=True)
 
     class Meta:
         managed = False
@@ -77,8 +78,7 @@ class Entitiesrelatedphrases(models.Model):
 
 
 class EntityRelationEntity(models.Model):
-    # eee = models.IntegerField(primary_key=True)
-    eid1 = models.ForeignKey(Entities, models.CASCADE,primary_key=True, db_column='eid1',related_name='EntityRelationEntity_eid1_set')
+    eid1 = models.ForeignKey(Entities, models.CASCADE, db_column='eid1',related_name='EntityRelationEntity_eid1_set')
     relationid = models.ForeignKey(Entities, models.CASCADE, db_column='relationid',related_name='EntityRelationEntity_relationid_set')
     eid2 = models.ForeignKey(Entities, models.CASCADE, db_column='eid2',related_name='EntityRelationEntity_eid2_set')
     comments = models.CharField(max_length=5000, blank=True, null=True)
@@ -100,7 +100,7 @@ class EntityRelationEntity(models.Model):
 
 
 class EntsBlobPropsValues(models.Model):
-    prop_owner_eid = models.ForeignKey(Entities, models.CASCADE, db_column='prop_owner_eid', primary_key=True,related_name='EntsBlobPropsValues_prop_owner_eid_set')
+    prop_owner_eid = models.ForeignKey(Entities, models.CASCADE, db_column='prop_owner_eid',related_name='EntsBlobPropsValues_prop_owner_eid_set')
     prop_eid = models.ForeignKey(Entities, models.CASCADE, db_column='prop_eid',related_name='EntsBlobPropsValues_prop_eid_set')
     drowid = models.IntegerField()
     mimetype = models.CharField(max_length=100, blank=True, null=True)
@@ -124,7 +124,7 @@ class EntsBlobPropsValues(models.Model):
 
 
 class EntsDoublePropsValues(models.Model):
-    prop_owner_eid = models.ForeignKey(Entities, models.CASCADE, db_column='prop_owner_eid', primary_key=True,related_name='EntsDoublePropsValues_prop_owner_eid_set')
+    prop_owner_eid = models.ForeignKey(Entities, models.CASCADE, db_column='prop_owner_eid',related_name='EntsDoublePropsValues_prop_owner_eid_set')
     prop_eid = models.ForeignKey(Entities, models.CASCADE, db_column='prop_eid',related_name='EntsDoublePropsValues_prop_eid_set')
     drowid = models.IntegerField()
     dvalue = models.FloatField(blank=True, null=True)
@@ -147,7 +147,7 @@ class EntsDoublePropsValues(models.Model):
 
 
 class EntsIntegerPropsValues(models.Model):
-    prop_owner_eid = models.ForeignKey(Entities, models.CASCADE, db_column='prop_owner_eid', primary_key=True,related_name='EntsIntegerPropsValues_prop_owner_eid_set')
+    prop_owner_eid = models.ForeignKey(Entities, models.CASCADE, db_column='prop_owner_eid',related_name='EntsIntegerPropsValues_prop_owner_eid_set')
     prop_eid = models.ForeignKey(Entities, models.CASCADE, db_column='prop_eid',related_name='EntsIntegerPropsValues_prop_eid_set')
     drowid = models.IntegerField()
     dvalue = models.BigIntegerField(blank=True, null=True)
@@ -157,34 +157,6 @@ class EntsIntegerPropsValues(models.Model):
         managed = False
         db_table = 'ents_integer_props_values'
         unique_together = (('prop_owner_eid', 'prop_eid', 'drowid'),)
-
-    def _do_update(self, base_qs, using, pk_val, values, update_fields, forced_update):
-        """
-        This method will try to update the model. If the model was updated (in
-        the sense that an update query was done and a matching row was found
-        from the DB) the method will return True.
-        """
-        filtered = base_qs.filter(prop_owner_eid=75 , prop_eid=1 , drowid=0)
-        if not values:
-            # We can end up here when saving a model in inheritance chain where
-            # update_fields doesn't target any field in current model. In that
-            # case we just say the update succeeded. Another case ending up here
-            # is a model with just PK - in that case check that the PK still
-            # exists.
-            return update_fields is not None or filtered.exists()
-        if self._meta.select_on_save and not forced_update:
-            if filtered.exists():
-                # It may happen that the object is deleted from the DB right after
-                # this check, causing the subsequent UPDATE to return zero matching
-                # rows. The same result can occur in some rare cases when the
-                # database returns zero despite the UPDATE being executed
-                # successfully (a row is matched and updated). In order to
-                # distinguish these two cases, the object's existence in the
-                # database is again checked for if the UPDATE query returns 0.
-                return filtered._update(values) > 0 or filtered.exists()
-            else:
-                return False
-        return filtered._update(values) > 0
 
     @staticmethod
     def get_primarykey_fields_name():
@@ -198,7 +170,7 @@ class EntsIntegerPropsValues(models.Model):
 
 
 class EntsStringPropsValues(models.Model):
-    prop_owner_eid = models.ForeignKey(Entities, models.CASCADE, db_column='prop_owner_eid', primary_key=True,related_name='EntsStringPropsValues_prop_owner_eid_set')
+    prop_owner_eid = models.ForeignKey(Entities, models.CASCADE, db_column='prop_owner_eid',related_name='EntsStringPropsValues_prop_owner_eid_set')
     prop_eid = models.ForeignKey(Entities, models.CASCADE, db_column='prop_eid',related_name='EntsStringPropsValues_prop_eid_set')
     drowid = models.IntegerField()
     langid = models.ForeignKey('Existinglanguages', models.CASCADE, db_column='langid')
