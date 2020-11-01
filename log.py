@@ -1,4 +1,83 @@
+{'base_qs': <QuerySet [<EntsIntegerPropsValues: hydrogen atom.atomic number[0]=1>, <EntsIntegerPropsValues: methane.chemical formula[0]=None>, <EntsIntegerPropsValues: helium atom.atomic number[0]=2>, <EntsIntegerPropsValues: helium atom.period (atom peroperty)[0]=67>, <EntsIntegerPropsValues: helium atom.group (atom peroperty)[0]=68>, <EntsIntegerPropsValues: hydrogen atom.period (atom peroperty)[0]=67>, <EntsIntegerPropsValues: hydrogen atom.group (atom peroperty)[0]=66>]>,
+ 'cls': <class 'search_in_database.models.EntsIntegerPropsValues'>,
+ 'force_insert': False,
+ 'force_update': False,
+ 'forced_update': False,
+ 'meta': <Options for EntsIntegerPropsValues>,
+ 'non_pks': [<django.db.models.fields.related.ForeignKey: prop_eid>,
+             <django.db.models.fields.IntegerField: drowid>,
+             <django.db.models.fields.BigIntegerField: dvalue>,
+             <django.db.models.fields.CharField: comments>],
+ 'pk_set': True,
+ 'pk_val': 74,
+ 'raw': False,
+ 'self': <EntsIntegerPropsValues: helium atom.atomic number[1]=2>,
+ 'update_fields': None,
+ 'updated': False,
+ 'using': 'default',
+ 'values': [(<django.db.models.fields.related.ForeignKey: prop_eid>, None, 19),
+            (<django.db.models.fields.IntegerField: drowid>, None, 1),
+            (<django.db.models.fields.BigIntegerField: dvalue>, None, 2),
+            (<django.db.models.fields.CharField: comments>, None, None)]}
+
+pp locals()
+{'ModelForm': <class 'django.forms.widgets.EntsIntegerPropsValuesForm'>,
+ 'add': False,
+ 'extra_context': None,
+ 'form': <EntsIntegerPropsValuesForm bound=True, valid=True, fields=(prop_owner_eid;prop_eid;drowid;dvalue;comments)>,
+ 'form_url': '',
+ 'form_validated': True,
+ 'formsets': [],
+ 'inline_instances': [],
+ 'model': <class 'search_in_database.models.EntsIntegerPropsValues'>,
+ 'new_object': <EntsIntegerPropsValues: helium atom.atomic number[1]=2>,
+ 'obj': <EntsIntegerPropsValues: helium atom.atomic number[1]=2>,
+ 'object_id': '74$19$0',
+ 'opts': <Options for EntsIntegerPropsValues>,
+ 'request': <WSGIRequest: POST '/admin/search_in_database/entsintegerpropsvalues/74$19$0/change/'>,
+ 'self': <search_in_database.admin.EntityRelationEntityAdmin object at 0x000001E8DB92FEF0>,
+ 'to_field': None}
+
+{'ModelForm': <class 'django.forms.widgets.EntsIntegerPropsValuesForm'>,
+ 'add': False,
+ 'extra_context': None,
+ 'form': <EntsIntegerPropsValuesForm bound=True, valid=True, fields=(prop_owner_eid;prop_eid;drowid;dvalue;comments)>,
+ 'form_url': '',
+ 'form_validated': True,
+ 'formsets': [],
+ 'inline_instances': [],
+ 'model': <class 'search_in_database.models.EntsIntegerPropsValues'>,
+ 'new_object': <EntsIntegerPropsValues: helium atom.atomic number[1]=2>,
+ 'obj': <EntsIntegerPropsValues: helium atom.atomic number[1]=2>,
+ 'object_id': '74$19$0',
+ 'opts': <Options for EntsIntegerPropsValues>,
+ 'request': <WSGIRequest: POST '/admin/search_in_database/entsintegerpropsvalues/74$19$0/change/'>,
+ 'self': <search_in_database.admin.EntityRelationEntityAdmin object at 0x000001E8DB92FEF0>,
+ 'to_field': None}
 
 
-{'self': <search_in_database.admin.EntityRelationEntityAdmin object at 0x000001FC08891630>, 'request': <WSGIRequest: GET '/admin/search_in_database/entityrelationentity/'>, 'extra_context': None, 'ERROR_FLAG': 'e', 'opts': <Options for EntityRelationEntity>, 'app_label': 'search_in_database', 'list_display': ['action_checkbox', '__str__'], 'list_display_links': ['__str__'], 'list_filter': (), 'search_fields': (), 'list_select_related': False, 'actions': OrderedDict([('delete_selected', (<function delete_selected at 0x000001FC08464950>, 'delete_selected', 'Delete selected %(verbose_name_plural)s'))]), 'ChangeList': <class 'django.contrib.admin.views.main.ChangeList'>, 'cl': <django.contrib.admin.views.main.ChangeList object at 0x000001FC08D7E0F0>, 'action_failed': False, 'selected': [], 'formset': None, 'media': <django.forms.widgets.Media object at 0x000001FC08D7E940>, 'action_form': <ActionForm bound=False, valid=Unknown, fields=(action;select_across)>, 'selection_note_all': 'All %(total_count)s selected', 'context': {'site_title': 'Django site admin', 'site_header': 'Django administration', 'site_url': '/', 'has_permission': True, 'available_apps': [{'name': 'Authentication and Authorization', 'app_label': 'auth', 'app_url': '/admin/auth/', 'has_module_perms': True, 'models': [{'name': 'Groups', 'object_name': 'Group', 'perms': {'add': True, 'change': True, 'delete': True}, 'admin_url': '/admin/auth/group/', 'add_url': '/admin/auth/group/add/'}, {'name': 'Users', 'object_name': 'User', 'perms': {'add': True, 'change': True, 'delete': True}, 'admin_url': '/admin/auth/user/', 'add_url': '/admin/auth/user/add/'}]}, {'name': 'Search_In_Database', 'app_label': 'search_in_database', 'app_url': '/admin/search_in_database/', 'has_module_perms': True, 'models': [{'name': 'Entities alternate namess', 'object_name': 'EntitiesAlternateNames', 'perms': {'add': True, 'change': True, 'delete': True}, 'admin_url': '/admin/search_in_database/entitiesalternatenames/', 'add_url': '/admin/search_in_database/entitiesalternatenames/add/'}, {'name': 'Entitiesrelatedphrasess', 'object_name': 'Entitiesrelatedphrases', 'perms': {'add': True, 'change': True, 'delete': True}, 'admin_url': '/admin/search_in_database/entitiesrelatedphrases/', 'add_url': '/admin/search_in_database/entitiesrelatedphrases/add/'}, {'name': 'Entitiess', 'object_name': 'Entities', 'perms': {'add': True, 'change': True, 'delete': True}, 'admin_url': '/admin/search_in_database/entities/', 'add_url': '/admin/search_in_database/entities/add/'}, {'name': 'Entity relation entitys', 'object_name': 'EntityRelationEntity', 'perms': {'add': True, 'change': True, 'delete': True}, 'admin_url': '/admin/search_in_database/entityrelationentity/', 'add_url': '/admin/search_in_database/entityrelationentity/add/'}, {'name': 'Ents blob props valuess', 'object_name': 'EntsBlobPropsValues', 'perms': {'add': True, 'change': True, 'delete': True}, 'admin_url': '/admin/search_in_database/entsblobpropsvalues/', 'add_url': '/admin/search_in_database/entsblobpropsvalues/add/'}, {'name': 'Ents double props valuess', 'object_name': 'EntsDoublePropsValues', 'perms': {'add': True, 'change': True, 'delete': True}, 'admin_url': '/admin/search_in_database/entsdoublepropsvalues/', 'add_url': '/admin/search_in_database/entsdoublepropsvalues/add/'}, {'name': 'Ents integer props valuess', 'object_name': 'EntsIntegerPropsValues', 'perms': {'add': True, 'change': True, 'delete': True}, 'admin_url': '/admin/search_in_database/entsintegerpropsvalues/', 'add_url': '/admin/search_in_database/entsintegerpropsvalues/add/'}, {'name': 'Ents string props valuess', 'object_name': 'EntsStringPropsValues', 'perms': {'add': True, 'change': True, 'delete': True}, 'admin_url': '/admin/search_in_database/entsstringpropsvalues/', 'add_url': '/admin/search_in_database/entsstringpropsvalues/add/'}, {'name': 'Existing phrasess', 'object_name': 'ExistingPhrases', 'perms': {'add': True, 'change': True, 'delete': True}, 'admin_url': '/admin/search_in_database/existingphrases/', 'add_url': '/admin/search_in_database/existingphrases/add/'}, {'name': 'Existinglanguagess', 'object_name': 'Existinglanguages', 'perms': {'add': True, 'change': True, 'delete': True}, 'admin_url': '/admin/search_in_database/existinglanguages/', 'add_url': '/admin/search_in_database/existinglanguages/add/'}, {'name': 'New tables', 'object_name': 'NewTable', 'perms': {'add': True, 'change': True, 'delete': True}, 'admin_url': '/admin/search_in_database/newtable/', 'add_url': '/admin/search_in_database/newtable/add/'}, {'name': 'Resultss', 'object_name': 'Results', 'perms': {'add': True, 'change': True, 'delete': True}, 'admin_url': '/admin/search_in_database/results/', 'add_url': '/admin/search_in_database/results/add/'}, {'name': 'Searchss', 'object_name': 'Searchs', 'perms': {'add': True, 'change': True, 'delete': True}, 'admin_url': '/admin/search_in_database/searchs/', 'add_url': '/admin/search_in_database/searchs/add/'}, {'name': 'Typesofentitiess', 'object_name': 'Typesofentities', 'perms': {'add': True, 'change': True, 'delete': True}, 'admin_url': '/admin/search_in_database/typesofentities/', 'add_url': '/admin/search_in_database/typesofentities/add/'}]}], 'module_name': 'entity relation entitys', 'selection_note': '0 of 99 selected', 'selection_note_all': 'All 99 selected', 'title': 'Select entity relation entity to change', 'is_popup': False, 'to_field': None, 'cl': <django.contrib.admin.views.main.ChangeList object at 0x000001FC08D7E0F0>, 'media': <django.forms.widgets.Media object at 0x000001FC08D7E940>, 'has_add_permission': True, 'opts': <Options for EntityRelationEntity>, 'action_form': <ActionForm bound=False, valid=Unknown, fields=(action;select_across)>, 'actions_on_top': True, 'actions_on_bottom': False, 'actions_selection_counter': True, 'preserved_filters': ''}}
-(Pdb)
+ {'ModelForm': <class 'django.forms.widgets.EntsIntegerPropsValuesForm'>,
+ 'add': False,
+ 'extra_context': None,
+ 'form': <EntsIntegerPropsValuesForm bound=True, valid=True, fields=(prop_owner_eid;prop_eid;drowid;dvalue;comments)>,
+ 'form_url': '',
+ 'form_validated': True,
+ 'formsets': [],
+ 'inline_instances': [],
+ 'model': <class 'search_in_database.models.EntsIntegerPropsValues'>,
+ 'new_object': <EntsIntegerPropsValues: lithium.atomic number[0]=2>,
+ 'obj': <EntsIntegerPropsValues: lithium.atomic number[0]=2>,
+ 'object_id': '74$19$0',
+ 'opts': <Options for EntsIntegerPropsValues>,
+ 'request': <WSGIRequest: POST '/admin/search_in_database/entsintegerpropsvalues/74$19$0/change/'>,
+ 'self': <search_in_database.admin.EntityRelationEntityAdmin object at 0x0000017C29DDD780>,
+ 'to_field': None}
+
+
+ -> obj.save()
+(Pdb) pp locals()
+{'change': True,
+ 'form': <EntsIntegerPropsValuesForm bound=True, valid=True, fields=(prop_owner_eid;prop_eid;drowid;dvalue;comments)>,
+ 'obj': <EntsIntegerPropsValues: lithium.atomic number[0]=2>,
+ 'request': <WSGIRequest: POST '/admin/search_in_database/entsintegerpropsvalues/74$19$0/change/'>,
+ 'self': <search_in_database.admin.EntityRelationEntityAdmin object at 0x0000027121BC5CF8>}

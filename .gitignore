@@ -24,3 +24,5 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+search_eng\SEDB.FDB
+search_eng/SEDB.FDB

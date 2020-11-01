@@ -265,10 +265,14 @@ ref = https://realpython.com/python-debugging-pdb/
 %%%%%
 import pdb; pdb.set_trace()
 breakpoint()
-p print
-n next_line
-c continue
-s step forward
-pp pretty print
+p 'print'
+n 'next_line'
+c 'continue'
+s 'step forward'
+pp 'pretty print'
+pp object.__dict__ 'print all properties and values'
+locals()
+globals()
+w find function callers
 
 !!!!!!!!!!!!!!!!!!!!!! options.py line 1703
