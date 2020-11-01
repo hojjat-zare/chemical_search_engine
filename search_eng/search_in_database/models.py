@@ -11,7 +11,7 @@ from django.db import models
 
 
 class Entities(models.Model):
-    entid = models.BigIntegerField(primary_key=True)
+    entid = models.AutoField(primary_key=True)
     mainname = models.CharField(unique=True, max_length=200)
     enttypeid = models.ForeignKey('Typesofentities', models.CASCADE, db_column='enttypeid')
     comments = models.CharField(max_length=5000, blank=True, null=True)
@@ -58,7 +58,7 @@ class Entitiesrelatedphrases(models.Model):
     entid = models.ForeignKey(Entities, models.CASCADE, db_column='entid')
     phraseid = models.ForeignKey('ExistingPhrases', models.CASCADE, db_column='phraseid')
     comments = models.CharField(max_length=5000, blank=True, null=True)
-    drowid = models.BigIntegerField(unique=True, primary_key=True)
+    drowid = models.AutoField(unique=True, primary_key=True)
 
     class Meta:
         managed = False
@@ -194,7 +194,7 @@ class EntsStringPropsValues(models.Model):
 
 
 class ExistingPhrases(models.Model):
-    phraseid = models.BigIntegerField(primary_key=True)
+    phraseid = models.AutoField(primary_key=True)
     phrasestring = models.CharField(unique=True, max_length=200)
     langid = models.ForeignKey('Existinglanguages', models.CASCADE, db_column='langid')
     comments = models.CharField(max_length=5000, blank=True, null=True)
@@ -215,7 +215,7 @@ class ExistingPhrases(models.Model):
 
 
 class Existinglanguages(models.Model):
-    langid = models.SmallIntegerField(primary_key=True)
+    langid = models.AutoField(primary_key=True)
     languagenameinenglish = models.CharField(unique=True, max_length=100)
     languagenamebyitself = models.CharField(unique=True, max_length=100)
     comments = models.CharField(max_length=5000, blank=True, null=True)
@@ -254,7 +254,7 @@ class NewTable(models.Model):
 
 
 class Typesofentities(models.Model):
-    enttypeid = models.SmallIntegerField(primary_key=True)
+    enttypeid = models.AutoField(primary_key=True)
     enttypename = models.CharField(unique=True, max_length=100)
     comments = models.CharField(max_length=5000, blank=True, null=True)
 
@@ -274,7 +274,7 @@ class Typesofentities(models.Model):
 
 
 class Searchs(models.Model):
-    searchid = models.BigIntegerField(primary_key=True)
+    searchid = models.AutoField(primary_key=True)
     ent_phraseid = models.ForeignKey(Entitiesrelatedphrases, models.DO_NOTHING, db_column='ent_phraseid')
     reference_address = models.CharField(max_length=2000)
     search_time = models.DateTimeField()
@@ -291,13 +291,13 @@ class Searchs(models.Model):
         return [self.searchid]
 
     def __str__(self):
-        return str(self.searchid) + "- (" + self.ent_phraseid + ")=>" + self.reference_address + "@(" + self.search_time.strftime("%Y.%m.%d, %H:%M:%S") + ")"
+        return str(self.searchid) + "- (" + str(self.ent_phraseid) + ")=>" + self.reference_address + "@(" + self.search_time.strftime("%Y.%m.%d, %H:%M:%S") + ")"
 
 
 class Results(models.Model):
-    resultid = models.BigIntegerField(primary_key=True)
+    resultid = models.AutoField(primary_key=True)
     searchid = models.ForeignKey('Searchs', models.DO_NOTHING, db_column='searchid')
-    result = models.BinaryField(blank=True, null=True)
+    result = models.BinaryField(blank=True, null=True,editable=True)
     mimetype = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
@@ -311,6 +311,20 @@ class Results(models.Model):
     def get_primary_key(self):
         return [self.resultid]
 
+    def get_search_ref(self):
+        return self.searchid.reference_address
+
+    def scheme_image_tag(self):
+        from base64 import b64encode
+        if('image' in self.mimetype):
+            return('<img src = "data: image/png; base64, {}" width="200" height="100">'.format(
+                b64encode(self.result).decode('utf8')))
+
+        return('<p>{}</p>'.format(self.result))
+
+    # scheme_image_tag.short_description = 'Image'
+    scheme_image_tag.allow_tags = True
+
         ###########  __str__ method is not compeleted (binary field wont be shown) ##########################
     def __str__(self):
-        return str(self.resultid) + "- (" + self.searchid.ent_phraseid + "&&" + self.reference_address +")=>"
+        return str(self.resultid) + "- (" + str(self.searchid.ent_phraseid) + "&&" + self.searchid.reference_address +")=>"

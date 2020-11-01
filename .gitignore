@@ -24,5 +24,8 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-search_eng\SEDB.FDB
 search_eng/SEDB.FDB
+log.py
+train.py
+a.jpg
+search_eng/search_in_database/__pycache__
