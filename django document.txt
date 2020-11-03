@@ -50,15 +50,17 @@ to tell your project that the polls app is installed:
 so add this to your settings.INSTALLED_APPS:
 %%%% 'polls.apps.PollsConfig' %%%%%%
 
-now create migration:
-%%% python manage.py makemigrations polls
+now create sql:
+>>> python manage.py makemigrations polls
 
 to see sql codes use this:
-%%% python manage.py sqlmigrate polls 0001
+>>> python manage.py sqlmigrate polls 0001
 
-now run migrate to save changes to database:
-%%% python manage.py sqlmigrate polls 0001
+now run this to make migrations:
+>>> python manage.py sqlmigrate polls 0001
 
+now run:
+>>> python manage.py migrate
 ################################################
 
 ##########using shell  02 #######################
@@ -274,5 +276,3 @@ pp object.__dict__ 'print all properties and values'
 locals()
 globals()
 w find function callers
-
-!!!!!!!!!!!!!!!!!!!!!! options.py line 1703

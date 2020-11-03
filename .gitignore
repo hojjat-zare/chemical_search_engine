@@ -28,4 +28,6 @@ search_eng/SEDB.FDB
 log.py
 train.py
 a.jpg
+c.jpg
+b.jpg
 search_eng/search_in_database/__pycache__

@@ -6,8 +6,10 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from __future__ import unicode_literals
-
+from django.db import router
 from django.db import models
+# from fdb.fbcore import BlobReader
+from builtins import bytes
 
 
 class Entities(models.Model):
@@ -74,7 +76,7 @@ class Entitiesrelatedphrases(models.Model):
         return [self.entid.entid,self.phraseid.phraseid]
 
     def __str__(self):
-        return self.entid.mainname + "=>" + self.phraseid.phrasestring
+        return self.entid.mainname + "<=>" + self.phraseid.phrasestring
 
 
 class EntityRelationEntity(models.Model):
@@ -104,13 +106,52 @@ class EntsBlobPropsValues(models.Model):
     prop_eid = models.ForeignKey(Entities, models.CASCADE, db_column='prop_eid',related_name='EntsBlobPropsValues_prop_eid_set')
     drowid = models.IntegerField()
     mimetype = models.CharField(max_length=100, blank=True, null=True)
-    dvalue = models.BinaryField(blank=True, null=True)
+    dvalue = models.FileField(blank=True, null=True)
     comments = models.CharField(max_length=5000, blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'ents_blob_props_values'
         unique_together = (('prop_owner_eid', 'prop_eid', 'drowid'),)
+
+    #override
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+
+        class Fake_EntsBlobPropsVaues(models.Model):
+            prop_owner_eid = models.ForeignKey(Entities, models.CASCADE, db_column='prop_owner_eid',related_name='Fake_EntsBlobPropsValues_prop_owner_eid_set')
+            prop_eid = models.ForeignKey(Entities, models.CASCADE, db_column='prop_eid',related_name='Fake_EntsBlobPropsValues_prop_eid_set')
+            drowid = models.IntegerField()
+            mimetype = models.CharField(max_length=100, blank=True, null=True)
+            dvalue = models.BinaryField(blank=True, null=True)
+            comments = models.CharField(max_length=5000, blank=True, null=True)
+
+            class Meta:
+                managed = False
+                db_table = 'ents_blob_props_values'
+                unique_together = (('prop_owner_eid', 'prop_eid', 'drowid'),)
+
+        binary_file = self.dvalue
+        if(not isinstance(binary_file,bytes)):
+            binary_file=binary_file._file.file.read()
+        fake = Fake_EntsBlobPropsVaues(pk=self.pk,prop_owner_eid=self.prop_owner_eid,prop_eid=self.prop_eid,drowid=self.drowid,mimetype=self.mimetype,dvalue=binary_file,comments=self.comments)
+        fake.save()
+
+    def scheme_image_tag(self,width=200, height=100):
+        from base64 import b64encode
+        if('image' in self.mimetype):
+            if(isinstance(self.dvalue,bytes)):
+                return('<img src = "data: image/png; base64, {}" width="{}" height="{}">'.format(
+                    b64encode(self.dvalue).decode('utf8'), width, height))
+            else:
+                ## is isinstance(self.dvalue,BlobReader)
+                return('<img src = "data: image/png; base64, {}" width="{}" height="{}">'.format(
+                    b64encode(self.dvalue.read()).decode('utf8'), width, height))
+        ### mimetype is txt
+        return('<pre><p>{}</p></pre>'.format(str(self.dvalue.decode("utf-8"))))
+
+    # scheme_image_tag.short_description = 'Image'
+    scheme_image_tag.allow_tags = True
 
     @staticmethod
     def get_primarykey_fields_name():
@@ -120,7 +161,7 @@ class EntsBlobPropsValues(models.Model):
         return [self.prop_owner_eid.entid, self.prop_eid.entid,self.drowid]
 
     def __str__(self):
-        return self.prop_owner_eid.mainname + "." + self.prop_eid.mainname + "[{}]".format(self.drowid) + "=" + mimetype
+        return self.prop_owner_eid.mainname + "." + self.prop_eid.mainname + "[{}]".format(self.drowid)
 
 
 class EntsDoublePropsValues(models.Model):
@@ -291,18 +332,55 @@ class Searchs(models.Model):
         return [self.searchid]
 
     def __str__(self):
-        return str(self.searchid) + "- (" + str(self.ent_phraseid) + ")=>" + self.reference_address + "@(" + self.search_time.strftime("%Y.%m.%d, %H:%M:%S") + ")"
+        return "(" + str(self.ent_phraseid) + ")=>" + self.reference_address + "@(" + self.search_time.strftime("%Y.%m.%d, %H:%M:%S") + ")"
 
 
 class Results(models.Model):
     resultid = models.AutoField(primary_key=True)
     searchid = models.ForeignKey('Searchs', models.DO_NOTHING, db_column='searchid')
-    result = models.BinaryField(blank=True, null=True,editable=True)
+    result = models.FileField()
     mimetype = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'results'
+
+    #override
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+
+        class fakeResult(models.Model):
+            # this class is a fake class just for help in Results class to store blob files(result) #
+            resultid = models.AutoField(primary_key=True)
+            searchid = models.ForeignKey('Searchs', models.DO_NOTHING, db_column='searchid')
+            result = models.BinaryField()
+            mimetype = models.CharField(max_length=100, blank=True, null=True)
+
+            class Meta:
+                managed = False
+                db_table = 'results'
+
+        binary_file = self.result
+        if(not isinstance(binary_file,bytes)):
+            binary_file=binary_file._file.file.read()
+        fake = fakeResult(resultid=self.resultid,searchid=self.searchid,result=binary_file,mimetype=self.mimetype)
+        fake.save()
+
+    def scheme_image_tag(self,width=200, height=100):
+        from base64 import b64encode
+        if('image' in self.mimetype):
+            if(isinstance(self.result,bytes)):
+                return('<img src = "data: image/png; base64, {}" width="{}" height="{}">'.format(
+                    b64encode(self.result).decode('utf8'), width, height))
+            else:
+                ## is isinstance(self.result,BlobReader)
+                return('<img src = "data: image/png; base64, {}" width="{}" height="{}">'.format(
+                    b64encode(self.result.read()).decode('utf8'), width, height))
+        ### mimetype is txt
+        return('<pre><p>{}</p></pre>'.format(str(self.result.decode("utf-8"))))
+
+    # scheme_image_tag.short_description = 'Image'
+    scheme_image_tag.allow_tags = True
 
     @staticmethod
     def get_primarykey_fields_name():
@@ -313,17 +391,6 @@ class Results(models.Model):
 
     def get_search_ref(self):
         return self.searchid.reference_address
-
-    def scheme_image_tag(self):
-        from base64 import b64encode
-        if('image' in self.mimetype):
-            return('<img src = "data: image/png; base64, {}" width="200" height="100">'.format(
-                b64encode(self.result).decode('utf8')))
-
-        return('<p>{}</p>'.format(self.result))
-
-    # scheme_image_tag.short_description = 'Image'
-    scheme_image_tag.allow_tags = True
 
         ###########  __str__ method is not compeleted (binary field wont be shown) ##########################
     def __str__(self):

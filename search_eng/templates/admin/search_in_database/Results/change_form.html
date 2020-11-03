@@ -6,7 +6,10 @@
 {{ media }}
 {% endblock %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />{% endblock %}
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/syle_for_results_page.css" %}" />
+{% endblock %}
 
 {% block coltype %}colM{% endblock %}
 
@@ -52,6 +55,7 @@
 {% block field_sets %}
 {% for fieldset in adminform %}
   {% include "admin\search_in_database\Results\fieldset.html" %}
+  {{manual_file_field|safe}}
 {% endfor %}
 {% endblock %}
 
@@ -82,4 +86,8 @@
 
 </div>
 </form></div>
+<div id="second_page">
+  <iframe id="second_page_iframe" src="/admin/search_in_database/" ></iframe>
+</div>
+{% block footer %}<div id="footer"></div>{% endblock %}
 {% endblock %}
