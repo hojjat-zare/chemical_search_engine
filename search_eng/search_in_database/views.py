@@ -3,6 +3,6 @@ from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.urls import reverse
 from .models import *
-
+from .tools import *
 def index(request):
-  return render(request, 'search_in_database/index.html')
+    return render(request, 'search_in_database/index.html')

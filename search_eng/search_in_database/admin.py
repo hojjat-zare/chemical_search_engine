@@ -10,11 +10,12 @@ TO_FIELD_VAR = '_to_field'
 app = apps.get_app_config('search_in_database')
 # tables_with_multi_column_primary_key = ['entitiesrelatedphrases','entitiesalternatenames','entityrelationentity','entsblobpropsvalues','entsdoublepropsvalues','entsintegerpropsvalues','entsstringpropsvalues']
 for model_name, model in app.models.items():
-    if(not str(model_name) in ['results','entsblobpropsvalues']):
+    if(not str(model_name) in ['results','entsblobpropsvalues','entityrelationentity','entities']):
         admin.site.register(model)
 ########################################################################
 
 class Has_blob_field_Admin(admin.ModelAdmin):
+    #override
     def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
         opts = self.model._meta
         app_label = opts.app_label
@@ -74,10 +75,12 @@ class ResultsAdmin(Has_blob_field_Admin):
 @admin.register(EntsBlobPropsValues)
 class EntsBlobPropsValuesAdmin(Has_blob_field_Admin):
     list_display = ('__str__','mimetype','scheme_image_tag')
-    # fieldsets = (
-    #     (None, {
-    #         'fields': ('prop_owner_eid','prop_eid','drowid','mimetype','dvalue')
-    #     }),
-    #
-    # )
-# admin.site.register(EntsBlobPropsValues,EntsBlobPropsValuesAdmin)
+
+@admin.register(EntityRelationEntity)
+class EntityRelationEntityAdmin(admin.ModelAdmin):
+    list_display = ('get_eid1','get_relationid','get_eid2')
+
+@admin.register(Entities)
+class EntitiesAdmin(admin.ModelAdmin):
+	list_display = ('mainname','enttypeid')
+

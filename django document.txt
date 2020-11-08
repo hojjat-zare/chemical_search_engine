@@ -72,6 +72,8 @@ from search_in_database.models import *
 <<<
 >>> Question.objects.all()
 
+this code shows the query sql code:
+%% str(pubs.query)
 ###########################################
 
 ########## admin  02 #########################

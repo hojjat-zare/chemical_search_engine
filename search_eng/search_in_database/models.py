@@ -12,6 +12,7 @@ from django.db import models
 from builtins import bytes
 
 
+
 class Entities(models.Model):
     entid = models.AutoField(primary_key=True)
     mainname = models.CharField(unique=True, max_length=200)
@@ -30,7 +31,7 @@ class Entities(models.Model):
         return [self.entid]
 
     def __str__(self):
-        return str(self.entid) + '-' + self.mainname + '====>' + self.enttypeid.enttypename
+        return self.mainname + '====>' + self.enttypeid.enttypename
 
 
 class EntitiesAlternateNames(models.Model):
@@ -53,7 +54,7 @@ class EntitiesAlternateNames(models.Model):
         return [self.eid.entid,self.drowid]
 
     def __str__(self):
-        return eid.mainname + "." + str(self.drowid)+ "=>" + alternatename
+        return eid.mainname + "[" + str(self.drowid)+ "]=>" + alternatename
 
 
 class Entitiesrelatedphrases(models.Model):
@@ -89,6 +90,18 @@ class EntityRelationEntity(models.Model):
         managed = False
         db_table = 'entity_relation_entity'
         unique_together = (('eid1', 'relationid', 'eid2'),)
+
+    def get_eid1(self):
+        return self.eid1.mainname
+    get_eid1.admin_order_field = 'eid1'
+
+    def get_relationid(self):
+        return self.relationid.mainname
+    get_relationid.admin_order_field = 'relationid'
+
+    def get_eid2(self):
+        return self.eid2.mainname
+    get_eid2.admin_order_field = 'eid2'
 
     @staticmethod
     def get_primarykey_fields_name():
@@ -252,7 +265,7 @@ class ExistingPhrases(models.Model):
         return [self.phraseid]
 
     def __str__(self):
-        return str(self.phraseid) + "-" + self.phrasestring
+        return str(self.langid.languagenameinenglish) + "-" + self.phrasestring
 
 
 class Existinglanguages(models.Model):
@@ -273,7 +286,7 @@ class Existinglanguages(models.Model):
         return [self.langid]
 
     def __str__(self):
-        return str(self.langid) + "-" + self.languagenameinenglish
+        return self.languagenameinenglish
 
 
 class NewTable(models.Model):
@@ -311,7 +324,7 @@ class Typesofentities(models.Model):
         return [self.enttypeid]
 
     def __str__(self):
-        return str(self.enttypeid) + "-" + self.enttypename
+        return self.enttypename
 
 
 class Searchs(models.Model):
@@ -395,3 +408,28 @@ class Results(models.Model):
         ###########  __str__ method is not compeleted (binary field wont be shown) ##########################
     def __str__(self):
         return str(self.resultid) + "- (" + str(self.searchid.ent_phraseid) + "&&" + self.searchid.reference_address +")=>"
+
+
+class not_used_propes_view(models.Model):
+    entid = models.AutoField(primary_key=True)
+    mainname = models.CharField(unique=True, max_length=200)
+    enttypeid = models.ForeignKey('Typesofentities', models.CASCADE, db_column='enttypeid')
+
+    class Meta:
+        managed = False
+        db_table = "NOT_USED_PROPERTIES"
+		
+    def __str__(self):
+	    return self.mainname
+		
+class unknown_type_propes_view(models.Model):
+    entid = models.AutoField(primary_key=True)
+    mainname = models.CharField(unique=True, max_length=200)
+    enttypeid = models.ForeignKey('Typesofentities', models.CASCADE, db_column='enttypeid')
+
+    class Meta:
+        managed = False
+        db_table = "UNKNOWN_TYPE_PROPERTIES"
+		
+    def __str__(self):
+	    return self.mainname
