@@ -244,7 +244,7 @@ class EntsStringPropsValues(models.Model):
         return [self.prop_owner_eid.entid, self.prop_eid.entid,self.drowid,self.langid.langid]
 
     def __str__(self):
-        return self.prop_owner_eid.mainname + "." + self.prop_eid.mainname + "[{}]".format(self.drowid) + "=" + self.dvalue
+        return self.prop_owner_eid.mainname + "." + self.prop_eid.mainname + "[{}]".format(self.drowid) + "=" + str(self.dvalue)
 
 
 class ExistingPhrases(models.Model):
@@ -418,10 +418,10 @@ class not_used_propes_view(models.Model):
     class Meta:
         managed = False
         db_table = "NOT_USED_PROPERTIES"
-		
+
     def __str__(self):
 	    return self.mainname
-		
+
 class unknown_type_propes_view(models.Model):
     entid = models.AutoField(primary_key=True)
     mainname = models.CharField(unique=True, max_length=200)
@@ -430,6 +430,6 @@ class unknown_type_propes_view(models.Model):
     class Meta:
         managed = False
         db_table = "UNKNOWN_TYPE_PROPERTIES"
-		
+
     def __str__(self):
 	    return self.mainname

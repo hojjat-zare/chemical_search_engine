@@ -1,8 +1,0 @@
-1- design index.html
-2- design an admin page
-3- fill database
-
-
-2.1- if had time: make admin foreign key fieldsets searchable selectbox.
-
-باید خط 1449 در آپشنز.پای را تغییر دهم
