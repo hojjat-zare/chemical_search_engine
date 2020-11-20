@@ -9,8 +9,8 @@
 </head>
 <body>
 	<div id="main">
-		<form id="" method="get" action="http://www.google.com">
-	    <input type="text" class="" name="searched_string" size="21" maxlength="120">
+		<form id="" method="get" action="{% url 'search_in_database:search_result' %}">
+	    <input type="text" class="" name="q" size="21" maxlength="120">
 			<input type="submit" value="search" class="">
 		</form>
 	</div>

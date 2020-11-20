@@ -1,10 +1,55 @@
 from .models import *
 from django.db.models import Q
+from django.db import connection
 
-class EntitySelection:
+# Entities
+id_of_typeOfValue = 1
+id_of_unit = 0
+id_of_drived_from = 7
+id_of_has = 8
+id_of_double_with_unit = 3
+id_of_entity_property = 4
+id_of_double_unitless = 10
+id_of_integer_unitless = 11
+id_of_string = 12
+id_of_blob = 13
+id_of_integer_with_unit = 14
 
-    def __init__(self,entity_id):
-        self._entity = Entities.objects.get(pk= entity_id)
+# Typesofentities
+id_of_property_type = 4
+id_of_concept_type = 1
+id_of_instance_type = 6
+
+
+
+def get_result_for_search(sentence):
+    encapsulated_result = []
+    sentence_related_entities = SentenceRelatedEntities(sentence)
+    proper_results = sentence_related_entities.get_sorted_result_candidates()
+    for result_element in proper_results:
+        if(result_element.type in ['instance','concept']):
+            all_props_of_entity = AllPropertiesOfEntity(result_element.entity).get_all_propes_in_dictionary_form()
+            encapsulated_result.append({'entity_name':result_element.entity.mainname,'type':result_element.type,'data':all_props_of_entity})
+        else:
+            property_of_entity = PropertyOfEntity(result_element.entity,result_element.property).get_property_value()
+            encapsulated_result.append({'entity_name':result_element.entity.mainname,'property_name':result_element.property.mainname,'type':result_element.type,'data':property_of_entity})
+    return encapsulated_result
+
+def get_result_for_entity(entity_mainname):
+    typeid_map_to_name = {id_of_concept_type:'concept',id_of_property_type:'property',id_of_instance_type:'instance'}
+    entity = Entities.objects.get(mainname=entity_mainname)
+    all_props_of_entity = AllPropertiesOfEntity(entity).get_all_propes_in_dictionary_form()
+    return [{'entity_name':entity.mainname, 'type':typeid_map_to_name[entity.enttypeid_id], 'data':all_props_of_entity}]
+
+
+
+
+
+class AllPropertiesOfEntity:
+
+    def __init__(self,entity):
+        self._entity = entity
+        entity_id = entity.entid
         self._blob_props = EntsBlobPropsValues.objects.filter(prop_owner_eid=entity_id).select_related('prop_eid').order_by('prop_eid','drowid')
         self._double_props = EntsDoublePropsValues.objects.filter(prop_owner_eid=entity_id).select_related('prop_eid').order_by('prop_eid','drowid')
         self._integer_props = EntsIntegerPropsValues.objects.filter(prop_owner_eid=entity_id).select_related('prop_eid').order_by('prop_eid','drowid')
@@ -26,48 +71,86 @@ class EntitySelection:
         return self.get_propes_in_dictionary_form(self._string_props)
 
     def get_double_propes_in_dictionary_form(self):
-        return self.get_propes_in_dictionary_form(self._double_props)
+        double_props = dict()
+        all_propes = {'double_props':double_props}
+        unit_of_property = None
+        for ent_prop in self._double_props:
+            if(ent_prop.drowid == 0):
+                unit_of_property = EntsStringPropsValues.objects.filter(prop_owner_eid=ent_prop.prop_eid,prop_eid=id_of_unit)
+                if(len(unit_of_property)==0):
+                    double_props[ent_prop.prop_eid.mainname] = {'value':[ent_prop.dvalue],'unit':None}
+                else:
+                    double_props[ent_prop.prop_eid.mainname] = {'value':[ent_prop.dvalue],'unit':unit_of_property[0].dvalue}
+            else:
+                # if(len(unit_of_property)==0):
+                #     double_props[ent_prop.prop_eid.mainname].append(ent_prop.dvalue)
+                # else:
+                double_props[ent_prop.prop_eid.mainname]['value'].append(ent_prop.dvalue)
+        return all_propes
 
     def get_integer_and_entity_propes_in_dictionary_form(self):
         integer_props = dict()
         entity_props = dict()
-        both_props = {'integer_props':integer_props,'entity_props':entity_props}
-        id_of_typeOfValue = 1
+        all_propes = {'integer_props':integer_props,'entity_props':entity_props}
+        unit_of_property = None
         for ent_prop in self._integer_props:
             type_of_prop = EntsIntegerPropsValues.objects.filter(prop_owner_eid = ent_prop.prop_eid , prop_eid = id_of_typeOfValue)
             if(ent_prop.drowid == 0):
                 if(len(type_of_prop) == 0):  # means property is integer not id of an entity
-                    integer_props[ent_prop.prop_eid.mainname] = [ent_prop.dvalue]
-                else:
+                    unit_of_property = EntsStringPropsValues.objects.filter(prop_owner_eid=ent_prop.prop_eid,prop_eid=id_of_unit)
+                    if(len(unit_of_property)==0):  # means property has not unit
+                        integer_props[ent_prop.prop_eid.mainname] = {'value':[ent_prop.dvalue],'unit':None}
+                    else:
+                        integer_props[ent_prop.prop_eid.mainname] = {'value':[ent_prop.dvalue],'unit':unit_of_property[0].dvalue}
+                else:   # means property is entity
                     if(ent_prop.dvalue != None):
-                        entity_property = EntitySelection(ent_prop.dvalue)
-                        entity_props[ent_prop.prop_eid.mainname] = [entity_property.get_all_propes_in_dictionary_form()]
+                        equivalent_entity = Entities.objects.get(pk=ent_prop.dvalue)
+                        entity_props[ent_prop.prop_eid.mainname] = [equivalent_entity.mainname]
                     else:
                         entity_props[ent_prop.prop_eid.mainname] = [None]
             else:
                 if(len(type_of_prop) == 0):  # means property is integer not id of an entity
-                    integer_props[ent_prop.prop_eid.mainname].append([ent_prop.dvalue])
-                else:
+                    unit_of_property = EntsStringPropsValues.objects.filter(prop_owner_eid=ent_prop.prop_eid,prop_eid=id_of_unit)
+                    # if(len(unit_of_property)==0):  # means property has not unit
+                    #     integer_with_unit_props[ent_prop.prop_eid.mainname]['value'].append(ent_prop.dvalue)
+                    # else:
+                    integer_props[ent_prop.prop_eid.mainname]['value'].append(ent_prop.dvalue)
+                else:  # means property is entity
                     if(ent_prop.dvalue != None):
-                        entity_property = EntitySelection(ent_prop.dvalue)
-                        entity_props[ent_prop.prop_eid.mainname].append([entity_property.get_all_propes_in_dictionary_form()])
+                        equivalent_entity = Entities.objects.get(pk=ent_prop.dvalue)
+                        entity_props[ent_prop.prop_eid.mainname].append(equivalent_entity.mainname)
                     else:
-                        entity_props[ent_prop.prop_eid.mainname].append([None])
-        return both_props
+                        entity_props[ent_prop.prop_eid.mainname].append(None)
+        return all_propes
 
+
+    # def get_all_propes_in_dictionary_form(self):
+    #     props = {'blob_props':dict(),'double_unitless_props':dict(),'double_with_unit_props':dict(),'string_props':dict(),'integer_unitless_props':dict(),'integer_with_unit_props':dict(),'entity_props':dict()}
+    #     props['blob_props'] = self.get_blob_propes_in_dictionary_form()
+    #     double_props = self.get_double_propes_in_dictionary_form()
+    #     props['double_unitless_props'] = double_props['double_unitless_props']
+    #     props['double_with_unit_props'] = double_props['double_with_unit_props']
+    #     props['string_props'] = self.get_string_props_in_dictionary_form()
+    #     integer_and_entity_props = self.get_integer_and_entity_propes_in_dictionary_form()
+    #     props['integer_unitless_props'] = integer_and_entity_props['integer_unitless_props']
+    #     props['integer_with_unit_props'] = integer_and_entity_props['integer_with_unit_props']
+    #     props['entity_props'] = integer_and_entity_props['entity_props']
+    #     return props
 
     def get_all_propes_in_dictionary_form(self):
-        props = {'blob_props':dict(),'double_props':dict(),'string_props':dict(),'integer_props':dict(),'entity_props':dict()}
-        props['blob_props'] = self.get_blob_propes_in_dictionary_form()
-        props['double_props'] = self.get_double_propes_in_dictionary_form()
-        props['string_props'] = self.get_string_props_in_dictionary_form()
+        props = {'numeric':dict(),'string':dict(),'entity':dict(),'blob':dict()}
+        props['blob'] = self.get_blob_propes_in_dictionary_form()
+        double_props = self.get_double_propes_in_dictionary_form()
+        props['numeric'].update(double_props['double_props'])
+        props['string'] = self.get_string_props_in_dictionary_form()
         integer_and_entity_props = self.get_integer_and_entity_propes_in_dictionary_form()
-        props['integer_props'] = integer_and_entity_props['integer_props']
-        props['entity_props'] = integer_and_entity_props['entity_props']
+        props['numeric'].update(integer_and_entity_props['integer_props'])
+        props['entity'] = integer_and_entity_props['entity_props']
         return props
 
+
     def get_an_special_property(self,property_eid):
-        type_of_prop_id = EntityRelationEntity.objects.get(eid1 = property_eid,relationid = 7).eid2 # 7 is id of drived from
+        type_of_prop_id = EntityRelationEntity.objects.get(eid1 = property_eid,relationid = id_of_drived_from).eid2
         if(type_of_prop_id in [10 , 3]):
             pass
         elif(type_of_prop == 12):
@@ -79,10 +162,47 @@ class EntitySelection:
         return None
 
 
+class PropertyOfEntity:
+    def __init__(self,entity, property):
+        self._entity = entity
+        self._property = property
+
+    def get_entity_id(self):
+        return self._entity.entid
+
+    def get_property_id(self):
+        return self._property.entid
+
+    def get_property_value(self):
+        type_of_prop_id = EntityRelationEntity.objects.get(eid1 = self._property.entid, relationid = id_of_drived_from).eid2_id
+        properties = None
+        prop_type_map = {id_of_double_with_unit:'numeric', id_of_integer_with_unit:'numeric',id_of_double_unitless:'numeric',id_of_integer_unitless:'numeric',id_of_string:'string',id_of_blob:'blob',id_of_entity_property:'entity'}
+        if(type_of_prop_id in [id_of_double_unitless ,  id_of_double_with_unit]): # property is an double
+            properties = EntsDoublePropsValues.objects.filter(prop_owner_eid=self.get_entity_id(), prop_eid=self.get_property_id()).order_by('drowid')
+        elif(type_of_prop_id == id_of_blob):
+            properties = EntsBlobPropsValues.objects.filter(prop_owner_eid=self.get_entity_id(), prop_eid=self.get_property_id()).order_by('drowid')
+        elif(type_of_prop_id == id_of_string):
+            properties = EntsStringPropsValues.objects.filter(prop_owner_eid=self.get_entity_id(), prop_eid=self.get_property_id()).order_by('drowid')
+        elif(type_of_prop_id in [id_of_entity_property, id_of_integer_unitless, id_of_integer_with_unit]): # property is an integer
+            properties = EntsIntegerPropsValues.objects.filter(prop_owner_eid=self.get_entity_id(), prop_eid=self.get_property_id()).order_by('drowid')
+        if(type_of_prop_id in [id_of_double_with_unit, id_of_integer_with_unit]):
+            unit_of_property = EntsStringPropsValues.objects.get(prop_owner_eid=self.get_property_id(), prop_eid=id_of_unit)
+            return{'type':prop_type_map[type_of_prop_id],'value':[prop.dvalue for prop in properties],'unit':unit_of_property.dvalue}
+        elif(type_of_prop_id in [id_of_double_unitless,id_of_integer_unitless,id_of_string,id_of_blob]):
+            return {'type':prop_type_map[type_of_prop_id],'value':[prop.dvalue for prop in properties],'unit':None}
+        elif(type_of_prop_id == id_of_entity_property):
+            values = []
+            for prop in properties:
+                if(prop.dvalue!= None):
+                    values.append(Entities.objects.get(pk=prop.dvalue).mainname)
+                else:
+                    values.append(None)
+            return {'type':prop_type_map[type_of_prop_id],'value':values,'unit':None}
+
 
 
 class ObjectRelatedString:
-    def __init__(self,object):
+    def __init__(self, object):
         self._object = object
         self._entities = None
         self._alternate_names = None
@@ -108,7 +228,7 @@ class ObjectRelatedString:
 
     def _find_properties(self):
         entities_id = self._entities.values_list('entid',flat=True)
-        self._properties = EntityRelationEntity.objects.select_related('eid','relationid','eid2').filter(Q(eid1__in = list(entities_id)) , Q(relationid = 8))  # 8 is id of 'has'
+        self._properties = EntityRelationEntity.objects.select_related('eid','relationid','eid2').filter(Q(eid1__in = list(entities_id)) , Q(relationid = id_of_has))
 
     def does_exist_entity(self):
         if(len(self._entities) == 0):
@@ -124,11 +244,11 @@ class ObjectRelatedString:
     # instance firest then concepts then properties
     def get_entities_sorted(self):
         def manual_sort(entity):
-            if(entity.enttypeid_id==6):
+            if(entity.enttypeid_id==id_of_instance_type):
                 return 1
-            if(entity.enttypeid_id==1):
+            if(entity.enttypeid_id==id_of_concept_type):
                 return 2
-            if(entity.enttypeid_id==4):
+            if(entity.enttypeid_id==id_of_property_type):
                 return 3
         sorted_list = list(self._entities)
         sorted_list.sort(key=manual_sort)
@@ -166,7 +286,7 @@ class WordRelatedStrings(ObjectRelatedString):
         word = self._object
         query_to_ents_alter_names = EntitiesAlternateNames.objects.filter(alternatename__contains = word).values('eid')
         query_to_ents_rel_phr = Entitiesrelatedphrases.objects.filter(phraseid__phrasestring__contains=word).values('entid')
-        query_to_get_entities = Entities.objects.filter(Q(enttypeid__in = [1,4,6]) & (Q(mainname__contains = word) | Q(entid__in =query_to_ents_rel_phr) | Q(entid__in=query_to_ents_alter_names)) )
+        query_to_get_entities = Entities.objects.filter(Q(enttypeid__in = [id_of_concept_type,id_of_property_type,id_of_instance_type]) & (Q(mainname__contains = word) | Q(entid__in =query_to_ents_rel_phr) | Q(entid__in=query_to_ents_alter_names)) )
         self._entities = query_to_get_entities
 
     def get_related_words_for_scrapy_site_evaluation(self):
@@ -195,7 +315,7 @@ class EntityRelatedStrings(ObjectRelatedString):
         self._entities = query_to_get_entities
 
 
-class SentenceRelatedStrings:
+class SentenceRelatedEntities:
     prepositions = ['to', 'of', 'by', 'on', 'for', 'at', 'from', 'in','how','what']
     def __init__(self,sentence):
         self._sentence = sentence
@@ -213,7 +333,7 @@ class SentenceRelatedStrings:
         identified_sentence = []
         for word in words:
             is_preposition = False
-            if(word in SentenceRelatedStrings.prepositions):
+            if(word in SentenceRelatedEntities.prepositions):
                 is_preposition = True
             identified_sentence.append({'word':word,'is_preposition':is_preposition})
         return identified_sentence
@@ -255,7 +375,7 @@ class SentenceRelatedStrings:
             previous_element = element
         return pairs
 
-    def get_rated_result(self):
+    def get_sorted_result_candidates(self):
         seperate_entities = self.get_entities()
         pairs_of_property_instance = self.get_pairs_of_property_instance()
         # compound_words = self.get_compound_words()
@@ -277,16 +397,13 @@ class SentenceRelatedStrings:
             results.increase_concepts_rate(30)
         elif(is_search_about_property):
             results.increase_propertyOfInstances_rate(20)
-        results.sort_by_rate()
-        return results
-
-
+        return results.get_all_results_sorted()
 
 
     def get_primary_result(self,modified_sentence,pairs_of_property_instance):
         result_candidates = ResultCandidates()
         query_for_whole_sentence = WordRelatedStrings(modified_sentence)
-        typeid_map_to_name = {1:'concept',4:'property',6:'instance'}
+        typeid_map_to_name = {id_of_concept_type:'concept',id_of_property_type:'property',id_of_instance_type:'instance'}
         for pair in self.get_pairs_of_property_instance():
             result_candidates.add_result('property_of_instance',pair['instance'],10,pair['property'])
         if(query_for_whole_sentence.does_exist_entity()):
@@ -328,26 +445,26 @@ class ResultCandidates:
 
     def add_result(self,type,entity,rate,property=None):
         # entitt_enttypeid_map = {'instance':6,'concept':1,'property':4}
-        if(entity.enttypeid_id != 4):   # type of entity is property
+        if(entity.enttypeid_id != id_of_property_type):
             result_element = ResultElement(type,entity,rate, property)
             operation_has_done = self.increase_rate_of(result_element,rate)
             if(not operation_has_done):
-                self.get_results().append(result_element)
+                self.get_all_results().append(result_element)
         else:
-            for result in self.get_results():
+            for result in self.get_all_results():
                 if(result.property == entity):
                     result.increase_rate(rate)
 
     def increase_rate_of(self,result_element,amount):
         is_there_item = False
-        for result in self.get_results():
+        for result in self.get_all_results():
             if(result.are_entities_equal(result_element) and (result_element.property==None)):
                 result.increase_rate(amount)
                 is_there_item = True
         return is_there_item
 
     def _increase_type_rate(self,type,amount):
-        for result in self.get_results():
+        for result in self.get_all_results():
             if(result.type == type):
                 result.increase_rate(amount)
 
@@ -360,14 +477,18 @@ class ResultCandidates:
     def sort_by_rate(self):
         self._results.sort(key=lambda result: result.rate,reverse=True)
 
-    def get_results(self):
+    def get_all_results(self):
+        return self._results
+
+    def get_all_results_sorted(self):
+        self.sort_by_rate()
         return self._results
 
     def __str__(self):
-        answer = '['
-        for result in self.get_results():
+        answer = '<ResultCandidates ['
+        for result in self.get_all_results():
             answer = answer + str(result)+'\n '
-        answer = answer + ']'
+        answer = answer + '] >'
         return answer
     def __repr__(self):
         return str(self)
@@ -397,3 +518,6 @@ class ResultElement:
 
     def __str__(self):
         return '<type:{},entity:{},property:{},rate:{}>'.format(self.type,str(self.entity),str(self.property),self.rate)
+
+    def __repr__(self):
+        return str(self)

@@ -97,7 +97,7 @@ for example:
 then add this to your settings.INSTALLED_APPS:
 %%%% 'polls.apps.PollsConfig' %%%%%%
 
-######### hard coded urls:
+######### hard coded urls && href && <a>:
 if you have a <a> thag and want to set "href" for it, it's
 better to use some thing like:
 first add this line to polls.urls:
