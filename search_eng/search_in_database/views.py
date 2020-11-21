@@ -4,6 +4,8 @@ from django.http import HttpResponse
 from django.urls import reverse
 from .models import *
 from .tools import SentenceRelatedEntities,AllPropertiesOfEntity,PropertyOfEntity,get_result_for_search, get_result_for_entity
+from .scraping import Search_methods
+
 def index(request):
     return render(request, 'search_in_database/index.html')
 

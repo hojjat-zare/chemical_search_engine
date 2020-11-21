@@ -1,0 +1,6 @@
+element name && Atomic number && Covalent radius && Ionization && Van der Waals radius && Group && Period && Standard atomic weight &&
+
+
+Hydrogen && 1 && 31±5pm && 1st: 1312.0 kJ/mol && 120 pm && 1: H and alkali metals && period 1 && None
+Helium && 2 && 28pm && 1st: 2372.3 kJ/mol2nd: 5250.5 kJ/mol && 140 pm && group 18 (noble gases) && period 1 && None
+Lithium && 3 && 128±7 pm && 1st: 520.2 kJ/mol2nd: 7298.1 kJ/mol3rd: 11815.0 kJ/mol && 182 pm && group 1: H and alkali metals && period 2 && None
