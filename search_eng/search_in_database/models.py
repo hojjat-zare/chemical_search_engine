@@ -392,7 +392,7 @@ class Results(models.Model):
                 return('<img src = "data: image/png; base64, {}" width="{}" height="{}">'.format(
                     b64encode(self.result.read()).decode('utf8'), width, height))
         elif('text' in self.mimetype):
-            return('<pre><p>{}</p></pre>'.format(str(self.result.decode("utf-8"))))
+            return('<pre><p>{}</p></pre>'.format(str(self.result)))
         else:
             return None
 

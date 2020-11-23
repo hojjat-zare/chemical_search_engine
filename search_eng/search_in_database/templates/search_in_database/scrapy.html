@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>scrapy result</title>
+</head>
+<body>
+<form action="/scrapy/" method="get">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="search">
+</form>
+</body>
+</html>

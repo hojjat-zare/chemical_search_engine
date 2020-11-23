@@ -1,3 +1,4 @@
+import sys
 
 import scrapy
 
@@ -14,6 +15,8 @@ from time import sleep, time
 ############ tasks ###############
 # todo:languages and translating
 ############ tasks ###############
+
+_user_search_entity = 142
 start_spider_message = """
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 ###############################################
@@ -62,7 +65,7 @@ def check_url(url):
 
 
 def get_from_wikipedia_manual():
-    search_word = input("Enter Material: ").title()
+    search_word = search_word = sys.argv[1]
     limits = 5
     response = requests.get(
         "https://en.wikipedia.org/w/api.php?action=opensearch&search={}&limit={}&namespace=0&format=json".format(
@@ -132,7 +135,7 @@ class Detector(scrapy.Spider):
         if is_page_valid:
             start_time = time()
             words_and_useful_tags_dict = ResponseController.get_useful_tag2(response, words, ignore_case=True)
-            breakpoint()
+
             # words_and_useful_tags_dict = ResponseController.get_useful_tags(response, words)
             DatabaseConnection.save_useful_tags(words_and_useful_tags_dict, main_word=response.cb_kwargs['main'],
                                                 refrence=response.request)  # we have to get ent id from the database
@@ -168,6 +171,49 @@ class DatabaseConnection:
     DATA_BASE_DIR = os.path.join(BASE_DIR,
                                  "SEDB.FDB")  # todo: we have to fix database directory using such this code os.path.join(BASE_DIR, "spamer", "spiders", "DB", "SEDB.FDB")
 
+
+    @staticmethod
+    def store_result(user_input_phrase_for_search, found_result, mimetype):
+        con = fdb.connect(dsn=DatabaseConnection.DATA_BASE_DIR, user='SYSDBA',
+                          password='masterkey')
+        cur = con.cursor()
+        is_result_string = isinstance(found_result, str)
+
+        cur.execute('select PHRASEID from EXISTING_PHRASES where PHRASESTRING=?;', (user_input_phrase_for_search,))
+        phrase_id = cur.fetchone()  # 0 false  1 true
+        if (phrase_id != None):
+            phrase_id = phrase_id[0]
+        else:
+            cur.execute('select gen_id(EXISTING_PHRASES_PHRASEID_GEN, 1) from rdb$database;')
+            phrase_id = cur.fetchone()[0]
+            cur.execute('insert into EXISTING_PHRASES (PHRASEID,PHRASESTRING,LANGID) values(?,?,?);',
+                        (phrase_id, user_input_phrase_for_search, 0))
+
+        cur.execute('select DROWID from ENTITIESRELATEDPHRASES where (PHRASEID=? and ENTID=?);',
+                    (phrase_id, _user_search_entity))
+        drowid = cur.fetchone()
+        if (drowid != None):
+            drowid = drowid[0]
+        else:
+            cur.execute('select gen_id(ENTSRELATEDPHRAS_ROWID_GEN, 1)from rdb$database;')
+            drowid = cur.fetchone()[0]
+            cur.execute('insert into ENTITIESRELATEDPHRASES (ENTID,PHRASEID,DROWID) values(?,?,?);',
+                        (_user_search_entity, phrase_id, drowid))
+
+        cur.execute('select gen_id(SEARCHS_SEARCHID_GEN, 1)from rdb$database;')
+        searchid = cur.fetchone()[0]
+        cur.execute('insert into SEARCHS (SEARCHID,ENT_PHRASEID,REFERENCE_ADDRESS,SEARCH_TIME) values(?,?,?,?);',
+                    (searchid, drowid, 'example.wikipedia.ir', datetime.datetime.now()))
+        # print(searchid)
+        print(is_result_string)
+        if (is_result_string):
+            cur.execute("insert into RESULTS (SEARCHID,RESULT,MIMETYPE) values (?,?,?);",
+                        (searchid, found_result.encode(encoding='utf8', errors='ignore'), mimetype))
+        else:  # is image
+            cur.execute("insert into RESULTS (SEARCHID,RESULT,MIMETYPE) values (?,?,?);",
+                        (searchid, found_result.read(), mimetype))
+
+        con.commit()
     @staticmethod
     def save_useful_tags(words_and_useful_tags_dict, main_word, refrence):  # refrence must be added
         final_body = ""
@@ -176,30 +222,10 @@ class DatabaseConnection:
             tags_of_this_word = words_and_useful_tags_dict[word]['useful_tags']
             string_tags = title + "<br>".join(tags_of_this_word)
             final_body += string_tags
+        final_body = final_body
+        DatabaseConnection.store_result(main_word, final_body, 'text/html')
 
-        methane_id = 121
-        _admin_for_manual_search_id = 0  # a phrase for manuall Searching
-        # todo: here we need a function or some codes to find the parameters which needed to fill the query like above
 
-        path = DatabaseConnection.DATA_BASE_DIR
-        con = fdb.connect(dsn=path, user='SYSDBA', password='masterkey')
-        cur = con.cursor()
-        cur.execute('select gen_id(ENTSRELATEDPHRAS_ROWID_GEN, 1)from rdb$database;')
-        drowid = cur.fetchone()[0]
-        cur.execute('insert into ENTITIESRELATEDPHRASES (ENTID,PHRASEID,DROWID) values(?,?,?);',
-                    (methane_id, _admin_for_manual_search_id, drowid))
-        # print(drowid)
-
-        cur.execute('select gen_id(SEARCHS_SEARCHID_GEN, 1)from rdb$database;')
-        searchid = cur.fetchone()[0]
-        cur.execute('insert into SEARCHS (SEARCHID,ENT_PHRASEID,REFERENCE_ADDRESS,SEARCH_TIME) values(?,?,?,?);',
-                    (searchid, drowid, refrence, datetime.datetime.now()))
-        # print(searchid)
-
-        cur.execute("insert into RESULTS (SEARCHID,RESULT,MIMETYPE) values (?,?,?);",
-                    (searchid, StringIO(final_body), 'txt'))
-
-        con.commit()
 
     @staticmethod
     def download_save_pdf_to_db(response):
