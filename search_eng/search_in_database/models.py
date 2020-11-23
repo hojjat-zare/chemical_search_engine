@@ -161,7 +161,10 @@ class EntsBlobPropsValues(models.Model):
                 return('<img src = "data: image/png; base64, {}" width="{}" height="{}">'.format(
                     b64encode(self.dvalue.read()).decode('utf8'), width, height))
         elif('text' in self.mimetype):
-            return('<pre><p>{}</p></pre>'.format(str(self.result.decode("utf-8"))))
+            if(isinstance(self.result,fdb.fbcore.BlobReader)):
+                return('<pre><p>{}</p></pre>'.format(str(self.result.read().decode('utf-8'))))
+            else:
+                return('<pre><p>{}</p></pre>'.format(str(self.result.decode('utf-8'))))
         else:
             return None
 
@@ -382,6 +385,7 @@ class Results(models.Model):
         fake.save()
 
     def blob_value(self,width=200, height=100):
+        import fdb
         from base64 import b64encode
         if('image' in self.mimetype):
             if(isinstance(self.result,bytes)):
@@ -392,7 +396,11 @@ class Results(models.Model):
                 return('<img src = "data: image/png; base64, {}" width="{}" height="{}">'.format(
                     b64encode(self.result.read()).decode('utf8'), width, height))
         elif('text' in self.mimetype):
-            return('<pre><p>{}</p></pre>'.format(str(self.result)))
+            # breakpoint()
+            if(isinstance(self.result,fdb.fbcore.BlobReader)):
+                return('<pre><p>{}</p></pre>'.format(str(self.result.read().decode('utf-8'))))
+            else:
+                return('<pre><p>{}</p></pre>'.format(str(self.result.decode('utf-8'))))
         else:
             return None
 

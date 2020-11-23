@@ -124,14 +124,14 @@ class Search_methods:
 #                 f.write(i)
 
 
-string = "boiling"
-html = urlopen('https://en.wikipedia.org/wiki/Hydrogen')
-html_str = html.read()
-res = Selector(text=html_str,type="html")
-####################### this method begins from <body> tag and goes down to find proper result ##################
-targets = Search_methods.search_in_page(res, string, '//body', 500,tr=100,p=500,div=500)
-#################################################################################################################
-
-print("\n\nresult from https://en.wikipedia.org/wiki/Hydrogen:")
-for t in targets:
-    print(t)
+# string = "boiling"
+# html = urlopen('https://en.wikipedia.org/wiki/Hydrogen')
+# html_str = html.read()
+# res = Selector(text=html_str,type="html")
+# ####################### this method begins from <body> tag and goes down to find proper result ##################
+# targets = Search_methods.search_in_page(res, string, '//body', 500,tr=100,p=500,div=500)
+# #################################################################################################################
+#
+# print("\n\nresult from https://en.wikipedia.org/wiki/Hydrogen:")
+# for t in targets:
+#     print(t)
