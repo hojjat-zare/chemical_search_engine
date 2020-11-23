@@ -1,0 +1,121 @@
+element name && Atomic number && Covalent radius && Ionization && Van der Waals radius && Group && Period && atomic weight
+
+Hydrogen && 1 && 31±5pm && 1st: 1312.0 kJ/mol && 120 pm && 1: H and alkali metals && period 1 && [1.00784,1.00811] conventional:1.008
+Helium && 2 && 28pm && 1st: 2372.3 kJ/mol2nd: 5250.5 kJ/mol && 140 pm && group 18 (noble gases) && period 1 && 4.002602(2)[1]
+Lithium && 3 && 128±7 pm && 1st: 520.2 kJ/mol2nd: 7298.1 kJ/mol3rd: 11815.0 kJ/mol && 182 pm && group 1: H and alkali metals && period 2 && [6.938,6.997] conventional:6.94
+Beryllium && 4 && 96±3 pm && 1st: 899.5 kJ/mol2nd: 1757.1 kJ/mol3rd: 14,848.7 kJ/mol(more) && 153 pm && group 2 (alkaline earth metals) && period 2 && 9.0121831(5)[1]
+Boron && 5 && 84±3 pm && 1st: 800.6 kJ/mol2nd: 2427.1 kJ/mol3rd: 3659.7 kJ/mol(more) && 192 pm && group 13 (boron group) && period 2 && [10.806,10.821] conventional:10.81
+Carbon && 6 && sp3: 77 pmsp2: 73 pmsp: 69pm && 1st: 1086.5 kJ/mol2nd: 2352.6 kJ/mol3rd: 4620.5 kJ/mol(more) && 170 pm && group 14 (carbon group) && period 2 && [12.0096,12.0116] conventional:12.011
+Nitrogen && 7 && 71±1pm && None && 155 pm && group 15 (pnictogens) && period 2 && [14.00643,14.00728] conventional:14.007
+Oxygen && 8 && 66±2pm && 1st: 1313.9 kJ/mol2nd: 3388.3 kJ/mol3rd: 5300.5 kJ/mol(more) && 152 pm && group 16 (chalcogens) && period 2 && [15.99903,15.99977] conventional:15.999
+Fluorine && 9 && 64pm[7] && 1st: 1681 kJ/mol2nd: 3374 kJ/mol3rd: 6147 kJ/mol(more)[6] && 135 pm[8] && group 17 (halogens) && period 2 && 18.998403163(6)[1]
+Neon && 10 && 58pm && 1st: 2080.7 kJ/mol2nd: 3952.3 kJ/mol3rd: 6122 kJ/mol(more) && 154 pm && group 18 (noble gases) && period 2 && 20.1797(6)[1]
+Sodium && 11 && 166±9 pm && 1st: 495.8 kJ/mol2nd: 4562 kJ/mol3rd: 6910.3 kJ/mol(more) && 227 pm && group 1: H and alkali metals && period 3 && 22.98976928(2)[1]
+Magnesium && 12 && 141±7 pm && 1st: 737.7 kJ/mol2nd: 1450.7 kJ/mol3rd: 7732.7 kJ/mol(more) && 173 pm && group 2 (alkaline earth metals) && period 3 && [24.304,24.307] conventional:24.305
+Aluminium && 13 && 121±4 pm && 1st: 577.5 kJ/mol2nd: 1816.7 kJ/mol3rd: 2744.8 kJ/mol(more) && 184 pm && group 13 (boron group) && period 3 && 26.9815384(3)[1]
+Silicon && 14 && 111 pm && 1st: 786.5 kJ/mol2nd: 1577.1 kJ/mol3rd: 3231.6 kJ/mol(more) && 210 pm && group 14 (carbon group) && period 3 && [28.084,28.086] conventional:28.085
+Phosphorus && 15 && 107±3pm && None && 180 pm && group 15 (pnictogens) && period 3 && 30.973761998(5)[1]
+Sulfur && 16 && 105±3pm && 1st: 999.6 kJ/mol2nd: 2252 kJ/mol3rd: 3357 kJ/mol(more) && 180 pm && group 16 (chalcogens) && period 3 && [32.059,32.076] conventional:32.06
+Chlorine && 17 && 102±4pm && None && 175 pm && group 17 (halogens) && period 3 && [35.446,35.457] conventional:35.45
+Argon && 18 && 106±10pm && 1st: 1520.6 kJ/mol2nd: 2665.8 kJ/mol3rd: 3931 kJ/mol(more) && 188 pm && group 18 (noble gases) && period 3 && [39.792,39.963] conventional:39.95[1]
+Potassium && 19 && 203±12 pm && 1st: 418.8 kJ/mol2nd: 3052 kJ/mol3rd: 4420 kJ/mol(more) && 275 pm && group 1: H and alkali metals && period 4 && 39.0983(1)[1]
+Calcium && 20 && 176±10 pm && None && 231 pm && group 2 (alkaline earth metals) && period 4 && 40.078(4)[2]
+Scandium && 21 && 170±7 pm && 1st: 633.1 kJ/mol2nd: 1235.0 kJ/mol3rd: 2388.6 kJ/mol(more) && 211 pm && group 3 && period 4 && 44.955908(5)[1]
+Titanium && 22 && 160±8 pm && 1st: 658.8 kJ/mol2nd: 1309.8 kJ/mol3rd: 2652.5 kJ/mol(more) && None && group 4 && period 4 && 47.867(1)[2]
+Vanadium && 23 && 153±8 pm && 1st: 650.9 kJ/mol2nd: 1414 kJ/mol3rd: 2830 kJ/mol(more) && None && group 5 && period 4 && 50.9415(1)[1]
+Chromium && 24 && 139±5 pm && 1st: 652.9 kJ/mol2nd: 1590.6 kJ/mol3rd: 2987 kJ/mol(more) && None && group 6 && period 4 && 51.9961(6)[1]
+Manganese && 25 && Low spin: 139±5 pmHigh spin: 161±8 pm && 1st: 717.3 kJ/mol2nd: 1509.0 kJ/mol3rd: 3248 kJ/mol(more) && None && group 7 && period 4 && 54.938043(2)[1]
+Iron && 26 && Low spin: 132±3 pmHigh spin: 152±6 pm && 1st: 762.5 kJ/mol2nd: 1561.9 kJ/mol3rd: 2957 kJ/mol(more) && None && group 8 && period 4 && 55.845(2)[1]
+Cobalt && 27 && Low spin: 126±3 pmHigh spin: 150±7 pm && 1st: 760.4 kJ/mol2nd: 1648 kJ/mol3rd: 3232 kJ/mol(more) && None && group 9 && period 4 && 58.933194(3)[2]
+Nickel && 28 && 124±4 pm && 1st: 737.1 kJ/mol2nd: 1753.0 kJ/mol3rd: 3395 kJ/mol(more) && 163 pm && group 10 && period 4 && 58.6934(4)[1]
+Copper && 29 && 132±4 pm && 1st: 745.5 kJ/mol2nd: 1957.9 kJ/mol3rd: 3555 kJ/mol(more) && 140 pm && group 11 && period 4 && 63.546(3)[1]
+Zinc && 30 && 122±4 pm && 1st: 906.4 kJ/mol2nd: 1733.3 kJ/mol3rd: 3833 kJ/mol(more) && 139 pm && group 12 && period 4 && 65.38(2)[1]
+Gallium && 31 && 122±3 pm && 1st: 578.8 kJ/mol2nd: 1979.3 kJ/mol3rd: 2963 kJ/mol(more) && 187 pm && group 13 (boron group) && period 4 && 69.723(1)[1]
+Germanium && 32 && 122 pm && 1st: 762 kJ/mol2nd: 1537.5 kJ/mol3rd: 3302.1 kJ/mol && 211 pm && group 14 (carbon group) && period 4 && 72.630(8)[1]
+Arsenic && 33 && 119±4 pm && 1st: 947.0 kJ/mol2nd: 1798 kJ/mol3rd: 2735 kJ/mol(more) && 185 pm && group 15 (pnictogens) && period 4 && 74.921595(6)[1]
+Selenium && 34 && 120±4 pm && 1st: 941.0 kJ/mol2nd: 2045 kJ/mol3rd: 2973.7 kJ/mol && 190 pm && group 16 (chalcogens) && period 4 && 78.971(8)[1]
+Bromine && 35 && 120±3 pm && None && 185 pm && group 17 (halogens) && period 4 && [79.901,79.907] conventional:79.904
+Krypton && 36 && 116±4pm && 1st: 1350.8 kJ/mol2nd: 2350.4 kJ/mol3rd: 3565 kJ/mol && 202 pm && group 18 (noble gases) && period 4 && 83.798(2)[1]
+Rubidium && 37 && 220±9 pm && 1st: 403 kJ/mol2nd: 2632.1 kJ/mol3rd: 3859.4 kJ/mol && 303 pm && group 1: H and alkali metals && period 5 && 85.4678(3)[1]
+Strontium && 38 && 195±10 pm && 1st: 549.5 kJ/mol2nd: 1064.2 kJ/mol3rd: 4138 kJ/mol && 249 pm && group 2 (alkaline earth metals) && period 5 && 87.62(1)[2]
+Yttrium && 39 && 190±7 pm && 1st: 600 kJ/mol2nd: 1180 kJ/mol3rd: 1980 kJ/mol && None && group 3 && period 5 && 88.90584(1)[1]
+Zirconium && 40 && 175±7 pm && 1st: 640.1 kJ/mol2nd: 1270 kJ/mol3rd: 2218 kJ/mol && None && group 4 && period 5 && 91.224(2)[1]
+Niobium && 41 && 164±6 pm && 1st: 652.1 kJ/mol2nd: 1380 kJ/mol3rd: 2416 kJ/mol && None && group 5 && period 5 && 92.90637(1)[1]
+Molybdenum && 42 && 154±5 pm && 1st: 684.3 kJ/mol2nd: 1560 kJ/mol3rd: 2618 kJ/mol && None && group 6 && period 5 && 95.95(1)[1]
+Technetium && 43 && 147±7 pm && 1st: 702 kJ/mol2nd: 1470 kJ/mol3rd: 2850 kJ/mol && None && group 7 && period 5 && None
+Ruthenium && 44 && 146±7 pm && 1st: 710.2 kJ/mol2nd: 1620 kJ/mol3rd: 2747 kJ/mol && None && group 8 && period 5 && 101.07(2)[1]
+Rhodium && 45 && 142±7 pm && 1st: 719.7 kJ/mol2nd: 1740 kJ/mol3rd: 2997 kJ/mol && None && group 9 && period 5 && 102.90549(2)[1]
+Palladium && 46 && 139±6 pm && 1st: 804.4 kJ/mol2nd: 1870 kJ/mol3rd: 3177 kJ/mol && 163 pm && group 10 && period 5 && 106.42(1)[1]
+Silver && 47 && 145±5 pm && None && 172 pm && group 11 && period 5 && 107.8682(2)[1]
+Cadmium && 48 && 144±9 pm && 1st: 867.8 kJ/mol2nd: 1631.4 kJ/mol3rd: 3616 kJ/mol && 158 pm && group 12 && period 5 && 112.414(4)[1]
+Indium && 49 && 142±5 pm && 1st: 558.3 kJ/mol2nd: 1820.7 kJ/mol3rd: 2704 kJ/mol && 193 pm && group 13 (boron group) && period 5 && 114.818(1)[1]
+Tin && 50 && 139±4 pm && 1st: 708.6 kJ/mol2nd: 1411.8 kJ/mol3rd: 2943.0 kJ/mol && 217 pm && group 14 (carbon group) && period 5 && 118.710(7)[1]
+Antimony && 51 && 139±5 pm && 1st: 834 kJ/mol2nd: 1594.9 kJ/mol3rd: 2440 kJ/mol(more) && 206 pm && group 15 (pnictogens) && period 5 && 121.760(1)[1]
+Tellurium && 52 && 138±4 pm && 1st: 869.3 kJ/mol2nd: 1790 kJ/mol3rd: 2698 kJ/mol && 206 pm && group 16 (chalcogens) && period 5 && 127.60(3)[1]
+Iodine && 53 && 139±3 pm && None && 198 pm && group 17 (halogens) && period 5 && 126.90447(3)[1]
+Xenon && 54 && 140±9pm && 1st: 1170.4 kJ/mol2nd: 2046.4 kJ/mol3rd: 3099.4 kJ/mol && 216 pm && group 18 (noble gases) && period 5 && 131.293(6)[3]
+Caesium && 55 && 244±11 pm && 1st: 375.7 kJ/mol2nd: 2234.3 kJ/mol3rd: 3400 kJ/mol && 343 pm && group 1: H and alkali metals && period 6 && 132.90545196(6)[1]
+Barium && 56 && 215±11 pm && 1st: 502.9 kJ/mol2nd: 965.2 kJ/mol3rd: 3600 kJ/mol && 268 pm && group 2 (alkaline earth metals) && period 6 && 137.327(7)[2]
+Lanthanum && 57 && 207±8 pm && 1st: 538.1 kJ/mol2nd: 1067 kJ/mol3rd: 1850.3 kJ/mol && None && group 3(sometimes considered group n/a) && period 6 && 138.90547(7)[1]
+Cerium && 58 && 204±9 pm && 1st: 534.4 kJ/mol2nd: 1050 kJ/mol3rd: 1949 kJ/mol(more) && None && group n/a && period 6 && 140.116(1)[1]
+Praseodymium && 59 && 203±7 pm && 1st: 527 kJ/mol2nd: 1020 kJ/mol3rd: 2086 kJ/mol && None && group n/a && period 6 && 140.90766(1)[2]
+Neodymium && 60 && 201±6 pm && 1st: 533.1 kJ/mol2nd: 1040 kJ/mol3rd: 2130 kJ/mol && None && group n/a && period 6 && 144.242(3)[1]
+Promethium && 61 && 199 pm && 1st: 540 kJ/mol2nd: 1050 kJ/mol3rd: 2150 kJ/mol && None && group n/a && period 6 && None
+Samarium && 62 && 198±8 pm && 1st: 544.5 kJ/mol2nd: 1070 kJ/mol3rd: 2260 kJ/mol && None && group n/a && period 6 && 150.36(2)[1]
+Europium && 63 && 198±6 pm && 1st: 547.1 kJ/mol2nd: 1085 kJ/mol3rd: 2404 kJ/mol && None && group n/a && period 6 && 151.964(1)[2]
+Gadolinium && 64 && 196±6 pm && 1st: 593.4 kJ/mol2nd: 1170 kJ/mol3rd: 1990 kJ/mol && None && group n/a && period 6 && 157.25(3)[1]
+Terbium && 65 && 194±5 pm && 1st: 565.8 kJ/mol2nd: 1110 kJ/mol3rd: 2114 kJ/mol && None && group n/a && period 6 && 158.925354(8)[1]
+Dysprosium && 66 && 192±7 pm && 1st: 573.0 kJ/mol2nd: 1130 kJ/mol3rd: 2200 kJ/mol && None && group n/a && period 6 && 162.500(1)[1]
+Holmium && 67 && 192±7 pm && 1st: 581.0 kJ/mol2nd: 1140 kJ/mol3rd: 2204 kJ/mol && None && group n/a && period 6 && 164.930328(7)[1]
+Erbium && 68 && 189±6 pm && 1st: 589.3 kJ/mol2nd: 1150 kJ/mol3rd: 2194 kJ/mol && None && group n/a && period 6 && 167.259(3)[1]
+Thulium && 69 && 190±10 pm && 1st: 596.7 kJ/mol2nd: 1160 kJ/mol3rd: 2285 kJ/mol && None && group n/a && period 6 && 168.934218(6)[1]
+Ytterbium && 70 && 187±8 pm && 1st: 603.4 kJ/mol2nd: 1174.8 kJ/mol3rd: 2417 kJ/mol && None && group n/a && period 6 && 173.045(10)[2][3][4]
+Lutetium && 71 && 187±8 pm && 1st: 523.5 kJ/mol2nd: 1340 kJ/mol3rd: 2022.3 kJ/mol && None && group n/a(sometimes consideredgroup 3) && period 6 && 174.9668(1)[1]
+Hafnium && 72 && 175±10 pm && 1st: 658.5 kJ/mol2nd: 1440 kJ/mol3rd: 2250 kJ/mol && None && group 4 && period 6 && 178.486(6)[1]
+Tantalum && 73 && 170±8 pm && 1st: 761 kJ/mol2nd: 1500 kJ/mol && None && group 5 && period 6 && 180.94788(2)[1]
+Tungsten && 74 && 162±7 pm && 1st: 770 kJ/mol2nd: 1700 kJ/mol && None && group 6 && period 6 && 183.84(1)[1]
+Rhenium && 75 && 151±7 pm && 1st: 760 kJ/mol2nd: 1260 kJ/mol3rd: 2510 kJ/mol(more) && None && group 7 && period 6 && 186.207(1)[1]
+Osmium && 76 && 144±4 pm && 1st: 840 kJ/mol2nd: 1600 kJ/mol && None && group 8 && period 6 && 190.23(3)[1]
+Iridium && 77 && 141±6 pm && 1st: 880 kJ/mol2nd: 1600 kJ/mol && None && group 9 && period 6 && 192.217(2)[1]
+Platinum && 78 && 136±5 pm && 1st: 870 kJ/mol2nd: 1791 kJ/mol && 175 pm && group 10 && period 6 && 195.084(9)[1]
+Gold && 79 && 136±6 pm && 1st: 890.1 kJ/mol2nd: 1980 kJ/mol && 166 pm && group 11 && period 6 && 196.966570(4)[1]
+Mercury_(element) && 80 && 132±5 pm && 1st: 1007.1 kJ/mol2nd: 1810 kJ/mol3rd: 3300 kJ/mol && 155 pm && group 12 && period 6 && 200.592(3)[1]
+Thallium && 81 && 145±7 pm && 1st: 589.4 kJ/mol2nd: 1971 kJ/mol3rd: 2878 kJ/mol && 196 pm && group 13 (boron group) && period 6 && [204.382,204.385] conventional:204.38
+Lead && 82 && 146±5 pm && 1st: 715.6 kJ/mol2nd: 1450.5 kJ/mol3rd: 3081.5 kJ/mol && 202 pm && group 14 (carbon group) && period 6 && 207.2(1)[1]
+Bismuth && 83 && 148±4 pm && 1st: 703 kJ/mol2nd: 1610 kJ/mol3rd: 2466 kJ/mol(more) && 207 pm && group 15 (pnictogens) && period 6 && 208.98040(1)[1]
+Polonium && 84 && 140±4 pm && 1st: 812.1 kJ/mol && 197 pm && group 16 (chalcogens) && period 6 && None
+Astatine && 85 && 150pm && 1st: 899.003 kJ/mol[7] && 202 pm && group 17 (halogens) && period 6 && None
+Radon && 86 && 150pm && 1st: 1037 kJ/mol && 220 pm && group 18 (noble gases) && period 6 && None
+Francium && 87 && 260pm(extrapolated) && 1st: 393 kJ/mol[2] && 348 pm(extrapolated) && group 1: H and alkali metals && period 7 && None
+Radium && 88 && 221±2pm && 1st: 509.3 kJ/mol2nd: 979.0 kJ/mol && 283 pm && group 2 (alkaline earth metals) && period 7 && None
+Actinium && 89 && 215pm && 1st: 499 kJ/mol2nd: 1170 kJ/mol3rd: 1900 kJ/mol(more) && None && group 3(sometimes considered group n/a) && period 7 && None
+Thorium && 90 && 206±6 pm && None && None && group n/a && period 7 && 232.0377(4)[1]
+Protactinium && 91 && 200 pm && 1st: 568 kJ/mol && None && group n/a && period 7 && 231.03588(1)[1]
+Uranium && 92 && 196±7 pm && 1st: 597.6 kJ/mol2nd: 1420 kJ/mol && 186 pm && group n/a && period 7 && 238.02891(3)[1]
+Neptunium && 93 && 190±1 pm && 1st: 604.5 kJ/mol && None && group n/a && period 7 && None
+Plutonium && 94 && 187±1 pm && 1st: 584.7 kJ/mol && None && group n/a && period 7 && None
+Americium && 95 && 180±6 pm && 1st: 578 kJ/mol && None && group n/a && period 7 && None
+Curium && 96 && 169±3 pm && 1st: 581 kJ/mol && None && group n/a && period 7 && None
+Berkelium && 97 && None && 1st: 601 kJ/mol && None && group n/a && period 7 && None
+Californium && 98 && None && 1st: 608 kJ/mol[7] && None && group n/a && period 7 && None
+Einsteinium && 99 && None && 1st: 619 kJ/mol && None && group n/a && period 7 && None
+Fermium && 100 && None && 1st: 629 kJ/mol[2] && None && group n/a && period 7 && None
+Mendelevium && 101 && None && 1st: 636 kJ/mol[2] && None && group n/a && period 7 && None
+Nobelium && 102 && None && 1st: 639[4]kJ/mol2nd: 1254.3 kJ/mol3rd: 2605.1 kJ/mol(all but first estimated) && None && group n/a && period 7 && None
+Lawrencium && 103 && None && 1st: 478.6 kJ/mol[5]2nd: 1428.0 kJ/mol(predicted)3rd: 2219.1 kJ/mol(predicted) && None && group n/a(sometimes consideredgroup 3) && period 7 && None
+Rutherfordium && 104 && 157 pm(estimated)[1] && 1st: 580 kJ/mol2nd: 1390 kJ/mol3rd: 2300 kJ/mol(more)(all but first estimated)[2] && None && group 4 && period 7 && None
+Dubnium && 105 && 149 pm(estimated)[6] && 1st: 665 kJ/mol2nd: 1547 kJ/mol3rd: 2378 kJ/mol(more)(all but first estimated)[3] && None && group 5 && period 7 && None
+Seaborgium && 106 && 143 pm(estimated)[4] && 1st: 757 kJ/mol2nd: 1733 kJ/mol3rd: 2484 kJ/mol(more)(all but first estimated)[1] && None && group 6 && period 7 && None
+Bohrium && 107 && 141 pm(estimated)[5] && 1st: 740 kJ/mol2nd: 1690 kJ/mol3rd: 2570 kJ/mol(more)(all but first estimated)[2] && None && group 7 && period 7 && None
+Hassium && 108 && 134 pm(estimated)[10] && 1st: 730 kJ/mol2nd: 1760 kJ/mol3rd: 2830 kJ/mol(more)(predicted)[9] && None && group 8 && period 7 && None
+Meitnerium && 109 && 129 pm(estimated)[9] && 1st: 800 kJ/mol2nd: 1820 kJ/mol3rd: 2900 kJ/mol(more)(all estimated)[3] && None && group 9 && period 7 && None
+Darmstadtium && 110 && 128 pm(estimated)[6] && 1st: 960 kJ/mol2nd: 1890 kJ/mol3rd: 3030 kJ/mol(more)(all estimated)[3] && None && group 10 && period 7 && None
+Roentgenium && 111 && 121 pm(estimated)[6] && 1st: 1020 kJ/mol2nd: 2070 kJ/mol3rd: 3080 kJ/mol(more)(all estimated)[2] && None && group 11 && period 7 && None
+Copernicium && 112 && 122 pm(predicted)[5] && 1st: 1155 kJ/mol2nd: 2170 kJ/mol3rd: 3160 kJ/mol(more)(all estimated)[2] && None && group 12 && period 7 && None
+Nihonium && 113 && 172–180 pm(extrapolated)[4] && None && None && group 13 (boron group) && period 7 && None
+Flerovium && 114 && 171–177 pm(extrapolated)[10] && 1st: 832.2 kJ/mol(predicted)[9]2nd: 1600 kJ/mol(predicted)[7]3rd: 3370 kJ/mol(predicted)[7](more) && None && group 14 (carbon group) && period 7 && None
+Moscovium && 115 && 156–158 pm(extrapolated)[3] && 1st: 538.3 kJ/mol(predicted)[4]2nd: 1760 kJ/mol(predicted)[2]3rd: 2650 kJ/mol(predicted)[2](more) && None && group 15 (pnictogens) && period 7 && None
+Livermorium && 116 && 162–166 pm(extrapolated)[2] && 1st: 663.9 kJ/mol(predicted)[5]2nd: 1330 kJ/mol(predicted)[3]3rd: 2850 kJ/mol(predicted)[3](more) && None && group 16 (chalcogens) && period 7 && None
+Tennessine && 117 && 156–157 pm(extrapolated)[6] && 1st: 742.9 kJ/mol(predicted)[7]2nd: 1435.4 kJ/mol(predicted)[7]3rd: 2161.9 kJ/mol(predicted)[7](more) && None && group 17 && period 7 && None
+Oganesson && 118 && 157pm(predicted)[14] && 1st: 860.1 kJ/mol(predicted)[12]2nd: 1560 kJ/mol(predicted)[13] && None && group 18 && period 7 && None
+Ununennium && 119 && 263–281 pm(extrapolated)[3] && 1st: 463.1 kJ/mol2nd: 1698.1 kJ/mol(predicted)[5] && None && group 1: H and alkali metals && period 8 && None

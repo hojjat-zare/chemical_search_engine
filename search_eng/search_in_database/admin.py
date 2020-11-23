@@ -51,7 +51,7 @@ class Has_blob_field_Admin(admin.ModelAdmin):
         request_url = request_url.split('/')
         if(request_url[len(request_url)-2]=='change'):
             row_pk = request_url[4]
-            result_blob = self.model.objects.get(pk=row_pk).scheme_image_tag(width=500,height=300)
+            result_blob = self.model.objects.get(pk=row_pk).blob_value(width=500,height=300)
             context['manual_file_field'] = result_blob
         else:
             context['manual_file_field'] = ''
@@ -64,7 +64,7 @@ class Has_blob_field_Admin(admin.ModelAdmin):
 
 @admin.register(Results)
 class ResultsAdmin(Has_blob_field_Admin):
-    list_display = ('get_search_ref','mimetype','scheme_image_tag')
+    list_display = ('get_search_ref','mimetype','blob_value')
     fieldsets = (
         (None, {
             'fields': ('searchid','mimetype','result')
@@ -74,7 +74,7 @@ class ResultsAdmin(Has_blob_field_Admin):
 
 @admin.register(EntsBlobPropsValues)
 class EntsBlobPropsValuesAdmin(Has_blob_field_Admin):
-    list_display = ('__str__','mimetype','scheme_image_tag')
+    list_display = ('__str__','mimetype','blob_value')
 
 @admin.register(EntityRelationEntity)
 class EntityRelationEntityAdmin(admin.ModelAdmin):
@@ -83,4 +83,3 @@ class EntityRelationEntityAdmin(admin.ModelAdmin):
 @admin.register(Entities)
 class EntitiesAdmin(admin.ModelAdmin):
 	list_display = ('mainname','enttypeid')
-

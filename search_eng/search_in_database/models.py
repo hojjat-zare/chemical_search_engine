@@ -150,7 +150,7 @@ class EntsBlobPropsValues(models.Model):
         fake = Fake_EntsBlobPropsVaues(pk=self.pk,prop_owner_eid=self.prop_owner_eid,prop_eid=self.prop_eid,drowid=self.drowid,mimetype=self.mimetype,dvalue=binary_file,comments=self.comments)
         fake.save()
 
-    def scheme_image_tag(self,width=200, height=100):
+    def blob_value(self,width=200, height=100):
         from base64 import b64encode
         if('image' in self.mimetype):
             if(isinstance(self.dvalue,bytes)):
@@ -160,11 +160,13 @@ class EntsBlobPropsValues(models.Model):
                 ## is isinstance(self.dvalue,BlobReader)
                 return('<img src = "data: image/png; base64, {}" width="{}" height="{}">'.format(
                     b64encode(self.dvalue.read()).decode('utf8'), width, height))
-        ### mimetype is txt
-        return('<pre><p>{}</p></pre>'.format(str(self.dvalue.decode("utf-8"))))
+        elif('text' in self.mimetype):
+            return('<pre><p>{}</p></pre>'.format(str(self.result.decode("utf-8"))))
+        else:
+            return None
 
-    # scheme_image_tag.short_description = 'Image'
-    scheme_image_tag.allow_tags = True
+    # blob_value.short_description = 'Image'
+    blob_value.allow_tags = True
 
     @staticmethod
     def get_primarykey_fields_name():
@@ -379,7 +381,7 @@ class Results(models.Model):
         fake = fakeResult(resultid=self.resultid,searchid=self.searchid,result=binary_file,mimetype=self.mimetype)
         fake.save()
 
-    def scheme_image_tag(self,width=200, height=100):
+    def blob_value(self,width=200, height=100):
         from base64 import b64encode
         if('image' in self.mimetype):
             if(isinstance(self.result,bytes)):
@@ -389,11 +391,13 @@ class Results(models.Model):
                 ## is isinstance(self.result,BlobReader)
                 return('<img src = "data: image/png; base64, {}" width="{}" height="{}">'.format(
                     b64encode(self.result.read()).decode('utf8'), width, height))
-        ### mimetype is txt
-        return('<pre><p>{}</p></pre>'.format(str(self.result.decode("utf-8"))))
+        elif('text' in self.mimetype):
+            return('<pre><p>{}</p></pre>'.format(str(self.result.decode("utf-8"))))
+        else:
+            return None
 
-    # scheme_image_tag.short_description = 'Image'
-    scheme_image_tag.allow_tags = True
+    # blob_value.short_description = 'Image'
+    blob_value.allow_tags = True
 
     @staticmethod
     def get_primarykey_fields_name():
