@@ -1,3 +1,11 @@
+<style media="screen">
+  table,th{
+    border: 1px solid black;
+  }
+  th{
+    margin-right: 5px
+  }
+</style>
 {% for result in results %}
   <div class="result">
     <h2><a href="{% url 'search_in_database:exact_entity' result.entity_name %}">{{result.entity_name|cut:'_'}}</a></h2>
@@ -9,11 +17,15 @@
           {% if property_group == 'entity' %}
             {% for property, property_value in property_group_value.items %}
               <tr>
-                <td>{{property|cut:'_'}}</td>
+                <th>{{property|cut:'_'}}</th>
                 <td>
                   {% autoescape off %}
                     {% if property_value.value|length > 1 %}
-                      <a href="{% url 'search_in_database:exact_entity' property_value.value %}">{{property_value.value|cut:'_'}}</a>
+                      [
+                        {% for index in property_value.value %}
+                            <a href="{% url 'search_in_database:exact_entity' index %}">{{index|cut:'_'}}</a>
+                        {% endfor %}
+                      ]
                     {% else %}
                       <a href="{% url 'search_in_database:exact_entity' property_value.value.0 %}">{{property_value.value.0|default_if_none:''|cut:'_'}}</a>
                     {% endif %}
@@ -25,7 +37,7 @@
           {% else %}
             {% for property, property_value in property_group_value.items %}
               <tr>
-                <td>{{property|cut:'_'}}</td>
+                <th>{{property|cut:'_'}}</th>
                 <td>
                   {% autoescape off %}
                     {% if property_value.value|length > 1 %}
@@ -46,13 +58,19 @@
     {% else %}
       <table>
         <tr>
-          <td>{{result.property_name|cut:'_'}}</td>
+          <th>{{result.property_name|cut:'_'}}</th>
           <td>
             {% if result.data.value|length > 1 %}
               {{result.data.value|cut:'_'}}
             {% else %}
               {% autoescape off %}
-                {{result.data.value.0|default_if_none:''|cut:'_'}}
+                {% if result.data.type == 'entity' %}
+                    <a href="{% url 'search_in_database:exact_entity' result.data.value.0 %}">{{result.data.value.0|default_if_none:''|cut:'_'}}</a>
+
+                {% else %}
+                  {{result.data.value.0|default_if_none:''|cut:'_'}}
+                {% endif %}
+
               {% endautoescape %}
             {% endif %}
           </td>
@@ -63,4 +81,4 @@
 
   </div>
 {% endfor %}
-<a href="scrapy/{{ request.GET.q }}">search in web</a>
+<a href="{% url 'search_in_database:crawler_form' %}">search in web</a>

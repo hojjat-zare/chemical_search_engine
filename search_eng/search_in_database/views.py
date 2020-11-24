@@ -23,10 +23,13 @@ def get_exact_entity(request,entity_mainname):
     results = get_result_for_entity(entity_mainname)
     return render(request,'search_in_database/search_result.html',{'results':results})
 
-def get_scrapy_search(request, phrase):
+def get_scrapy_search(request):
+    phrase = request.GET['entity']
     path = os.path.join(BASE_DIR, 'search_in_database')
     os.system("cd " + path + " && " + "python spider.py {}".format(phrase))
-    breakpoint()
+    # breakpoint()
     return HttpResponse('/scrapyResponse/') # here we have to use rendering
 
     #return render(request, 'form.html', {'form': form})
+def crawler_form(request):
+    return render(request,'search_in_database/crawler_form.html')

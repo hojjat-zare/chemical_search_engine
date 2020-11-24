@@ -10,7 +10,7 @@ from django.db import router
 from django.db import models
 # from fdb.fbcore import BlobReader
 from builtins import bytes
-
+import fdb
 
 
 class Entities(models.Model):
@@ -385,7 +385,6 @@ class Results(models.Model):
         fake.save()
 
     def blob_value(self,width=200, height=100):
-        import fdb
         from base64 import b64encode
         if('image' in self.mimetype):
             if(isinstance(self.result,bytes)):

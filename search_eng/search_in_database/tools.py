@@ -108,6 +108,7 @@ class AllPropertiesOfEntity:
                         integer_props[ent_prop.prop_eid.mainname] = {'value':[ent_prop.dvalue],'unit':unit_of_property[0].dvalue}
                 else:   # means property is entity
                     if(ent_prop.dvalue != None):
+                        # breakpoint()
                         equivalent_entity = Entities.objects.get(pk=ent_prop.dvalue)
                         entity_props[ent_prop.prop_eid.mainname] = {'value':[equivalent_entity.mainname],'unit':None}
                     else:

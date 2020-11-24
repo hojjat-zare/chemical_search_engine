@@ -1,0 +1,28 @@
+<html>
+<head>
+<title>Search Box Example 1</title>
+<!-- CSS styles for standard search box -->
+<style type="text/css">
+</style>
+</head>
+<body>
+	<div id="main">
+		<form id="" method="get" action="{% url 'search_in_database:scrapy' %}">
+			<table>
+				<tr>
+					<td><label for="entity">key word you looking for </label></td>
+					<td><input type="text" class="" name="entity" size="21" maxlength="120"><br></td>
+				</tr>
+				<tr>
+					<td><label for="properties">property of which you looking for</label></td>
+					<td><input type="text" name="properties" ></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>	<input type="submit" value="scrapy" class=""></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</body>
+</html>
