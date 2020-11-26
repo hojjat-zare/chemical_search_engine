@@ -1,18 +1,10 @@
-<html>
-<head>
-<title>Search Box Example 1</title>
-
-<!-- CSS styles for standard search box -->
-<style type="text/css">
-
-</style>
-</head>
-<body>
-	<div id="main">
+{% extends "search_in_database/base/base_search_form.html" %}
+{% block title %}chemical search{% endblock title %}
+{% block main %}
+	<div id="form_container">
 		<form id="" method="get" action="{% url 'search_in_database:search_result' %}">
-	    <input type="text" class="" name="q" size="21" maxlength="120">
+			<input type="text" class="" name="q" size="21" minlength="3">
 			<input type="submit" value="search" class="">
 		</form>
 	</div>
-</body>
-</html>
+{% endblock main %}

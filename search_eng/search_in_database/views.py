@@ -27,9 +27,7 @@ def get_scrapy_search(request):
     phrase = request.GET['entity']
     path = os.path.join(BASE_DIR, 'search_in_database')
     os.system("cd " + path + " && " + "python spider.py {}".format(phrase))
-    # breakpoint()
     return HttpResponse('/scrapyResponse/') # here we have to use rendering
 
-    #return render(request, 'form.html', {'form': form})
 def crawler_form(request):
     return render(request,'search_in_database/crawler_form.html')

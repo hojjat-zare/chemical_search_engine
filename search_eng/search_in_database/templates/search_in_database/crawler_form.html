@@ -1,12 +1,7 @@
-<html>
-<head>
-<title>Search Box Example 1</title>
-<!-- CSS styles for standard search box -->
-<style type="text/css">
-</style>
-</head>
-<body>
-	<div id="main">
+{% extends "search_in_database/base/base_search_form.html" %}
+{% block title %}search in web{% endblock title %}
+{% block main %}
+	<div id="form_container">
 		<form id="" method="get" action="{% url 'search_in_database:scrapy' %}">
 			<table>
 				<tr>
@@ -24,5 +19,4 @@
 			</table>
 		</form>
 	</div>
-</body>
-</html>
+{% endblock main %}

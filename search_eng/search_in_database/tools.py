@@ -30,7 +30,7 @@ def get_result_for_search(sentence):
         if(result_element.type in ['instance','concept']):
             all_props_of_entity = AllPropertiesOfEntity(result_element.entity).get_all_propes_in_dictionary_form()
             encapsulated_result.append({'entity_name':result_element.entity.mainname,'type':result_element.type,'data':all_props_of_entity})
-        else:
+        else:   # result is property_of_instance
             property_of_entity = PropertyOfEntity(result_element.entity,result_element.property).get_property_value()
             encapsulated_result.append({'entity_name':result_element.entity.mainname,'property_name':result_element.property.mainname,'type':result_element.type,'data':property_of_entity})
     a = encapsulated_result
@@ -129,19 +129,6 @@ class AllPropertiesOfEntity:
         return all_propes
 
 
-    # def get_all_propes_in_dictionary_form(self):
-    #     props = {'blob_props':dict(),'double_unitless_props':dict(),'double_with_unit_props':dict(),'string_props':dict(),'integer_unitless_props':dict(),'integer_with_unit_props':dict(),'entity_props':dict()}
-    #     props['blob_props'] = self.get_blob_propes_in_dictionary_form()
-    #     double_props = self.get_double_propes_in_dictionary_form()
-    #     props['double_unitless_props'] = double_props['double_unitless_props']
-    #     props['double_with_unit_props'] = double_props['double_with_unit_props']
-    #     props['string_props'] = self.get_string_props_in_dictionary_form()
-    #     integer_and_entity_props = self.get_integer_and_entity_propes_in_dictionary_form()
-    #     props['integer_unitless_props'] = integer_and_entity_props['integer_unitless_props']
-    #     props['integer_with_unit_props'] = integer_and_entity_props['integer_with_unit_props']
-    #     props['entity_props'] = integer_and_entity_props['entity_props']
-    #     return props
-
     def get_all_propes_in_dictionary_form(self):
         props = {'numeric':dict(),'string':dict(),'entity':dict(),'blob':dict()}
         props['blob'] = self.get_blob_propes_in_dictionary_form()
@@ -152,19 +139,6 @@ class AllPropertiesOfEntity:
         props['numeric'].update(integer_and_entity_props['integer_props'])
         props['entity'] = integer_and_entity_props['entity_props']
         return props
-
-
-    def get_an_special_property(self,property_eid):
-        type_of_prop_id = EntityRelationEntity.objects.get(eid1 = property_eid,relationid = id_of_drived_from).eid2
-        if(type_of_prop_id in [10 , 3]):
-            pass
-        elif(type_of_prop == 12):
-            pass
-        elif(type_of_prop == 13):
-            pass
-        elif(type_of_prop_id in [11,14,4]):
-            pass
-        return None
 
 
 class PropertyOfEntity:
@@ -192,11 +166,11 @@ class PropertyOfEntity:
             properties = EntsIntegerPropsValues.objects.filter(prop_owner_eid=self.get_entity_id(), prop_eid=self.get_property_id()).order_by('drowid')
         if(type_of_prop_id in [id_of_double_with_unit, id_of_integer_with_unit]):
             unit_of_property = EntsStringPropsValues.objects.get(prop_owner_eid=self.get_property_id(), prop_eid=id_of_unit)
-            return{'type':prop_type_map[type_of_prop_id],'value':[prop.dvalue for prop in properties],'unit':unit_of_property.dvalue}
+            return{'group':prop_type_map[type_of_prop_id],'value':[prop.dvalue for prop in properties],'unit':unit_of_property.dvalue}
         elif(type_of_prop_id in [id_of_double_unitless,id_of_integer_unitless,id_of_string]):
-            return {'type':prop_type_map[type_of_prop_id],'value':[prop.dvalue for prop in properties],'unit':None}
+            return {'group':prop_type_map[type_of_prop_id],'value':[prop.dvalue for prop in properties],'unit':None}
         elif(type_of_prop_id == id_of_blob):
-            return {'type':prop_type_map[type_of_prop_id],'value':[prop.blob_value() for prop in properties],'unit':None}
+            return {'group':prop_type_map[type_of_prop_id],'value':[prop.blob_value() for prop in properties],'unit':None}
         elif(type_of_prop_id == id_of_entity_property):
             values = []
             for prop in properties:
@@ -204,7 +178,7 @@ class PropertyOfEntity:
                     values.append(Entities.objects.get(pk=prop.dvalue).mainname)
                 else:
                     values.append(None)
-            return {'type':prop_type_map[type_of_prop_id],'value':values,'unit':None}
+            return {'group':prop_type_map[type_of_prop_id],'value':values,'unit':None}
 
 
 

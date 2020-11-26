@@ -1,0 +1,32 @@
+{# variables: header_cell prop_prop_value prop_unit property_type #}
+<tr>
+  <th>{{header_cell|cut:'_'}}</th>
+  <td>
+    {% autoescape off %}
+      {% if prop_value|length > 1 %}
+        [
+          {% if property_type == 'entity' %}
+            {% for index in prop_value %}
+              <a href="{% url 'search_in_database:exact_entity' index %}">{{index|default_if_none:''|cut:'_'}}</a>
+            {% endfor %}
+          {% else %}
+            {% for index in prop_value %}
+              {{index|default_if_none:''|cut:'_'}}
+            {% endfor %}
+          {% endif %}
+        ]
+      {% else %}
+        {% if property_type == 'entity' %}
+          <a href="{% url 'search_in_database:exact_entity' prop_value.0 %}">{{prop_value.0|default_if_none:''|cut:'_'}}</a>
+        {% else %}
+          {{prop_value.0|default_if_none:''|cut:'_'}}
+        {% endif %}
+      {% endif %}
+    {% endautoescape %}
+  </td>
+  {% if property_type == 'numeric' %}
+    <td>
+      {{prop_unit|default_if_none:''}}
+    </td>
+  {% endif %}
+</tr>

@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <title>{% block title %}{% endblock title %}</title>
+    <link rel="stylesheet" href={% static "search_in_database/css/base.css" %}>
+    {% block more_styles %}{% endblock more_styles %}
+  </head>
+
+  <body>
+    <header>
+      {% block header %}{% endblock header %}
+    </header>
+
+    <main>
+      {% block main %}{% endblock main %}
+    </main>
+
+    <footer>
+      {% block footer %}{% endblock footer %}
+    </footer>
+  </body>
+</html>
