@@ -1,0 +1,12 @@
+{# variables: header_cell prop_value property_type #}
+<div class="none_numeric_prop_container">
+  {% autoescape off %}
+    {% if property_type == 'string' %}
+        <h3>{{header_cell|cut:'_'}}</h3>
+        <p>{{prop_value.0}}</p>
+    {% else %}
+      <h3>{{header_cell|cut:'_'}}</h3>
+      {{prop_value.0}}
+    {% endif %}
+  {% endautoescape %}
+</div>

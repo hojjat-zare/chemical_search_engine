@@ -1,4 +1,4 @@
-{# variables: header_cell prop_prop_value prop_unit property_type #}
+{# variables: header_cell prop_value prop_unit property_type #}
 <tr>
   <th>{{header_cell|cut:'_'}}</th>
   <td>
@@ -24,9 +24,7 @@
       {% endif %}
     {% endautoescape %}
   </td>
-  {% if property_type == 'numeric' %}
-    <td>
-      {{prop_unit|default_if_none:''}}
-    </td>
-  {% endif %}
+  <td>
+    {{prop_unit|default_if_none:''}}
+  </td>
 </tr>

@@ -6,17 +6,28 @@
       {% if result.type in 'concept,instance' %}
         {% for property_group, property_group_value in result.data.items %}
           {% if property_group_value %}
-          <table>
-            {% for property, property_value in property_group_value.items %}
-              {% include "search_in_database/base/show_single_prop.html" with header_cell=property prop_value=property_value.value prop_unit=property_value.unit property_type=property_group %}
-            {% endfor %}
-          </table>
+            {% if not property_group in 'numeric-entity' %}
+              {% for property, property_value in property_group_value.items %}
+                  {% include "search_in_database/base/none_numeric_property_div.html" with header_cell=property prop_value=property_value.value %}
+              {% endfor %}
+            {% else %}
+              <div class="table_container">
+                <table class="in_table_properties">
+                  <caption>{{property_group}} properties</caption>
+                  {% for property, property_value in property_group_value.items %}
+                    {% include "search_in_database/base/numeric_property_row.html" with header_cell=property prop_value=property_value.value prop_unit=property_value.unit property_type=property_group %}
+                  {% endfor %}
+                </table>
+              </div>
+            {% endif %}
           {% endif %}
         {% endfor %}
       {% else %}
-        <table>
-          {% include "search_in_database/base/show_single_prop.html" with header_cell=result.property_name prop_value=result.data.value prop_unit=result.data.unit property_type=result.data.group %}
-        </table>
+        <div class="table_container">
+          <table class="in_table_properties">
+            {% include "search_in_database/base/numeric_property_row.html" with header_cell=result.property_name prop_value=result.data.value prop_unit=result.data.unit property_type=result.data.group %}
+          </table>
+        </div>
       {% endif %}
     </div>
   {% endfor %}

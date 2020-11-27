@@ -62,13 +62,13 @@ class AllPropertiesOfEntity:
                 if(not is_blob):
                     props[ent_prop.prop_eid.mainname] = {'value':[ent_prop.dvalue]}
                 else:
-                    props[ent_prop.prop_eid.mainname] = {'value':[ent_prop.blob_value()]}
+                    props[ent_prop.prop_eid.mainname] = {'value':[ent_prop.blob_value(width='auto',height='auto')]}
                     # breakpoint()
             else:
                 if(not is_blob == None):
                     props[ent_prop.prop_eid.mainname]['value'].append(ent_prop.dvalue)
                 else:
-                    props[ent_prop.prop_eid.mainname]['value'].append(ent_prop.blob_value())
+                    props[ent_prop.prop_eid.mainname]['value'].append(ent_prop.blob_value(width='auto',height='auto'))
         return props
 
     def get_blob_propes_in_dictionary_form(self):
@@ -170,7 +170,7 @@ class PropertyOfEntity:
         elif(type_of_prop_id in [id_of_double_unitless,id_of_integer_unitless,id_of_string]):
             return {'group':prop_type_map[type_of_prop_id],'value':[prop.dvalue for prop in properties],'unit':None}
         elif(type_of_prop_id == id_of_blob):
-            return {'group':prop_type_map[type_of_prop_id],'value':[prop.blob_value() for prop in properties],'unit':None}
+            return {'group':prop_type_map[type_of_prop_id],'value':[prop.blob_value(width='auto',height='auto') for prop in properties],'unit':None}
         elif(type_of_prop_id == id_of_entity_property):
             values = []
             for prop in properties:
