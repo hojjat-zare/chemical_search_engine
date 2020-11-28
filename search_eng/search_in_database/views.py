@@ -8,7 +8,7 @@ from .models import *
 from .tools import SentenceRelatedEntities,AllPropertiesOfEntity,PropertyOfEntity,get_result_for_search, get_result_for_entity
 from .scraping import Search_methods
 from .form import SearchForm
-
+from django.contrib.staticfiles import finders
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -17,7 +17,9 @@ def index(request):
 
 def search_result(request):
     results = get_result_for_search(request.GET['q'].lower())
-    return render(request,'search_in_database/search_result.html',{'results':results})
+    json = finders.find('search_in_database/js/a.json')
+    json = open(json,'rt').read()
+    return render(request,'search_in_database/search_result.html',{'results':results,'json':json})
 
 def get_exact_entity(request,entity_mainname):
     results = get_result_for_entity(entity_mainname)

@@ -7,7 +7,7 @@
         [
           {% if property_type == 'entity' %}
             {% for index in prop_value %}
-              <a href="{% url 'search_in_database:exact_entity' index %}">{{index|default_if_none:''|cut:'_'}}</a>
+              <a href="{% url 'search_in_database:exact_entity' index.entity_name %}">{{index.entity_name|default_if_none:''|cut:'_'}}</a>
             {% endfor %}
           {% else %}
             {% for index in prop_value %}
@@ -17,7 +17,7 @@
         ]
       {% else %}
         {% if property_type == 'entity' %}
-          <a href="{% url 'search_in_database:exact_entity' prop_value.0 %}">{{prop_value.0|default_if_none:''|cut:'_'}}</a>
+          <a href="{% url 'search_in_database:exact_entity' prop_value.0.entity_name %}">{{prop_value.0.entity_name|default_if_none:''|cut:'_'}}</a>
         {% else %}
           {{prop_value.0|default_if_none:''|cut:'_'}}
         {% endif %}

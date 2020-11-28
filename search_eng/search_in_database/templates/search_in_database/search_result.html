@@ -1,35 +1,41 @@
 {% extends "search_in_database/base/base_result.html" %}
+{% load static %}
 {% block main %}
   {% for result in results %}
     <div class="result">
       <h2><a href="{% url 'search_in_database:exact_entity' result.entity_name %}">{{result.entity_name|cut:'_'}}</a></h2>
-      {% if result.type in 'concept,instance' %}
-        {% for property_group, property_group_value in result.data.items %}
-          {% if property_group_value %}
-            {% if not property_group in 'numeric-entity' %}
-              {% for property, property_value in property_group_value.items %}
-                  {% include "search_in_database/base/none_numeric_property_div.html" with header_cell=property prop_value=property_value.value %}
-              {% endfor %}
-            {% else %}
-              <div class="table_container">
-                <table class="in_table_properties">
-                  <caption>{{property_group}} properties</caption>
-                  {% for property, property_value in property_group_value.items %}
-                    {% include "search_in_database/base/numeric_property_row.html" with header_cell=property prop_value=property_value.value prop_unit=property_value.unit property_type=property_group %}
-                  {% endfor %}
-                </table>
-              </div>
-            {% endif %}
+      {% for property_group, property_group_value in result.data.items %}
+        {% if property_group_value %}
+          {% if not property_group in 'numeric-entity' %}
+            {% for property, property_value in property_group_value.items %}
+              {% include "search_in_database/base/none_numeric_property_div.html" with header_cell=property prop_value=property_value.value %}
+            {% endfor %}
+          {% else %}
+            <div class="table_container">
+              <table class="in_table_properties">
+                <caption>{{property_group}} properties</caption>
+                {% for property, property_value in property_group_value.items %}
+                  {% include "search_in_database/base/numeric_property_row.html" with header_cell=property prop_value=property_value.value prop_unit=property_value.unit property_type=property_group %}
+                {% endfor %}
+              </table>
+            </div>
           {% endif %}
-        {% endfor %}
-      {% else %}
-        <div class="table_container">
-          <table class="in_table_properties">
-            {% include "search_in_database/base/numeric_property_row.html" with header_cell=result.property_name prop_value=result.data.value prop_unit=result.data.unit property_type=result.data.group %}
-          </table>
-        </div>
-      {% endif %}
+        {% endif %}
+      {% endfor %}
     </div>
   {% endfor %}
   <a href="{% url 'search_in_database:crawler_form' %}">search in web</a>
+  <script type="text/javascript">
+    // var path = "{% static 'search_in_database/js/a.json' %}";
+    None = null;
+    results = {{results|safe|default_if_none:''}}
+    data = {{json|safe}}
+  </script>
+  <svg class="for_test">
+
+  </svg>
 {% endblock main %}
+
+{% block scripts %}
+  <script type="text/javascript" src={% static "search_in_database/js/new.js" %}></script>
+{% endblock scripts %}

@@ -1,1 +1,5 @@
 {% extends "search_in_database/base/base.html" %}
+{% load static %}
+{% block initial_scripts %}
+  <script src={% static "search_in_database/js/d3.min.js" %}></script>
+{% endblock initial_scripts %}
