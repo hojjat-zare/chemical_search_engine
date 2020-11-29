@@ -5,6 +5,11 @@
   display: inline-block;
   margin-left: 15%;
 }
+
+svg, g{
+  overflow-x: auto;
+}
+
 caption{
   border-bottom:1px solid black;
 }

@@ -25,17 +25,4 @@
     </div>
   {% endfor %}
   <a href="{% url 'search_in_database:crawler_form' %}">search in web</a>
-  <script type="text/javascript">
-    // var path = "{% static 'search_in_database/js/a.json' %}";
-    None = null;
-    results = {{results|safe|default_if_none:''}}
-    data = {{json|safe}}
-  </script>
-  <svg class="for_test">
-
-  </svg>
 {% endblock main %}
-
-{% block scripts %}
-  <script type="text/javascript" src={% static "search_in_database/js/new.js" %}></script>
-{% endblock scripts %}

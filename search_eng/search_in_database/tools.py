@@ -111,7 +111,7 @@ class AllPropertiesOfEntity:
                         all_props_of_entity = AllPropertiesOfEntity(equivalent_entity).get_all_propes_in_dictionary_form()
                         entity_props[ent_prop.prop_eid.mainname] = {'value':[{'entity_name':equivalent_entity.mainname,'data':all_props_of_entity,'type':"instance"}]}
                     else:
-                        entity_props[ent_prop.prop_eid.mainname] = {'value':[{'entity_name':None,'data':None,'type':'instance'}]}
+                        entity_props[ent_prop.prop_eid.mainname] = {'value':[]}
             else:
                 if(len(type_of_prop) == 0):  # means property is integer not id of an entity
                     unit_of_property = EntsStringPropsValues.objects.filter(prop_owner_eid=ent_prop.prop_eid,prop_eid=id_of_unit)
@@ -125,7 +125,7 @@ class AllPropertiesOfEntity:
                         all_props_of_entity = AllPropertiesOfEntity(equivalent_entity).get_all_propes_in_dictionary_form()
                         entity_props[ent_prop.prop_eid.mainname]['value'].append({'entity_name':equivalent_entity.mainname,'data':all_props_of_entity,'type':"instance"})
                     else:
-                        entity_props[ent_prop.prop_eid.mainname]['value'].append({'entity_name':None,'data':None,'type':'instance'})
+                        entity_props[ent_prop.prop_eid.mainname]['value'].append(None)
         return all_propes
 
 
