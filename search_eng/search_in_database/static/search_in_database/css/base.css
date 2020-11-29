@@ -7,7 +7,7 @@
 }
 
 svg, g{
-  overflow-x: auto;
+  overflow-x: scroll;
 }
 
 caption{

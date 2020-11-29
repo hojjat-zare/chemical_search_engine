@@ -34,8 +34,8 @@ function modify_result(single_result){
   level1.children = [];
   if(single_result.data != null){
     Object.keys(single_result.data).forEach(function(property_group){
-      // let level2 = {name:property_type_map[property_group]};
-      // level2.children = [];
+      let level2 = {name:property_type_map[property_group]};
+      level2.children = [];
       Object.keys(single_result.data[property_group]).forEach(function(property_name){
         // console.log(property_name);
         // console.log(single_result.data[property_group][property_name]);
@@ -45,9 +45,9 @@ function modify_result(single_result){
         }else{
           level3 = modify_none_entity_property(property_name,single_result.data[property_group][property_name]);
         }
-        level1.children.push(level3);
+        level2.children.push(level3);
       });
-      // level1.children.push(level2);
+      level1.children.push(level2);
     });
   }
   return level1;
