@@ -1,7 +1,7 @@
 margin = ({top: 10, right: 120, bottom: 10, left: 40});
 width = 900;
-dy = width / 8;
-dx = 10;
+dy = width / 6;
+dx = 30;
 tree = d3.tree().nodeSize([dx, dy]);
 diagonal = d3.linkHorizontal().x(d => d.y).y(d => d.x)
 
@@ -11,9 +11,9 @@ property_type_map = {"blob":"images","entity":"conceptual","numeric":"numeric","
 function modify_none_entity_property(property_name,property_value){
   let mod_prop = {name:property_name.replaceAll('_', '')};
   if(property_value.unit === undefined){
-    mod_prop.children = [{name:property_value.value.toString(),value:100}]; // name = [1,2,5,7]
+    mod_prop.children = [{name:property_value.value.toString()}]; // name = [1,2,5,7]
   }else{
-    mod_prop.children = [{name:property_value.value.toString() + ' ' + property_value.unit,value:100}]; // name = [1,2,5,7]
+    mod_prop.children = [{name:property_value.value.toString() + ' ' + property_value.unit}]; // name = [1,2,5,7]
   }
   return mod_prop;
 }
@@ -25,7 +25,7 @@ function modify_entity_property(property_name,property_value){
     if(value != null){
       mod_prop.children.push(modify_result(value));
     }else{
-      mod_prop.children.push({name:'none',value:100})
+      mod_prop.children.push({name:'none'})
     }
   });
   return mod_prop;
@@ -52,7 +52,7 @@ function modify_result(single_result){
       });
     }
   }else{
-    level1.value = 100;
+    // level1.value = 100;
   }
   return level1;
 }
@@ -61,6 +61,10 @@ data = modify_result(results[0]);
 console.log(data);
 
 function draw() {
+
+  const svg_container = d3.select(".svg_container")
+  .style("overflow","scroll");
+
   const root = d3.hierarchy(data);
 
   root.x0 = dy / 2;
@@ -71,8 +75,11 @@ function draw() {
     if (d.depth && d.data.name.length !== 7) d.children = null;
   });
 
+  // console.log(root.descendants());
+
   const svg = d3.select("svg")
       .attr("viewBox", [-margin.left, -margin.top, width, dx])
+      .style("width","5100px")
       .style("font", "10px sans-serif")
       .style("user-select", "none");
 
@@ -103,9 +110,11 @@ function draw() {
 
     const height = right.x - left.x + margin.top + margin.bottom;
 
+    // svg.attr("viewBox",[-margin.left, left.x - margin.top, width, height])
+
     const transition = svg.transition()
         .duration(duration)
-        .attr("viewBox", [-margin.left, left.x - margin.top, width, height])
+        .attr("viewBox", [-margin.left, left.x - margin.top- height/10, width*6, height*1.4])
         .tween("resize", window.ResizeObserver ? null : () => () => svg.dispatch("toggle"));
 
     // Update the nodes…

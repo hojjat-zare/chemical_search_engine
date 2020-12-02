@@ -2,16 +2,18 @@
 {% load static %}
 {% block main %}
   {# {{ block.super }} #}
-  <svg class="for_test">
+  <div class="svg_container">
+    <svg class="for_test">
 
-  </svg>
+    </svg>
+  </div>
+
 {% endblock main %}
 
 {% block scripts %}
   <script type="text/javascript">
-    None = '';
+    None = 'none';
     results = {{results|safe|default_if_none:''}}
-    //data = {{json|safe}}
   </script>
-  <script type="text/javascript" src={% static "search_in_database/js/new.js" %}></script>
+  <script type="text/javascript" src={% static "search_in_database/js/data_tree.js" %}></script>
 {% endblock scripts %}

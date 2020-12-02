@@ -6,10 +6,6 @@
   margin-left: 15%;
 }
 
-svg, g{
-  overflow-x: scroll;
-}
-
 caption{
   border-bottom:1px solid black;
 }

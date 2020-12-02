@@ -3,7 +3,7 @@
 {% block main %}
   {% for result in results %}
     <div class="result">
-      <h2><a href="{% url 'search_in_database:exact_entity' result.entity_name %}">{{result.entity_name|cut:'_'}}</a></h2>
+      <h2><a href="{% url 'search_in_database:exact_entity_tree_mode' result.entity_name %}">{{result.entity_name|cut:'_'}}</a></h2>
       {% for property_group, property_group_value in result.data.items %}
         {% if property_group_value %}
           {% if not property_group in 'numeric-entity' %}

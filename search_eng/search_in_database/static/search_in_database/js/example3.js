@@ -1,26 +1,12 @@
-color = d3.scaleLinear()
-    .domain([0, 5])
-    .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
-    .interpolate(d3.interpolateHcl);
-
-format = d3.format(",d")
-
-width = 600;
-height = width;
-
-pack = data => d3.pack()
-    .size([width, height])
-    .padding(3)
-  (d3.hierarchy(data)
-    .sum(d => d.value)
-    .sort((a, b) => b.value - a.value));
-
-
 property_type_map = {"blob":"images","entity":"conceptual","numeric":"numeric","string":"texts"};
 
 function modify_none_entity_property(property_name,property_value){
   let mod_prop = {name:property_name.replaceAll('_', '')};
-  mod_prop.children = [{name:property_value.value.toString() + ' ' + property_value.unit,value:100}]; // name = [1,2,5,7]
+  if(property_value.unit === undefined){
+    mod_prop.children = [{name:property_value.value.toString(),value:100}]; // name = [1,2,5,7]
+  }else{
+    mod_prop.children = [{name:property_value.value.toString() + ' ' + property_value.unit,value:100}]; // name = [1,2,5,7]
+  }
   return mod_prop;
 }
 
@@ -37,33 +23,52 @@ function modify_entity_property(property_name,property_value){
   return mod_prop;
 }
 
+found_entities = [];
 "use strict";
 function modify_result(single_result){
   let level1 = {name:single_result.entity_name.replaceAll('_', '')};
-  level1.children = [];
-  if(single_result.data != null){
-    Object.keys(single_result.data).forEach(function(property_group){
-      let level2 = {name:property_type_map[property_group]};
-      level2.children = [];
-      Object.keys(single_result.data[property_group]).forEach(function(property_name){
-        // console.log(property_name);
-        // console.log(single_result.data[property_group][property_name]);
-        let level3 = {name:''}
-        if(property_group == 'entity'){
-          level3 = modify_entity_property(property_name,single_result.data[property_group][property_name]);
-        }else{
-          level3 = modify_none_entity_property(property_name,single_result.data[property_group][property_name]);
-        }
-        level2.children.push(level3);
+  if(!(level1.name in found_entities)){
+    found_entities.push(single_result.entity_name);
+    level1.children = [];
+    if(single_result.data != null){
+      Object.keys(single_result.data).forEach(function(property_group){
+        Object.keys(single_result.data[property_group]).forEach(function(property_name){
+          let level3 = {name:''}
+          if(property_group == 'entity'){
+            level3 = modify_entity_property(property_name,single_result.data[property_group][property_name]);
+          }else{
+            level3 = modify_none_entity_property(property_name,single_result.data[property_group][property_name]);
+          }
+          level1.children.push(level3);
+        });
       });
-      level1.children.push(level2);
-    });
+    }
+  }else{
+    level1.value = 100;
   }
   return level1;
 }
 
 data = modify_result(results[0]);
-console.log(data);
+
+
+color = d3.scaleLinear()
+    .domain([0, 5])
+    .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
+    .interpolate(d3.interpolateHcl);
+
+format = d3.format(",d")
+
+width = 900;
+height = width;
+
+pack = data => d3.pack()
+    .size([width, height])
+    .padding(3)
+  (d3.hierarchy(data)
+    .sum(d => d.value)
+    .sort((a, b) => b.value - a.value));
+
 
 color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, data.children.length + 1))
 
