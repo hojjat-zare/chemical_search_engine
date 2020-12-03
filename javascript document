@@ -1,0 +1,31 @@
+JavaScript has three kinds of variable declarations.
+
+var
+Declares a variable, optionally initializing it to a value.
+let
+Declares a block-scoped, local variable, optionally initializing it to a value.
+const
+Declares a block-scoped, read-only named constant.
+
+
+########### log data & display data #################################
+avaScript can "display" data in different ways:
+
+Writing into an HTML element, using innerHTML.
+Writing into the HTML output using document.write().
+Writing into an alert box, using window.alert().
+Writing into the browser console, using console.log().
+
+
+######### variable scopes ######################
+%%%%%%%%%%
+if (true) {
+  var x = 5;
+}
+console.log(x);  // x is 5
+
+if (true) {
+  let y = 5;
+}
+console.log(y);  // ReferenceError: y is not defined
+%%%%%%%%%%%%%%%%

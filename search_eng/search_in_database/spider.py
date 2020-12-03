@@ -65,7 +65,7 @@ def check_url(url):
 
 
 def get_from_wikipedia_manual():
-    search_word = search_word = sys.argv[1]
+    search_word = sys.argv[1]
     limits = 5
     response = requests.get(
         "https://en.wikipedia.org/w/api.php?action=opensearch&search={}&limit={}&namespace=0&format=json".format(
@@ -77,14 +77,15 @@ def get_from_wikipedia_manual():
         for i in range(len(suggestion_urls)):
             print(i+1, ":", suggestions[i])
             print(suggestion_urls[i])
-    search_result_number = int(input("Enter the number: "))
+    search_result_number = 1#nt(input("Enter the number: "))
     url = suggestion_urls[search_result_number - 1]
     print(url)
-    input("you want to search for " + suggestions[search_result_number - 1])
+    #input("you want to search for " + suggestions[search_result_number - 1])
     # words that we are looking for
     # here we can get it from database
     words = get_target_words()
-    words += input("Enter any words split theme by '/' : ").split(sep="/")
+    words += sys.argv[2:]
+    #words += input("Enter any words split theme by '/' : ").split(sep="/")
     cb_kwargs = {"target_words": words, "main": suggestions[search_result_number - 1]}
     result = {
         "url": url,
@@ -160,8 +161,7 @@ class Detector(scrapy.Spider):
             result = input("do you want to have {}? if yes Enter 1\n".format(section))
             if result == "1":
                 if sections[section] == 1:
-                    DatabaseConnection.download_save_img_to_db(response, response.request,
-                                                               121)  # here we have to get methane id or get it inside the database
+                    DatabaseConnection.download_save_img_to_db(response)
                 elif sections[section] == 2:
                     pass  # download pdf
 
@@ -173,7 +173,7 @@ class DatabaseConnection:
 
 
     @staticmethod
-    def store_result(user_input_phrase_for_search, found_result, mimetype):
+    def store_result(user_input_phrase_for_search, found_result, mimetype, refrence):
         con = fdb.connect(dsn=DatabaseConnection.DATA_BASE_DIR, user='SYSDBA',
                           password='masterkey')
         cur = con.cursor()
@@ -200,10 +200,10 @@ class DatabaseConnection:
             cur.execute('insert into ENTITIESRELATEDPHRASES (ENTID,PHRASEID,DROWID) values(?,?,?);',
                         (_user_search_entity, phrase_id, drowid))
 
-        cur.execute('select gen_id(SEARCHS_SEARCHID_GEN, 1)from rdb$database;')
-        searchid = cur.fetchone()[0]
+        # cur.execute('select gen_id(SEARCHS_SEARCHID_GEN, 1)from rdb$database;')
+        searchid = hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
         cur.execute('insert into SEARCHS (SEARCHID,ENT_PHRASEID,REFERENCE_ADDRESS,SEARCH_TIME) values(?,?,?,?);',
-                    (searchid, drowid, 'example.wikipedia.ir', datetime.datetime.now()))
+                    (searchid, drowid, refrence, datetime.datetime.now()))
         # print(searchid)
         print(is_result_string)
         if (is_result_string):
@@ -223,41 +223,28 @@ class DatabaseConnection:
             string_tags = title + "<br>".join(tags_of_this_word)
             final_body += string_tags
         final_body = final_body
-        DatabaseConnection.store_result(main_word, final_body, 'text/html')
+        DatabaseConnection.store_result(main_word, final_body, 'text/html', refrence)
 
 
 
     @staticmethod
     def download_save_pdf_to_db(response):
-        """
-        all_hrefs_contains_http = ResponseController.get_hrefs_contains_http(response)
-        pdf_urls = [url.strip() for url in all_hrefs_contains_http if url.strip().endswith(".pdf")]
-        print(pdf_urls)
-        for j in range(len(pdf_urls)):
-            pdf_url = pdf_urls[j]
-            print(pdf_url)
-            if int(input("1")):
-                resp = requests.get(pdf_url)
-                input("2")
-                pdf_file = open("D:\\programming\\scraP\\spammer\\spamer\\spamer\\spiders\\pdf\\{}.pdf".format(j), "wb")
-                pdf_file.write(resp.content)
-                pdf_file.close()
-        :param response:
-        :return:
-        """
         pass
 
     @staticmethod
-    def download_save_img_to_db(response, refrence, Ent_id):
+    def download_save_img_to_db(response):
+        refrence = response.request
         main_word = response.cb_kwargs['main']
+        user_input_phrase_for_search = main_word
+        _user_search_entity = 142
         searched_words = response.cb_kwargs['target_words']
 
         path = DatabaseConnection.DATA_BASE_DIR
         con = fdb.connect(dsn=path, user='SYSDBA', password='masterkey')
         cur = con.cursor()
-        _admin_for_manual_search_id = 0  # a phrase for manuall Searching
-        img_directory_path = "D:\\programming\\scraP\\spammer\\spamer\\spamer\\spiders\\imgs\\"
-        bad_imgs_lines = open(img_directory_path + "bad.txt", "r")
+
+        img_directory_path = os.path.join(DatabaseConnection.BASE_DIR, "images")
+        bad_imgs_lines = open(img_directory_path + "\\bad.txt", "r")
         bad_urls = bad_imgs_lines.readlines()
         bad_urls = [urls.strip() for urls in bad_urls]
         bad_imgs_lines.close()
@@ -284,12 +271,13 @@ class DatabaseConnection:
                                 is_bad = False
                                 break
                         break
-
-                if is_bad:
-                    is_bad = bool(input("is it bad so enter 1"))
+                # this part of commented code is about manual adding bad images
+                #if is_bad:
+                #    is_bad = bool(input("is it bad so enter 1"))
                 if is_bad:
                     bad_imgs2.write(src + "\n")
                 else:
+                    mimetype = "image/" + img_format
                     res = requests.get(img['src'])
                     img_file = open(img_directory_path + "{}_{}.{}".format(main_word, i, img_format), "wb")
                     img_file.write(res.content)
@@ -298,33 +286,56 @@ class DatabaseConnection:
                     img_file = open(img_directory_path + "{}_{}.{}".format(main_word, i, img_format), "rb")
                     content = img_file.read()
                     img_file.close()
+                    found_result = content
+                    is_result_string = isinstance(found_result, str)
+                    # breakpoint()
 
-                    cur.execute('select gen_id(ENTSRELATEDPHRAS_ROWID_GEN, 1)from rdb$database;')
-                    drowid = cur.fetchone()[0]
-                    cur.execute('insert into ENTITIESRELATEDPHRASES (ENTID,PHRASEID,DROWID) values(?,?,?);',
-                                (Ent_id, _admin_for_manual_search_id, drowid))
-                    # print(drowid)
+                    cur.execute('select PHRASEID from EXISTING_PHRASES where PHRASESTRING=?;',
+                                (user_input_phrase_for_search,))
+                    phrase_id = cur.fetchone()  # 0 false  1 true
+                    if (phrase_id != None):
+                        phrase_id = phrase_id[0]
+                    else:
+                        cur.execute('select gen_id(EXISTING_PHRASES_PHRASEID_GEN, 1) from rdb$database;')
+                        phrase_id = cur.fetchone()[0]
+                        cur.execute('insert into EXISTING_PHRASES (PHRASEID,PHRASESTRING,LANGID) values(?,?,?);',
+                                    (phrase_id, user_input_phrase_for_search, 0))
 
-                    cur.execute('select gen_id(SEARCHS_SEARCHID_GiEN, 1)from rdb$database;')
+                    cur.execute('select DROWID from ENTITIESRELATEDPHRASES where (PHRASEID=? and ENTID=?);',
+                                (phrase_id, _user_search_entity))
+                    drowid = cur.fetchone()
+                    if (drowid != None):
+                        drowid = drowid[0]
+                    else:
+                        cur.execute('select gen_id(ENTSRELATEDPHRAS_ROWID_GEN, 1)from rdb$database;')
+                        drowid = cur.fetchone()[0]
+                        cur.execute('insert into ENTITIESRELATEDPHRASES (ENTID,PHRASEID,DROWID) values(?,?,?);',
+                                    (_user_search_entity, phrase_id, drowid))
+
+                    cur.execute('select gen_id(SEARCHS_SEARCHID_GEN, 1)from rdb$database;')
                     searchid = cur.fetchone()[0]
                     cur.execute(
                         'insert into SEARCHS (SEARCHID,ENT_PHRASEID,REFERENCE_ADDRESS,SEARCH_TIME) values(?,?,?,?);',
                         (searchid, drowid, refrence, datetime.datetime.now()))
                     # print(searchid)
 
-                    cur.execute("insert into RESULTS (SEARCHID,RESULT,MIMETYPE) values (?,?,?);",
-                                (searchid, StringIO(content), 'image/{}'.format(img_format)))
+                    if (is_result_string):
+                        cur.execute("insert into RESULTS (SEARCHID,RESULT,MIMETYPE) values (?,?,?);",
+                                    (searchid, StringIO(found_result), mimetype))
+                    else:  # is image
+                        cur.execute("insert into RESULTS (SEARCHID,RESULT,MIMETYPE) values (?,?,?);",
+                                    (searchid, found_result, mimetype))
 
                     # delete after save it into the db
 
-                    if os.path.exists("{}}.{}".format(i, img_format)):
-                        os.remove("{}}.{}".format(i, img_format))
+                    if os.path.exists(img_directory_path + "{}_{}.{}".format(main_word, i, img_format)):
+                        os.remove(img_directory_path + "{}_{}.{}".format(main_word, i, img_format))
                     else:
                         print("The file does not exist")
 
         bad_imgs2.close()
         # print(cur.fetchall())
-        # con.commit()
+        con.commit()
 class ResponseController:
 
     @staticmethod
@@ -877,9 +888,9 @@ class ResponseController:
                     words_dic[word]["word_point"] += 1
                     words_dic[word]["useful_tags"].append(tag.xpath('.').get())
                     print(name, word, number_of_conditions, condition_done, final_text, sep="//", end="\n*******************************************************\n")
-        all_tables = ResponseController.get_all_tables(response)
-
-        words_dic["all_tables"] = {"useful_tags": all_tables, "word_point":len(all_tables)}
+        # all_tables = ResponseController.get_all_tables(response)
+        #
+        # words_dic["all_tables"] = {"useful_tags": all_tables, "word_point":len(all_tables)}
         return words_dic
 
     ############ NOT USEFUL METHODS ################

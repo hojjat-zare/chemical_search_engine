@@ -1,0 +1,9 @@
+{# variables: property_group property_group_value #}
+<div class="table_container">
+  <table class="in_table_properties">
+    <caption>{{property_group}} properties</caption>
+    {% for property, property_value in property_group_value.items %}
+      {% include "search_in_database/base/numeric_property_row.html" with header_cell=property prop_value=property_value.value prop_unit=property_value.unit property_type=property_group %}
+    {% endfor %}
+  </table>
+</div>

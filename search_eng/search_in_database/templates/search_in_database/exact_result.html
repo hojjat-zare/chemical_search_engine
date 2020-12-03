@@ -1,0 +1,19 @@
+{% extends "search_in_database/base/base_result.html" %}
+{% load static %}
+{% block main %}
+  {# {{ block.super }} #}
+  <div class="svg_container">
+    <svg class="for_test">
+
+    </svg>
+  </div>
+
+{% endblock main %}
+
+{% block scripts %}
+  <script type="text/javascript">
+    None = 'none';
+    results = {{results|safe|default_if_none:''}}
+  </script>
+  <script type="text/javascript" src={% static "search_in_database/js/data_tree.js" %}></script>
+{% endblock scripts %}

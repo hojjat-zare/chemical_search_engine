@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <title>{% block title %}{% endblock title %}</title>
+    <link rel="stylesheet" href={% static "search_in_database/css/base.css" %}>
+    {% block more_styles %}{% endblock more_styles %}
+    {% block initial_scripts %}{% endblock initial_scripts %}
+  </head>
+
+  <body>
+    <header>
+      {% block header %}{% endblock header %}
+    </header>
+
+    <div class="content">
+      <main>
+        {% block main %}{% endblock main %}
+      </main>
+        {% block nav_tag %}{% endblock nav_tag %}
+    </div>
+
+    <footer>
+      {% block footer %}{% endblock footer %}
+    </footer>
+    {% block scripts %}{% endblock scripts %}
+  </body>
+</html>
