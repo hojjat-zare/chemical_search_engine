@@ -13,9 +13,12 @@
       {% block header %}{% endblock header %}
     </header>
 
-    <main>
-      {% block main %}{% endblock main %}
-    </main>
+    <div class="content">
+      <main>
+        {% block main %}{% endblock main %}
+      </main>
+        {% block nav_tag %}{% endblock nav_tag %}
+    </div>
 
     <footer>
       {% block footer %}{% endblock footer %}

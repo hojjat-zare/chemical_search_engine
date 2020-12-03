@@ -58,7 +58,6 @@ function modify_result(single_result){
 }
 
 data = modify_result(results[0]);
-console.log(data);
 
 function draw() {
 
@@ -114,7 +113,7 @@ function draw() {
 
     const transition = svg.transition()
         .duration(duration)
-        .attr("viewBox", [-margin.left, left.x - margin.top- height/10, width*6, height*1.4])
+        .attr("viewBox", [-margin.left, left.x - margin.top- height/10, width*5, height*1.4])
         .tween("resize", window.ResizeObserver ? null : () => () => svg.dispatch("toggle"));
 
     // Update the nodes…

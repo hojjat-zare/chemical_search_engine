@@ -2,10 +2,10 @@
 <tr>
   <th>{{header_cell|cut:'_'}}</th>
   <td>
-    {% autoescape off %}
+    {# {% autoescape off %} #}
       {% if prop_value|length > 1 %}
-        [
-          {% if property_type == 'entity' %}
+        [{% if property_type == 'link' %}
+            {{prop_value.entity_name}}
             {% for index in prop_value %}
               <a href="{% url 'search_in_database:exact_entity' index.entity_name %}">{{index.entity_name|default_if_none:''|cut:'_'}}</a>
             {% endfor %}
@@ -13,16 +13,15 @@
             {% for index in prop_value %}
               {{index|default_if_none:''|cut:'_'}}
             {% endfor %}
-          {% endif %}
-        ]
+          {% endif %}]
       {% else %}
-        {% if property_type == 'entity' %}
+        {% if property_type == 'link' %}
           <a href="{% url 'search_in_database:exact_entity' prop_value.0.entity_name %}">{{prop_value.0.entity_name|default_if_none:''|cut:'_'}}</a>
         {% else %}
           {{prop_value.0|default_if_none:''|cut:'_'}}
         {% endif %}
       {% endif %}
-    {% endautoescape %}
+    {# {% endautoescape %} #}
   </td>
   <td>
     {{prop_unit|default_if_none:''}}

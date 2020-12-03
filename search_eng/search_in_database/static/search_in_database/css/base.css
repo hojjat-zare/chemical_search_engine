@@ -1,9 +1,68 @@
 
 /* special styles */
 
-.table_container, .none_numeric_prop_container {
+.nav_tag a:nth-child(odd){
+  background-color: #d6d7d9;
+}
+
+.nav_tag a{
+  font-size: 20px;
+  color: black;
+}
+
+#right_logo{
+  background-image: url("images/logo_ref=learn.stanford.edu.jpg");
+  width: 250px;
+  height: 150px;
+  background-size:cover;
+  background-repeat:no-repeat;
+  background-position: center center;
+}
+
+#logo{
+  font-size: 45px;
+}
+
+#logo, #right_logo{
+  height: 150px;
+  width: 100%;
+  font: Arial;
+  font-weight: bold;
+  text-align: center;
+  top: 0px;
+  width: 100%;
+  z-index: 1;
+}
+
+#logo, .nav_tag{
+  background-color: #f1f1f1;
+}
+
+
+.nav_tag{
+  position: fixed;
+  width: 250px;
+  height: 100%;
+  right: 0px;
+  top: 0px;
+}
+
+.table_container {
   display: inline-block;
   margin-left: 15%;
+}
+
+.result_header{
+  margin-left: 2%;
+}
+
+.none_numeric_prop_container{
+  display: block;
+  margin-left: 15%;
+}
+
+.string_result{
+  margin-left:15px;
 }
 
 caption{
@@ -13,7 +72,8 @@ caption{
   display: inline-block;
 }
 .result {
-  border-bottom: 2px solid black;
+  border-bottom : 2px solid black;
+  padding-right: 300px;
 }
 
 body {
@@ -27,9 +87,13 @@ body {
 
 
 /* LINKS */
+a{
+  display: block;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
 
 a:link, a:visited {
-    color: #447e9b;
     text-decoration: none;
 }
 

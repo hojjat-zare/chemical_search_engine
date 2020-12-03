@@ -19,6 +19,8 @@ def search_result(request):
 
 def exact_entity(request,entity_mainname):
     results = get_result_for_entity(entity_mainname)
+    # a = get_result_for_entity(">C=O (none-ring)")
+    # breakpoint()
     return render(request,'search_in_database/search_result.html',{'results':results})
 
 def exact_entity_tree_mode(request,entity_mainname):

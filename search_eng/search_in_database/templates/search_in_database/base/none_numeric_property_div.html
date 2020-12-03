@@ -2,11 +2,15 @@
 <div class="none_numeric_prop_container">
   {% autoescape off %}
     {% if property_type == 'string' %}
-        <h3>{{header_cell|cut:'_'}}</h3>
-        <p>{{prop_value.0}}</p>
+      <h3>{{header_cell|cut:'_'}}</h3>
+      {% for paragraph in prop_value %}
+        <p class="string_result">{{paragraph}}</p>
+      {% endfor %}
     {% else %}
       <h3>{{header_cell|cut:'_'}}</h3>
-      {{prop_value.0}}
+      {% for blob_file in prop_value %}
+        {{blob_file}}
+      {% endfor %}
     {% endif %}
   {% endautoescape %}
 </div>

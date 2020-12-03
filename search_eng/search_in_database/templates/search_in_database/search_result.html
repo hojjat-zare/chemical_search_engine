@@ -3,26 +3,37 @@
 {% block main %}
   {% for result in results %}
     <div class="result">
-      <h2><a href="{% url 'search_in_database:exact_entity_tree_mode' result.entity_name %}">{{result.entity_name|cut:'_'}}</a></h2>
+      {% if result.type == 'property_of_instance' %}
+        <h2 class="result_header"><a href="{% url 'search_in_database:exact_entity' result.entity_name %}">{{result.entity_name|cut:'_'}}</a></h2>
+      {% else %}
+        <h2 class="result_header"><a href="{% url 'search_in_database:exact_entity_tree_mode' result.entity_name %}">{{result.entity_name|cut:'_'}}</a></h2>
+      {% endif %}
+      {% if result.data.numeric %}
+        {% include "search_in_database/base/numeric_property_table.html" with property_group="numeric" property_group_value=result.data.numeric %}
+      {% endif %}
+      {% if result.data.entity %}
+        {% include "search_in_database/base/numeric_property_table.html" with property_group="link" property_group_value=result.data.entity %}
+      {% endif %}
       {% for property_group, property_group_value in result.data.items %}
         {% if property_group_value %}
-          {% if not property_group in 'numeric-entity' %}
+          {% if property_group in 'string-blob' %}
             {% for property, property_value in property_group_value.items %}
-              {% include "search_in_database/base/none_numeric_property_div.html" with header_cell=property prop_value=property_value.value %}
+              {% include "search_in_database/base/none_numeric_property_div.html" with header_cell=property prop_value=property_value.value prop_unit=property_value.unit property_type=property_group %}
             {% endfor %}
-          {% else %}
-            <div class="table_container">
-              <table class="in_table_properties">
-                <caption>{{property_group}} properties</caption>
-                {% for property, property_value in property_group_value.items %}
-                  {% include "search_in_database/base/numeric_property_row.html" with header_cell=property prop_value=property_value.value prop_unit=property_value.unit property_type=property_group %}
-                {% endfor %}
-              </table>
-            </div>
           {% endif %}
         {% endif %}
       {% endfor %}
     </div>
   {% endfor %}
-  <a href="{% url 'search_in_database:crawler_form' %}">search in web</a>
 {% endblock main %}
+
+
+{% block nav_tag %}
+<div class="nav_container">
+  <div class="nav_tag">
+    <div id="right_logo"></div>
+    <a href={% url 'search_in_database:index' %}>back to main page</a>
+    <a href={% url 'search_in_database:crawler_form' %}>crawl wikipedia</a>
+  </div>
+</div>
+{% endblock nav_tag %}
