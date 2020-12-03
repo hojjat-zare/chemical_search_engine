@@ -200,8 +200,8 @@ class DatabaseConnection:
             cur.execute('insert into ENTITIESRELATEDPHRASES (ENTID,PHRASEID,DROWID) values(?,?,?);',
                         (_user_search_entity, phrase_id, drowid))
 
-        cur.execute('select gen_id(SEARCHS_SEARCHID_GEN, 1)from rdb$database;')
-        searchid = cur.fetchone()[0]
+        # cur.execute('select gen_id(SEARCHS_SEARCHID_GEN, 1)from rdb$database;')
+        searchid = hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
         cur.execute('insert into SEARCHS (SEARCHID,ENT_PHRASEID,REFERENCE_ADDRESS,SEARCH_TIME) values(?,?,?,?);',
                     (searchid, drowid, refrence, datetime.datetime.now()))
         # print(searchid)
