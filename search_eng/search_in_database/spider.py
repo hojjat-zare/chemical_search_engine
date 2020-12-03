@@ -57,7 +57,7 @@ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 
 def get_target_words():
-    return ['boiling&point', 'vapor', 'reaction', 'chemical&formul', "melting&point", 'molar', 'weight', 'mass']
+    return []
 
 
 def check_url(url):
@@ -83,10 +83,12 @@ def get_from_wikipedia_manual():
     #input("you want to search for " + suggestions[search_result_number - 1])
     # words that we are looking for
     # here we can get it from database
+    search_id = sys.argv[2]
     words = get_target_words()
-    words += sys.argv[2:]
+    words += sys.argv[3:]
+    words += search_word
     #words += input("Enter any words split theme by '/' : ").split(sep="/")
-    cb_kwargs = {"target_words": words, "main": suggestions[search_result_number - 1]}
+    cb_kwargs = {"target_words": words, "main": suggestions[search_result_number - 1], "search_id":search_id}
     result = {
         "url": url,
         "cb_kwargs": cb_kwargs
@@ -119,6 +121,7 @@ class Detector(scrapy.Spider):
         print('request:', response.request)
         print('lang:', ResponseController.get_languages(response)['page'])
         words = response.cb_kwargs['target_words']
+        search_id = response.cb_kwargs['search_id']
         # main_word = response.cb_kwargs['main']
         # keywords are words which the page marked them as keywords such as meta tags and h1,2,3,..,6
         keywords = ResponseController.get_key_words(response)
@@ -139,7 +142,7 @@ class Detector(scrapy.Spider):
 
             # words_and_useful_tags_dict = ResponseController.get_useful_tags(response, words)
             DatabaseConnection.save_useful_tags(words_and_useful_tags_dict, main_word=response.cb_kwargs['main'],
-                                                refrence=response.request)  # we have to get ent id from the database
+                                                refrence=response.request, search_id=search_id)  # we have to get ent id from the database
             for word in words_and_useful_tags_dict:
                 print(word, words_and_useful_tags_dict[word]["word_point"])
 
@@ -173,7 +176,7 @@ class DatabaseConnection:
 
 
     @staticmethod
-    def store_result(user_input_phrase_for_search, found_result, mimetype, refrence):
+    def store_result(user_input_phrase_for_search, found_result, mimetype, refrence, searchid):
         con = fdb.connect(dsn=DatabaseConnection.DATA_BASE_DIR, user='SYSDBA',
                           password='masterkey')
         cur = con.cursor()
@@ -201,7 +204,7 @@ class DatabaseConnection:
                         (_user_search_entity, phrase_id, drowid))
 
         # cur.execute('select gen_id(SEARCHS_SEARCHID_GEN, 1)from rdb$database;')
-        searchid = hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+
         cur.execute('insert into SEARCHS (SEARCHID,ENT_PHRASEID,REFERENCE_ADDRESS,SEARCH_TIME) values(?,?,?,?);',
                     (searchid, drowid, refrence, datetime.datetime.now()))
         # print(searchid)
@@ -215,7 +218,7 @@ class DatabaseConnection:
 
         con.commit()
     @staticmethod
-    def save_useful_tags(words_and_useful_tags_dict, main_word, refrence):  # refrence must be added
+    def save_useful_tags(words_and_useful_tags_dict, main_word, refrence, search_id):  # refrence must be added
         final_body = ""
         for word in words_and_useful_tags_dict:
             title = "<h2>{}</h2>".format(word)
@@ -223,7 +226,7 @@ class DatabaseConnection:
             string_tags = title + "<br>".join(tags_of_this_word)
             final_body += string_tags
         final_body = final_body
-        DatabaseConnection.store_result(main_word, final_body, 'text/html', refrence)
+        DatabaseConnection.store_result(main_word, final_body, 'text/html', refrence, search_id)
 
 
 

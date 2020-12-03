@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.http import HttpResponse
 from django.urls import reverse
 from .models import *
+from .spider import DatabaseConnection
 from .tools import SentenceRelatedEntities,AllPropertiesOfEntity,PropertyOfEntity,get_result_for_search, get_result_for_entity
 from .scraping import Search_methods
 import fdb
