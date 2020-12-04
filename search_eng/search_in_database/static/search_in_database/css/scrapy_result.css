@@ -1,0 +1,15 @@
+a{
+  display: inline;
+}
+
+.nav_tag a{
+  display: block;
+}
+
+.result{
+  padding-left:7px;
+}
+
+b{
+  font-size: 11px;
+}

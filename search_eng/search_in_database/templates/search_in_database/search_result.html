@@ -26,14 +26,3 @@
     </div>
   {% endfor %}
 {% endblock main %}
-
-
-{% block nav_tag %}
-<div class="nav_container">
-  <div class="nav_tag">
-    <div id="right_logo"></div>
-    <a href={% url 'search_in_database:index' %}>back to main page</a>
-    <a href={% url 'search_in_database:crawler_form' %}>crawl wikipedia</a>
-  </div>
-</div>
-{% endblock nav_tag %}

@@ -42,7 +42,7 @@ def get_scrapy_search(request):
     blob_results = Results.objects.filter(searchid=search_id).order_by('resultid')
     results = []
     for blob in blob_results:
-        results.append(blob.blob_value())
+        results.append(blob.blob_value('auto','auto'))
     return render(request,'search_in_database/scrapy_result.html',{'results':results})
 
 def crawler_form(request):

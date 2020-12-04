@@ -162,9 +162,9 @@ class EntsBlobPropsValues(models.Model):
                     b64encode(self.dvalue.read()).decode('utf8'), width, height))
         elif('text' in self.mimetype):
             if(isinstance(self.result,fdb.fbcore.BlobReader)):
-                return('<pre><p>{}</p></pre>'.format(str(self.result.read().decode('utf-8'))))
+                return('{}'.format(str(self.result.read().decode('utf-8'))))
             else:
-                return('<pre><p>{}</p></pre>'.format(str(self.result.decode('utf-8'))))
+                return('{}'.format(str(self.result.decode('utf-8'))))
         else:
             return None
 
@@ -397,9 +397,9 @@ class Results(models.Model):
         elif('text' in self.mimetype):
             # breakpoint()
             if(isinstance(self.result,fdb.fbcore.BlobReader)):
-                return('<pre><p>{}</p></pre>'.format(str(self.result.read().decode('utf-8'))))
+                return('{}'.format(str(self.result.read().decode('utf-8'))))
             else:
-                return('<pre><p>{}</p></pre>'.format(str(self.result.decode('utf-8'))))
+                return('{}'.format(str(self.result.decode('utf-8'))))
         else:
             return None
 

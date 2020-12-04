@@ -1,0 +1,59 @@
+
+/* special styles */
+
+.nav_tag a:nth-child(odd){
+  background-color: #d6d7d9;
+}
+
+.nav_tag a{
+  font-size: 20px;
+  color: black;
+}
+
+#right_logo{
+  background-image: url("images/logo_ref=learn.stanford.edu.jpg");
+  width: 250px;
+  height: 150px;
+  background-size:cover;
+  background-repeat:no-repeat;
+  background-position: center center;
+}
+
+
+.nav_tag{
+  position: fixed;
+  width: 250px;
+  height: 100%;
+  right: 0px;
+  top: 0px;
+  background-color: #f1f1f1;
+}
+
+.table_container {
+  display: inline-block;
+  margin-left: 15%;
+}
+
+.result_header{
+  margin-left: 2%;
+}
+
+.none_numeric_prop_container{
+  display: block;
+  margin-left: 15%;
+}
+
+.string_result{
+  margin-left:15px;
+}
+
+caption{
+  border-bottom:1px solid black;
+}
+.in_table_properties{
+  display: inline-block;
+}
+.result {
+  border-bottom : 2px solid black;
+  padding-right: 255px;
+}
