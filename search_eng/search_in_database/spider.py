@@ -83,7 +83,7 @@ def get_from_wikipedia_manual():
     #input("you want to search for " + suggestions[search_result_number - 1])
     # words that we are looking for
     # here we can get it from database
-    search_id = sys.argv[2]
+    search_id = int(sys.argv[2])
     words = get_target_words()
     words += sys.argv[3:]
     words += search_word
