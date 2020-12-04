@@ -13,6 +13,7 @@ import pprint
 import re
 from time import sleep, time
 
+
 ############ tasks ###############
 # todo:languages and translating
 ############ tasks ###############
@@ -86,7 +87,7 @@ def get_from_wikipedia_manual():
     search_id = int(sys.argv[2])
     words = get_target_words()
     words += sys.argv[3:]
-    words += search_word
+    # words += search_word
     # words += input("Enter any words split theme by '/' : ").split(sep="/")
     cb_kwargs = {"target_words": words, "main": suggestions[search_result_number - 1], "search_id": search_id}
     result = {
@@ -158,16 +159,17 @@ class Detector(scrapy.Spider):
             "images": 1,
             "pdf": 2
         }
-        for section in sections:
-            # download images:
-            # get the tables:
-            # get the pdf
-            result = input("do you want to have {}? if yes Enter 1\n".format(section))
-            if result == "1":
-                if sections[section] == 1:
-                    DatabaseConnection.download_save_img_to_db(response)
-                elif sections[section] == 2:
-                    pass  # download pdf
+        DatabaseConnection.download_save_img_to_db(response)
+        # for section in sections:
+        #     # download images:
+        #     # get the tables:
+        #     # get the pdf
+        #     result = input("do you want to have {}? if yes Enter 1\n".format(section))
+        #     if result == "1":
+        #         if sections[section] == 1:
+        #             DatabaseConnection.download_save_img_to_db(response)
+        #         elif sections[section] == 2:
+        #             pass  # download pdf
 
         logging.critical(spider_finished)
 
@@ -176,11 +178,10 @@ class DatabaseConnection:
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     DATA_BASE_DIR = os.path.join(BASE_DIR,
                                  "SEDB.FDB")  # todo: we have to fix database directory using such this code os.path.join(BASE_DIR, "spamer", "spiders", "DB", "SEDB.FDB")
-
+    is_search_stored = False;
     @staticmethod
     def store_result(user_input_phrase_for_search, found_result, mimetype, refrence, searchid):
-        con = fdb.connect(dsn=DatabaseConnection.DATA_BASE_DIR, user='SYSDBA',
-                          password='masterkey')
+        con = fdb.connect(dsn=DatabaseConnection.DATA_BASE_DIR, user='SYSDBA',password='masterkey')
         cur = con.cursor()
         is_result_string = isinstance(found_result, str)
 
@@ -206,9 +207,10 @@ class DatabaseConnection:
                         (_user_search_entity, phrase_id, drowid))
 
         # cur.execute('select gen_id(SEARCHS_SEARCHID_GEN, 1)from rdb$database;')
-
-        cur.execute('insert into SEARCHS (SEARCHID,ENT_PHRASEID,REFERENCE_ADDRESS,SEARCH_TIME) values(?,?,?,?);',
-                    (searchid, drowid, refrence, datetime.datetime.now()))
+        if(not DatabaseConnection.is_search_stored):
+            cur.execute('insert into SEARCHS (SEARCHID,ENT_PHRASEID,REFERENCE_ADDRESS,SEARCH_TIME) values(?,?,?,?);',
+                        (searchid, drowid, refrence, datetime.datetime.now()))
+            DatabaseConnection.is_search_stored = True
         # print(searchid)
         print(is_result_string)
         if (is_result_string):
@@ -216,7 +218,7 @@ class DatabaseConnection:
                         (searchid, found_result.encode(encoding='utf8', errors='ignore'), mimetype))
         else:  # is image
             cur.execute("insert into RESULTS (SEARCHID,RESULT,MIMETYPE) values (?,?,?);",
-                        (searchid, found_result.read(), mimetype))
+                        (searchid, found_result, mimetype))
 
         con.commit()
 
@@ -242,10 +244,6 @@ class DatabaseConnection:
         user_input_phrase_for_search = main_word
         searched_words = response.cb_kwargs['target_words']
         searchid = response.cb_kwargs['search_id']
-
-        con = fdb.connect(dsn=DatabaseConnection.DATA_BASE_DIR, user='SYSDBA',
-                          password='masterkey')
-        cur = con.cursor()
 
         img_directory_path = os.path.join(DatabaseConnection.BASE_DIR, "images")
         bad_imgs_lines = open(img_directory_path + "\\bad.txt", "r")
@@ -291,48 +289,8 @@ class DatabaseConnection:
                     content = img_file.read()
                     img_file.close()
                     found_result = content
-                    is_result_string = isinstance(found_result, str)
-                    # breakpoint()
-
-                    cur.execute('select PHRASEID from EXISTING_PHRASES where PHRASESTRING=?;',
-                                (user_input_phrase_for_search,))
-                    phrase_id = cur.fetchone()  # 0 false  1 true
-                    if (phrase_id != None):
-                        phrase_id = phrase_id[0]
-                    else:
-                        cur.execute('select gen_id(EXISTING_PHRASES_PHRASEID_GEN, 1) from rdb$database;')
-                        phrase_id = cur.fetchone()[0]
-                        cur.execute('insert into EXISTING_PHRASES (PHRASEID,PHRASESTRING,LANGID) values(?,?,?);',
-                                    (phrase_id, user_input_phrase_for_search, 0))
-
-                    cur.execute('select DROWID from ENTITIESRELATEDPHRASES where (PHRASEID=? and ENTID=?);',
-                                (phrase_id, _user_search_entity))
-                    drowid = cur.fetchone()
-                    if (drowid != None):
-                        drowid = drowid[0]
-                    else:
-                        cur.execute('select gen_id(ENTSRELATEDPHRAS_ROWID_GEN, 1)from rdb$database;')
-                        drowid = cur.fetchone()[0]
-                        cur.execute('insert into ENTITIESRELATEDPHRASES (ENTID,PHRASEID,DROWID) values(?,?,?);',
-                                    (_user_search_entity, phrase_id, drowid))
-
-                    # cur.execute('select gen_id(SEARCHS_SEARCHID_GEN, 1)from rdb$database;')
-
-                    cur.execute(
-                        'insert into SEARCHS (SEARCHID,ENT_PHRASEID,REFERENCE_ADDRESS,SEARCH_TIME) values(?,?,?,?);',
-                        (searchid, drowid, refrence, datetime.datetime.now()))
-                    # print(searchid)
-                    print(is_result_string)
-                    if (is_result_string):
-                        cur.execute("insert into RESULTS (SEARCHID,RESULT,MIMETYPE) values (?,?,?);",
-                                    (searchid, found_result.encode(encoding='utf8', errors='ignore'), mimetype))
-                    else:  # is image
-                        cur.execute("insert into RESULTS (SEARCHID,RESULT,MIMETYPE) values (?,?,?);",
-                                    (searchid, found_result.read(), mimetype))
-
+                    DatabaseConnection.store_result(main_word, found_result, mimetype, refrence, searchid)
         bad_imgs2.close()
-        # print(cur.fetchall())
-        con.commit()
 
 
 class ResponseController:
@@ -709,7 +667,7 @@ class ResponseController:
         logging.debug(message)
         logging.debug(next_tags_message)
         sleep(unit_time)
-        input()
+        # input()
 
     @staticmethod
     def two_chars_search(target_string, word):
