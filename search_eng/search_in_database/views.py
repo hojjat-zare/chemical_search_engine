@@ -35,9 +35,15 @@ def get_scrapy_search(request):
     cur.execute('select gen_id(SEARCHS_SEARCHID_GEN, 1)from rdb$database;')
     search_id = cur.fetchone()[0];
     words_to_search = request.GET['properties']
+    words_to_search=words_to_search.replace('-','&&')
     path = os.path.join(BASE_DIR, 'search_in_database')
-    os.system("cd " + path + " && " + "python spider.py {}".format("methane " + str(search_id) + " boiling&&point"))
-    return HttpResponse('/scrapyResponse/') # here we have to use rendering
+    inputs = "python spider.py {} {} {}".format(phrase , str(search_id) , words_to_search)
+    os.system("cd " + path + " && " + inputs)
+    blob_results = Results.objects.filter(searchid=search_id).order_by('resultid')
+    results = []
+    for blob in blob_results:
+        results.append(blob.blob_value())
+    return render(request,'search_in_database/scrapy_result.html',{'results':results})
 
 def crawler_form(request):
     return render(request,'search_in_database/crawler_form.html')

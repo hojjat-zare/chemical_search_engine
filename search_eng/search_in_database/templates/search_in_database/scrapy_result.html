@@ -1,0 +1,10 @@
+{% extends "search_in_database/base/base_result.html" %}
+{% load static %}
+
+{% block main %}
+  {% autoescape off %}
+    {% for result in results %}
+        {{result}}
+    {% endfor %}
+  {% endautoescape %}
+{% endblock main %}

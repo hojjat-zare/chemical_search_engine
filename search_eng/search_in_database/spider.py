@@ -135,25 +135,25 @@ class Detector(scrapy.Spider):
         for key in headers:
             print(key, ":", headers[key])
 
-        is_page_valid = ResponseController.is_page_valid_for_these_words(response, words)
+        # is_page_valid = ResponseController.is_page_valid_for_these_words(response, words)
 
-        if is_page_valid:
-            start_time = time()
-            words_and_useful_tags_dict = ResponseController.get_useful_tag2(response, words, ignore_case=True)
+        # if is_page_valid:
+        start_time = time()
+        words_and_useful_tags_dict = ResponseController.get_useful_tag2(response, words, ignore_case=True)
 
-            # words_and_useful_tags_dict = ResponseController.get_useful_tags(response, words)
-            DatabaseConnection.save_useful_tags(words_and_useful_tags_dict, main_word=response.cb_kwargs['main'],
-                                                refrence=response.request,
-                                                search_id=search_id)  # we have to get ent id from the database
-            for word in words_and_useful_tags_dict:
-                print(word, words_and_useful_tags_dict[word]["word_point"])
+        # words_and_useful_tags_dict = ResponseController.get_useful_tags(response, words)
+        DatabaseConnection.save_useful_tags(words_and_useful_tags_dict, main_word=response.cb_kwargs['main'],
+                                            refrence=response.request,
+                                            search_id=search_id)  # we have to get ent id from the database
+        for word in words_and_useful_tags_dict:
+            print(word, words_and_useful_tags_dict[word]["word_point"])
 
-            pretty_str = str(pprint.pformat(words_and_useful_tags_dict))
-            logging.debug("\n" + pretty_str)
-            print("--- %s seconds ---" % (time() - start_time))
+        pretty_str = str(pprint.pformat(words_and_useful_tags_dict))
+        logging.debug("\n" + pretty_str)
+        print("--- %s seconds ---" % (time() - start_time))
 
-        else:
-            logging.critical(invalid_page_message)
+        # else:
+        # logging.critical(invalid_page_message)
 
         sections = {
             "images": 1,
