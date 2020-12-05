@@ -8,6 +8,7 @@ from .tools import SentenceRelatedEntities, AllPropertiesOfEntity, PropertyOfEnt
     get_result_for_entity
 from .scraping import Search_methods
 import fdb
+from time import time
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_BASE_DIR = os.path.join(BASE_DIR, "SEDB.FDB")
@@ -35,6 +36,7 @@ def exact_entity_tree_mode(request, entity_mainname):
 
 
 def get_scrapy_search(request):
+    t1 = time()
     phrase = request.GET['entity']
     phrase = phrase.replace(" ", "#")
     do_download_images = request.GET['do_download_images']  ################################# add this setting to spider
@@ -53,11 +55,12 @@ def get_scrapy_search(request):
     path = os.path.join(BASE_DIR, 'search_in_database')
     inputs = "python spider.py {} {} {} {}".format(phrase, str(search_id), str(do_download_images), WTS)
     os.system("cd " + path + " && " + inputs)
-    print(do_download_images)
     blob_results = Results.objects.filter(searchid=search_id).order_by('resultid')
     results = []
     for blob in blob_results:
         results.append(blob.blob_value('auto', 'auto'))
+    t2 = time()
+    print("it takes about: ", t2 - t1, "seconds")
     return render(request, 'search_in_database/scrapy_result.html', {'results': results})
 
 

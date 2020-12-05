@@ -200,7 +200,7 @@ class ObjectRelatedString:
         self._find_properties()
 
 
-    def _find_entities():
+    def _find_entities(self):
         pass
 
     def _find_alternate_names(self):
