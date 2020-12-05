@@ -13,7 +13,6 @@ import pprint
 import re
 from time import sleep, time
 
-
 ############ tasks ###############
 # todo:languages and translating
 ############ tasks ###############
@@ -66,7 +65,7 @@ def check_url(url):
 
 
 def get_from_wikipedia_manual():
-    search_word = sys.argv[1]
+    search_word = sys.argv[1].replace("#", " ")
     limits = 5
     response = requests.get(
         "https://en.wikipedia.org/w/api.php?action=opensearch&search={}&limit={}&namespace=0&format=json".format(
@@ -74,22 +73,16 @@ def get_from_wikipedia_manual():
     response2 = response.json()
     suggestions = response2[1]
     suggestion_urls = response2[3]
-    if len(suggestions) == len(suggestion_urls):
-        for i in range(len(suggestion_urls)):
-            print(i + 1, ":", suggestions[i])
-            print(suggestion_urls[i])
     search_result_number = 1  # nt(input("Enter the number: "))
     url = suggestion_urls[search_result_number - 1]
-    print(url)
-    # input("you want to search for " + suggestions[search_result_number - 1])
-    # words that we are looking for
-    # here we can get it from database
+
     search_id = int(sys.argv[2])
+    do_download_imgs = bool(sys.argv[3])
     words = get_target_words()
-    words += sys.argv[3:]
-    # words += search_word
-    # words += input("Enter any words split theme by '/' : ").split(sep="/")
-    cb_kwargs = {"target_words": words, "main": suggestions[search_result_number - 1], "search_id": search_id}
+    words += sys.argv[4:]
+    words = [word.replace("#", " ") for word in words]
+    words = [word.replace('-', '&') for word in words]
+    cb_kwargs = {"target_words": words, "main": suggestions[search_result_number - 1], "search_id": search_id, "img_dl":do_download_imgs}
     result = {
         "url": url,
         "cb_kwargs": cb_kwargs
@@ -97,13 +90,6 @@ def get_from_wikipedia_manual():
     return result
 
 
-# html = """
-# <body>
-# <p> boiling point </p>
-# </body>
-# """
-# resp = Selector(text=html, type="html")
-# Selector.xpath()
 class Detector(scrapy.Spider):
     name = 'detector'
 
@@ -117,23 +103,22 @@ class Detector(scrapy.Spider):
         yield scrapy.Request(url=url, callback=self.parse, cb_kwargs=cb_kwargs)
 
     def parse(self, response, **kwargs):
-
         logging.critical(start_spider_message)
-        print('request:', response.request)
-        print('lang:', ResponseController.get_languages(response)['page'])
         words = response.cb_kwargs['target_words']
         search_id = response.cb_kwargs['search_id']
+        do_download_images = response.cb_kwargs['img_dl']
+
         # main_word = response.cb_kwargs['main']
         # keywords are words which the page marked them as keywords such as meta tags and h1,2,3,..,6
-        keywords = ResponseController.get_key_words(response)
-        title = keywords.get("title")
-        print("title:", title)
-        key_words = keywords.get("keywords")
-        print("key words: ", key_words)
-        headers = keywords.get('headers')
+        # keywords = ResponseController.get_key_words(response)
+        # title = keywords.get("title")
+        # print("title:", title)
+        # key_words = keywords.get("keywords")
+        # print("key words: ", key_words)
+        # headers = keywords.get('headers')
         # showing h1 to h6
-        for key in headers:
-            print(key, ":", headers[key])
+        # for key in headers:
+        #   print(key, ":", headers[key])
 
         # is_page_valid = ResponseController.is_page_valid_for_these_words(response, words)
 
@@ -141,25 +126,15 @@ class Detector(scrapy.Spider):
         start_time = time()
         words_and_useful_tags_dict = ResponseController.get_useful_tag2(response, words, ignore_case=True)
 
-        # words_and_useful_tags_dict = ResponseController.get_useful_tags(response, words)
         DatabaseConnection.save_useful_tags(words_and_useful_tags_dict, main_word=response.cb_kwargs['main'],
                                             refrence=response.request,
                                             search_id=search_id)  # we have to get ent id from the database
-        for word in words_and_useful_tags_dict:
-            print(word, words_and_useful_tags_dict[word]["word_point"])
-
-        pretty_str = str(pprint.pformat(words_and_useful_tags_dict))
-        logging.debug("\n" + pretty_str)
         print("--- %s seconds ---" % (time() - start_time))
 
         # else:
         # logging.critical(invalid_page_message)
-
-        sections = {
-            "images": 1,
-            "pdf": 2
-        }
-        DatabaseConnection.download_save_img_to_db(response)
+        if do_download_images:
+            DatabaseConnection.download_save_img_to_db(response)
         # for section in sections:
         #     # download images:
         #     # get the tables:
@@ -177,11 +152,12 @@ class Detector(scrapy.Spider):
 class DatabaseConnection:
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     DATA_BASE_DIR = os.path.join(BASE_DIR,
-                                 "SEDB.FDB")  # todo: we have to fix database directory using such this code os.path.join(BASE_DIR, "spamer", "spiders", "DB", "SEDB.FDB")
+                                 "SEDB.FDB")
     is_search_stored = False;
+
     @staticmethod
     def store_result(user_input_phrase_for_search, found_result, mimetype, refrence, searchid):
-        con = fdb.connect(dsn=DatabaseConnection.DATA_BASE_DIR, user='SYSDBA',password='masterkey')
+        con = fdb.connect(dsn=DatabaseConnection.DATA_BASE_DIR, user='SYSDBA', password='masterkey')
         cur = con.cursor()
         is_result_string = isinstance(found_result, str)
 
@@ -207,7 +183,7 @@ class DatabaseConnection:
                         (_user_search_entity, phrase_id, drowid))
 
         # cur.execute('select gen_id(SEARCHS_SEARCHID_GEN, 1)from rdb$database;')
-        if(not DatabaseConnection.is_search_stored):
+        if (not DatabaseConnection.is_search_stored):
             cur.execute('insert into SEARCHS (SEARCHID,ENT_PHRASEID,REFERENCE_ADDRESS,SEARCH_TIME) values(?,?,?,?);',
                         (searchid, drowid, refrence, datetime.datetime.now()))
             DatabaseConnection.is_search_stored = True
@@ -241,7 +217,6 @@ class DatabaseConnection:
     def download_save_img_to_db(response):
         refrence = response.request
         main_word = response.cb_kwargs['main']
-        user_input_phrase_for_search = main_word
         searched_words = response.cb_kwargs['target_words']
         searchid = response.cb_kwargs['search_id']
 
@@ -251,18 +226,14 @@ class DatabaseConnection:
         bad_urls = [urls.strip() for urls in bad_urls]
         bad_imgs_lines.close()
 
-        bad_imgs2 = open(img_directory_path + "bad.txt", "a")
+        bad_imgs2 = open(img_directory_path + "\\bad.txt", "a")
         imgs = ResponseController.get_images(response)
         for i in range(len(imgs)):
             img = imgs[i]
             is_bad = True
             src = img['src']
             img_format = img['format']
-            if src in bad_urls:
-                print("it is in bad databases")
-                print("///////////////////" + src + "///////////////")
-            else:
-                print(src)
+            if src not in bad_urls:
                 if bool(re.search(main_word, src, flags=re.RegexFlag.IGNORECASE)):
                     is_bad = False
                 else:
@@ -273,19 +244,16 @@ class DatabaseConnection:
                                 is_bad = False
                                 break
                         break
-                # this part of commented code is about manual adding bad images
-                # if is_bad:
-                #    is_bad = bool(input("is it bad so enter 1"))
                 if is_bad:
                     bad_imgs2.write(src + "\n")
                 else:
                     mimetype = "image/" + img_format
                     res = requests.get(img['src'])
-                    img_file = open(img_directory_path + "{}_{}.{}".format(main_word, i, img_format), "wb")
+                    img_file = open(img_directory_path + "\\{}_{}.{}".format(main_word, i, img_format), "wb")
                     img_file.write(res.content)
                     img_file.close()
 
-                    img_file = open(img_directory_path + "{}_{}.{}".format(main_word, i, img_format), "rb")
+                    img_file = open(img_directory_path + "\\{}_{}.{}".format(main_word, i, img_format), "rb")
                     content = img_file.read()
                     img_file.close()
                     found_result = content
@@ -844,8 +812,7 @@ class ResponseController:
                 if condition_done >= number_of_conditions:
                     words_dic[word]["word_point"] += 1
                     words_dic[word]["useful_tags"].append(tag.xpath('.').get())
-                    print(name, word, number_of_conditions, condition_done, final_text, sep="//",
-                          end="\n*******************************************************\n")
+
         # all_tables = ResponseController.get_all_tables(response)
         #
         # words_dic["all_tables"] = {"useful_tags": all_tables, "word_point":len(all_tables)}
