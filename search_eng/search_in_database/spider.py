@@ -217,7 +217,6 @@ class DatabaseConnection:
     def download_save_img_to_db(response):
         refrence = response.request
         main_word = response.cb_kwargs['main']
-        searched_words = response.cb_kwargs['target_words']
         searchid = response.cb_kwargs['search_id']
 
         img_directory_path = os.path.join(DatabaseConnection.BASE_DIR, "images")
@@ -226,41 +225,26 @@ class DatabaseConnection:
         bad_urls = [urls.strip() for urls in bad_urls]
         bad_imgs_lines.close()
 
-        bad_imgs2 = open(img_directory_path + "\\bad.txt", "a")
         imgs = ResponseController.get_images(response)
         for i in range(len(imgs)):
             img = imgs[i]
-            is_bad = True
             src = img['src']
             img_format = img['format']
             if src not in bad_urls:
-                if bool(re.search(main_word, src, flags=re.RegexFlag.IGNORECASE)):
-                    is_bad = False
-                else:
-                    for word in searched_words:
-                        spitted_words = word.split(sep="&")
-                        for w in spitted_words:
-                            if bool(re.search(w, src, flags=re.RegexFlag.IGNORECASE)):
-                                is_bad = False
-                                break
-                        break
-                if is_bad:
-                    bad_imgs2.write(src + "\n")
-                else:
-                    mimetype = "image/" + img_format
-                    res = requests.get(img['src'])
-                    img_file = open(img_directory_path + "\\{}_{}.{}".format(main_word, i, img_format), "wb")
-                    img_file.write(res.content)
-                    img_file.close()
+                input(src)
+                mimetype = "image/" + img_format
+                res = requests.get(img['src'])
+                img_file = open(img_directory_path + "\\{}_{}.{}".format(main_word, i, img_format), "wb")
+                img_file.write(res.content)
+                img_file.close()
 
-                    img_file = open(img_directory_path + "\\{}_{}.{}".format(main_word, i, img_format), "rb")
-                    content = img_file.read()
-                    img_file.close()
-                    found_result = content
-                    DatabaseConnection.store_result(main_word, found_result, mimetype, refrence, searchid)
-                    # delete the picture
-                    os.remove(img_directory_path + "\\{}_{}.{}".format(main_word, i, img_format))
-        bad_imgs2.close()
+                img_file = open(img_directory_path + "\\{}_{}.{}".format(main_word, i, img_format), "rb")
+                content = img_file.read()
+                img_file.close()
+                found_result = content
+                DatabaseConnection.store_result(main_word, found_result, mimetype, refrence, searchid)
+                # delete the picture
+                os.remove(img_directory_path + "\\{}_{}.{}".format(main_word, i, img_format))
 
 
 class ResponseController:
