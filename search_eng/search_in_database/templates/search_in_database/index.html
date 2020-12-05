@@ -2,35 +2,12 @@
 {% load static %}
 {% block title %}chemical search{% endblock title %}
 {% block more_styles %}
-<style>
-	/* body{
-		background-image : url({% static "search_in_database/images/index_bgi.jpg" %});
-		background-repeat: no-repeat;
-	  background-attachment: fixed;
-	  background-size: cover;
-	} */
-
-	#form_container{
-		text-align: center;
-		margin-top: 150px;
-	}
-
-	#search_input{
-		width: 50%;
-	}
-
-	.submit_btn{
-		height: 30px;
-	}
-</style>
+<link rel="stylesheet" href={% static "search_in_database/css/base_form.css" %}>
 {% endblock more_styles %}
 {% block main %}
-	<div id="logo">
-		chemical<br>engineers<br>data
-	</div>
-	<div id="form_container">
-		<form id="search_form" method="get" action="{% url 'search_in_database:search_result' %}">
-			<input id="search_input" type="text" class="" name="q" size="21" minlength="3">
+	<div class="form_container">
+		<form class="search_form" method="get" action="{% url 'search_in_database:search_result' %}">
+			<input class="search_input" type="text" class="" name="q" size="21" minlength="3">
 			<input class="submit_btn" type="submit" value="search">
 		</form>
 	</div>

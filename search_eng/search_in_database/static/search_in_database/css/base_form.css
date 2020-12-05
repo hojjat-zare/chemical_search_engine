@@ -1,0 +1,27 @@
+
+.form_container{
+	text-align: center;
+	margin-top: 150px;
+}
+
+div .search_input{
+	width: 50%;
+}
+
+td .search_input{
+  width: 90%;
+}
+
+.submit_btn{
+	height: 30px;
+}
+
+.form_table{
+  width: 80%;
+  margin-left: 10%;
+}
+
+#crawl_btn{
+  width: 20%;
+  margin-left: 73%;
+}
