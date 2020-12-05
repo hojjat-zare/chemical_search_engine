@@ -30,6 +30,7 @@ def exact_entity_tree_mode(request,entity_mainname):
 
 def get_scrapy_search(request):
     phrase = request.GET['entity']
+    do_download_images = request.GET['do_download_images']  ################################# add this setting to spider
     con = fdb.connect(dsn=DATA_BASE_DIR, user='SYSDBA',password='masterkey')
     cur = con.cursor()
     cur.execute('select gen_id(SEARCHS_SEARCHID_GEN, 1)from rdb$database;')
@@ -39,6 +40,7 @@ def get_scrapy_search(request):
     path = os.path.join(BASE_DIR, 'search_in_database')
     inputs = "python spider.py {} {} {}".format(phrase , str(search_id) , words_to_search)
     os.system("cd " + path + " && " + inputs)
+    print(do_download_images)
     blob_results = Results.objects.filter(searchid=search_id).order_by('resultid')
     results = []
     for blob in blob_results:
