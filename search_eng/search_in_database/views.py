@@ -50,8 +50,6 @@ def get_scrapy_search(request):
     WTS = " ".join(words_to_search)
     # #means white space (means words come respectively after each other)
     # - or & means words that must be in the tag string or tag text not respectively
-    print(phrase)
-    print(WTS)
     path = os.path.join(BASE_DIR, 'search_in_database')
     inputs = "python spider.py {} {} {} {}".format(phrase, str(search_id), str(do_download_images), WTS)
     os.system("cd " + path + " && " + inputs)

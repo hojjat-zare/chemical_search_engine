@@ -202,7 +202,7 @@ class DatabaseConnection:
     def save_useful_tags(words_and_useful_tags_dict, main_word, refrence, search_id):  # refrence must be added
         final_body = ""
         for word in words_and_useful_tags_dict:
-            title = "<h2>{}</h2>".format(word)
+            title = "<h2>{}</h2>".format(word.replace("&", "+"))
             tags_of_this_word = words_and_useful_tags_dict[word]['useful_tags']
             string_tags = title + "<br>".join(tags_of_this_word)
             final_body += string_tags
