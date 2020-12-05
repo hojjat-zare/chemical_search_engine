@@ -258,6 +258,8 @@ class DatabaseConnection:
                     img_file.close()
                     found_result = content
                     DatabaseConnection.store_result(main_word, found_result, mimetype, refrence, searchid)
+                    # delete the picture
+                    os.remove(img_directory_path + "\\{}_{}.{}".format(main_word, i, img_format))
         bad_imgs2.close()
 
 
