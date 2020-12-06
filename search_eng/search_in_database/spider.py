@@ -152,9 +152,10 @@ class DatabaseConnection:
         for word in words_and_useful_tags_dict:
             title = "<h2>{}:</h2>".format(word.replace("&", "+"))
             tags_of_this_word = words_and_useful_tags_dict[word]['useful_tags']
-            string_tags = title + "<br>".join(tags_of_this_word)
+            string_tags = title + "<br>".join(tags_of_this_word) + "<hr>"
             final_body += string_tags
-
+        final_body = re.subn('<a.*?>', '<span>', final_body)[0]
+        final_body = re.subn('<\/a>', '</span>', final_body)[0]
         if download_imgss:
             final_body += DatabaseConnection.add_images(response)
 
@@ -714,7 +715,7 @@ class ResponseController:
                                }
         all_tags = ResponseController.get_all_tags(response)
         bad_tags_name = ["html", "head", "body", "meta", "img", "script", "tbody", "title", "link", "br",
-                         "input", "style", "td", "th", "table"]
+                         "input", "style", "td", "th", "table", "ul", "ol", "li"]
         needed_string_tags = ["p", "tr"]
         for tag_num in range(0, len(all_tags)):
             tag = all_tags[tag_num]
