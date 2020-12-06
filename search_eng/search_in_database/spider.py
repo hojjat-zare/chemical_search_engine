@@ -69,8 +69,7 @@ class Detector(scrapy.Spider):
 
         # if is_page_valid:
         words_and_useful_tags_dict = ResponseController.get_useful_tag2(response, words, ignore_case=True)
-        DatabaseConnection.save_useful_tags(words_and_useful_tags_dict, response)
-        t2 = time()
+        threading.Thread(target=DatabaseConnection.save_useful_tags, args=(words_and_useful_tags_dict, response,)).start()
         # else:
         # logging.critical(invalid_page_message)
         if do_download_images:
