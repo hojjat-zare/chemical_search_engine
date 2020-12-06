@@ -39,8 +39,8 @@ def exact_entity_tree_mode(request, entity_mainname):
 def get_scrapy_search(request):
     t1 = time()
     phrase = request.GET['entity']
+    do_download_images = request.GET['do_download_images']
     phrase = phrase.replace(" ", "#")
-    do_download_images = request.GET['do_download_images']  ################################# add this setting to spider
     con = fdb.connect(dsn=DATA_BASE_DIR, user='SYSDBA', password='masterkey')
     cur = con.cursor()
     cur.execute('select gen_id(SEARCHS_SEARCHID_GEN, 1)from rdb$database;')
@@ -54,7 +54,7 @@ def get_scrapy_search(request):
     # #means white space (means words come respectively after each other)
     # - or & means words that must be in the tag string or tag text not respectively
     path = os.path.join(BASE_DIR, 'search_in_database')
-    inputs = "python spider.py {} {} {} {}".format(phrase, str(search_id), str('False'), WTS)
+    inputs = "python spider.py {} {} {} {} {}".format(phrase, str(search_id), do_download_images, "1", WTS)
     os.system("cd " + path + " && " + inputs)
     blob_results = Results.objects.filter(searchid=search_id).order_by('resultid')
     results = []
@@ -62,8 +62,8 @@ def get_scrapy_search(request):
         results.append(blob.blob_value('auto', 'auto'))
     t2 = time()
     print("it takes about: ", t2 - t1, "seconds")
-    inputs = "python spider.py {} {} {} {}".format(phrase, str(search_id), str('True'), WTS)
-    # threading.Thread(target=os.system,args=("cd " + path + " && " + inputs,)).start()
+    inputs = "python spider.py {} {} {} {} {}".format(phrase, str(search_id), do_download_images, "2", WTS)
+    threading.Thread(target=os.system,args=("cd " + path + " && " + inputs,)).start()
     return render(request, 'search_in_database/scrapy_result.html', {'results': results})
 
 

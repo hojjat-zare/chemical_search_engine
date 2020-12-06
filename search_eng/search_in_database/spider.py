@@ -4,14 +4,12 @@ import scrapy
 from scrapy.crawler import CrawlerProcess
 import os
 import fdb
-from io import StringIO
 import requests
 import datetime
 import logging
-import pprint
 import re
 from time import sleep, time
-
+from pprint import pprint
 
 def get_target_words():
     return []
@@ -33,13 +31,16 @@ def get_from_wikipedia_manual():
     do_download_imgs = False
     if sys.argv[3] == "True":
         do_download_imgs = True
+
+    if sys.argv[4] == "2":
         DatabaseConnection.is_search_stored = True
+
     words = get_target_words()
-    words += sys.argv[4:]
+    words += sys.argv[5:]
     words = [word.replace("#", " ") for word in words]
     words = [word.replace('-', '&') for word in words]
     cb_kwargs = {"target_words": words, "main": suggestions[search_result_number - 1], "search_id": search_id,
-                 "img_dl": do_download_imgs}
+                 "img_dl": do_download_imgs, 'time': sys.argv[4]}
     result = {
         "url": url,
         "cb_kwargs": cb_kwargs
@@ -61,19 +62,15 @@ class Detector(scrapy.Spider):
 
     def parse(self, response, **kwargs):
         words = response.cb_kwargs['target_words']
-        do_download_images = bool(response.cb_kwargs['img_dl'])
-        print(do_download_images)
+        do_download_images = response.cb_kwargs['img_dl']
+        if response.cb_kwargs['time'] == "1":
+            words_and_useful_tags_dict = ResponseController.get_useful_tag2(response, words, ignore_case=True)
+            threading.Thread(target=DatabaseConnection.save_useful_tags,
+                             args=(words_and_useful_tags_dict, response,)).start()
 
-        # is_page_valid = ResponseController.is_page_valid_for_these_words(response, words)
-
-        # if is_page_valid:
-        words_and_useful_tags_dict = ResponseController.get_useful_tag2(response, words, ignore_case=True)
-        threading.Thread(target=DatabaseConnection.save_useful_tags,
-                         args=(words_and_useful_tags_dict, response,)).start()
-        # else:
-        # logging.critical(invalid_page_message)
-        if do_download_images:
+        elif response.cb_kwargs['time'] == "2" and do_download_images:
             threading.Thread(target=DatabaseConnection.download_save_img_to_db, args=(response,)).start()
+        print("////////  FINISHED  ///////////")
 
 
 class DatabaseConnection:
@@ -81,6 +78,7 @@ class DatabaseConnection:
     DATA_BASE_DIR = os.path.join(BASE_DIR,
                                  "SEDB.FDB")
     is_search_stored = False
+
 
     @staticmethod
     def store_result(user_input_phrase_for_search, found_result, mimetype, refrence, searchid):
@@ -138,8 +136,8 @@ class DatabaseConnection:
             if bool(re.search("check", src, flags=re.RegexFlag.IGNORECASE)):
                 continue
             if src not in bad_urls:
-                tag = '<img src="{}" alt="{} picture"'.format(src, response.cb_kwargs['main'])
-                tag += '<hr>'
+                tag = '<img src="{}"'.format(src)
+                tag += '<br>'
                 final += tag
         return final
 
@@ -148,23 +146,20 @@ class DatabaseConnection:
         refrence = response.request
         main_word = response.cb_kwargs['main']
         search_id = response.cb_kwargs['search_id']
+        download_imgss = response.cb_kwargs['img_dl']
+
         final_body = '<h1>"{}":</h1>'.format(main_word)
         for word in words_and_useful_tags_dict:
-            if len(words_and_useful_tags_dict[word]['useful_tags']) == 0:
-                continue
             title = "<h2>{}:</h2>".format(word.replace("&", "+"))
             tags_of_this_word = words_and_useful_tags_dict[word]['useful_tags']
-            try:
-                string_tags = title + "<br>".join(tags_of_this_word)
-                final_body += string_tags
-            except:
-                print(type(tags_of_this_word))
-                print(len(tags_of_this_word))
-                for string in tags_of_this_word:
-                    print(type(string))
-                    print(string)
-        final_body += DatabaseConnection.add_images(response)
+            string_tags = title + "<br>".join(tags_of_this_word)
+            final_body += string_tags
+
+        if download_imgss:
+            final_body += DatabaseConnection.add_images(response)
+
         DatabaseConnection.store_result(main_word, final_body, 'text/html', refrence, search_id)
+
 
     @staticmethod
     def download_save_pdf_to_db(response):
@@ -174,7 +169,7 @@ class DatabaseConnection:
     def download_img(src, i, img_format, main_word):
         img_directory_path = os.path.join(DatabaseConnection.BASE_DIR, "images", "imgs")
         writing_file = open(img_directory_path + "\\{}_{}.{}".format(main_word, i, img_format), "wb")
-        res = requests.get(src)
+        res = requests.get(src, timeout=25)
         writing_file.write(res.content)
         writing_file.close()
 
@@ -214,6 +209,7 @@ class DatabaseConnection:
             reading_file.close()
             DatabaseConnection.store_result(main_word, found_result, mimetype, refrence, search_id)
             os.remove(img['address'])
+        print("#############  FINISHED DATABASE IMAGES  ################")
 
 
 class ResponseController:
@@ -590,7 +586,6 @@ class ResponseController:
         logging.debug(message)
         logging.debug(next_tags_message)
         sleep(unit_time)
-        # input()
 
     @staticmethod
     def two_chars_search(target_string, word):
@@ -635,7 +630,6 @@ class ResponseController:
     @staticmethod
     def is_page_valid_for_these_words(response, words):  # this method is one of the initial methods which must be used
         index = 0  # critical index is count of target words
-
         whole_text = ResponseController.get_the_whole_page_content(response).lower()
         for word in words:
             Ws = word.split("&")
@@ -740,6 +734,8 @@ class ResponseController:
                 continue
             if ResponseController.get_tag_name(tag) in ['sub', 'sup'] and bool(re.search(r"\d", tag_text)):
                 continue
+            if len(final_text) > 700:
+                continue
             for word in words:
                 if bool(re.search(r"\d", word)):
                     final_text = tag_string
@@ -766,14 +762,15 @@ class ResponseController:
 
                 if condition_done >= number_of_conditions:
                     # here I can work with a tags (internal refrences)
+                    useful_tag = tag.xpath('.').get()
                     words_dic[word]["word_point"] += 1
-                    words_dic[word]["useful_tags"].append(tag.xpath('.').get())
-
-        words_dic['info_table'] = {
-            'word_point': 1,
-            'useful_tags': [(response.xpath("//table[contains(@class, 'infobox bordered')]").get())]
-        }
-
+                    words_dic[word]["useful_tags"].append(useful_tag)
+        info_table = response.xpath("//table[contains(@class, 'infobox bordered')]").get()
+        if info_table is not None:
+            words_dic['info_table'] = {
+                'word_point': 1,
+                'useful_tags': [info_table]
+            }
         return words_dic
 
     ############ NOT USEFUL METHODS ################
