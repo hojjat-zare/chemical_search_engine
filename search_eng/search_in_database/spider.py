@@ -142,6 +142,43 @@ class DatabaseConnection:
     is_search_stored = False
 
     @staticmethod
+    def store_result2(cur, user_input_phrase_for_search, found_result, mimetype, refrence, searchid):
+        is_result_string = isinstance(found_result, str)
+
+        cur.execute('select PHRASEID from EXISTING_PHRASES where PHRASESTRING=?;', (user_input_phrase_for_search,))
+        phrase_id = cur.fetchone()  # 0 false  1 true
+        if (phrase_id != None):
+            phrase_id = phrase_id[0]
+        else:
+            cur.execute('select gen_id(EXISTING_PHRASES_PHRASEID_GEN, 1) from rdb$database;')
+            phrase_id = cur.fetchone()[0]
+            cur.execute('insert into EXISTING_PHRASES (PHRASEID,PHRASESTRING,LANGID) values(?,?,?);',
+                        (phrase_id, user_input_phrase_for_search, 0))
+
+        cur.execute('select DROWID from ENTITIESRELATEDPHRASES where (PHRASEID=? and ENTID=?);',
+                    (phrase_id, _user_search_entity))
+        drowid = cur.fetchone()
+        if (drowid != None):
+            drowid = drowid[0]
+        else:
+            cur.execute('select gen_id(ENTSRELATEDPHRAS_ROWID_GEN, 1)from rdb$database;')
+            drowid = cur.fetchone()[0]
+            cur.execute('insert into ENTITIESRELATEDPHRASES (ENTID,PHRASEID,DROWID) values(?,?,?);',
+                        (_user_search_entity, phrase_id, drowid))
+
+        # cur.execute('select gen_id(SEARCHS_SEARCHID_GEN, 1)from rdb$database;')
+        if (not DatabaseConnection.is_search_stored):
+            cur.execute('insert into SEARCHS (SEARCHID,ENT_PHRASEID,REFERENCE_ADDRESS,SEARCH_TIME) values(?,?,?,?);',
+                        (searchid, drowid, refrence, datetime.datetime.now()))
+            DatabaseConnection.is_search_stored = True
+        if (is_result_string):
+            cur.execute("insert into RESULTS (SEARCHID,RESULT,MIMETYPE) values (?,?,?);",
+                        (searchid, found_result.encode(encoding='utf8', errors='ignore'), mimetype))
+        else:  # is image
+            cur.execute("insert into RESULTS (SEARCHID,RESULT,MIMETYPE) values (?,?,?);",
+                        (searchid, found_result, mimetype))
+
+    @staticmethod
     def store_result(user_input_phrase_for_search, found_result, mimetype, refrence, searchid):
         con = fdb.connect(dsn=DatabaseConnection.DATA_BASE_DIR, user='SYSDBA', password='masterkey')
         cur = con.cursor()
@@ -200,15 +237,18 @@ class DatabaseConnection:
         pass
 
     @staticmethod
-    def download_save_pdf_to_db2(response, src, mimetype):
+    def download_save_pdf_to_db2(response, src, mimetype, cur):
+
         refrence = response.request
         main_word = response.cb_kwargs['main']
         searchid = response.cb_kwargs['search_id']
         res = requests.get(src)
-        DatabaseConnection.store_result(main_word, res.content, mimetype, refrence, searchid)
+        DatabaseConnection.store_result2(cur, main_word, res.content, mimetype, refrence, searchid)
 
     @staticmethod
     def download_save_img_to_db(response):
+        con = fdb.connect(dsn=DatabaseConnection.DATA_BASE_DIR, user='SYSDBA', password='masterkey')
+        cur = con.cursor()
         img_directory_path = os.path.join(DatabaseConnection.BASE_DIR, "images")
         bad_imgs_lines = open(img_directory_path + "\\bad.txt", "r")
         bad_urls = bad_imgs_lines.readlines()
@@ -226,7 +266,8 @@ class DatabaseConnection:
             if src not in bad_urls:
                 mimetype = "image/" + img_format
                 threading.Thread(target=DatabaseConnection.download_save_pdf_to_db2,
-                                 args=(response, src, mimetype,)).start()
+                                 args=(response, src, mimetype,cur, )).start()
+        con.commit()
 
 
 class ResponseController:
