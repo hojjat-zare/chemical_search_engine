@@ -35,6 +35,7 @@ def get_from_wikipedia_manual():
     do_download_imgs = False
     if sys.argv[3] == "True":
         do_download_imgs = True
+        DatabaseConnection.is_search_stored = True
     words = get_target_words()
     words += sys.argv[4:]
     words = [word.replace("#", " ") for word in words]
