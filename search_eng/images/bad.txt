@@ -22,3 +22,6 @@ https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Ambox_globe_content.sv
 https://upload.wikimedia.org/wikipedia/en/thumb/e/e7/Cscr-featured.svg/20px-Cscr-featured.svg.png
 https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/WHO_Rod.svg/9px-WHO_Rod.svg.png
 https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/NFPA_704.svg/80px-NFPA_704.svg.png
+https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Nitrous-oxide-3D-balls.png/90px-Nitrous-oxide-3D-balls.png
+https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Ethanol-3D-balls.png/90px-Ethanol-3D-balls.png
+https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Buckminsterfullerene-perspective-3D-balls.png/90px-Buckminsterfullerene-perspective-3D-balls.png

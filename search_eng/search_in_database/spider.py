@@ -1,7 +1,6 @@
 import sys
 import threading
 import scrapy
-
 from scrapy.crawler import CrawlerProcess
 import os
 import fdb
@@ -13,55 +12,11 @@ import pprint
 import re
 from time import sleep, time
 
-############ tasks ###############
-# todo:languages and translating
-############ tasks ###############
 
-_user_search_entity = 142
-start_spider_message = """
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-###############################################
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-                START SPIDER
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-###############################################
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-"""
-invalid_page_message = """
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-###############################################
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-                INVALID PAGE
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-###############################################
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-"""
-writing_in_file_message = """
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-###############################################
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-                WRITING IN FILE
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-###############################################
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-"""
-spider_finished = """
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-###############################################
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-                SPIDER FINISHED
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-###############################################
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-"""
 
 
 def get_target_words():
     return []
-
-
-def check_url(url):
-    return url
 
 
 def get_from_wikipedia_manual():
@@ -77,7 +32,9 @@ def get_from_wikipedia_manual():
     url = suggestion_urls[search_result_number - 1]
 
     search_id = int(sys.argv[2])
-    do_download_imgs = bool(sys.argv[3])
+    do_download_imgs = False
+    if sys.argv[3] == "True":
+        do_download_imgs = True
     words = get_target_words()
     words += sys.argv[4:]
     words = [word.replace("#", " ") for word in words]
@@ -104,9 +61,7 @@ class Detector(scrapy.Spider):
         yield scrapy.Request(url=url, callback=self.parse, cb_kwargs=cb_kwargs)
 
     def parse(self, response, **kwargs):
-        logging.critical(start_spider_message)
         words = response.cb_kwargs['target_words']
-        search_id = response.cb_kwargs['search_id']
         do_download_images = bool(response.cb_kwargs['img_dl'])
         print(do_download_images)
 
@@ -114,25 +69,13 @@ class Detector(scrapy.Spider):
 
         # if is_page_valid:
         words_and_useful_tags_dict = ResponseController.get_useful_tag2(response, words, ignore_case=True)
-        threading.Thread(target=DatabaseConnection.save_useful_tags,
-                         args=(words_and_useful_tags_dict, response)).start()
+        DatabaseConnection.save_useful_tags(words_and_useful_tags_dict, response)
+        t2 = time()
         # else:
         # logging.critical(invalid_page_message)
-        if 1:
+        if do_download_images:
             threading.Thread(target=DatabaseConnection.download_save_img_to_db, args=(response,)).start()
 
-        # for section in sections:
-        #     # download images:
-        #     # get the tables:
-        #     # get the pdf
-        #     result = input("do you want to have {}? if yes Enter 1\n".format(section))
-        #     if result == "1":
-        #         if sections[section] == 1:
-        #             DatabaseConnection.download_save_img_to_db(response)
-        #         elif sections[section] == 2:
-        #             pass  # download pdf
-
-        logging.critical(spider_finished)
 
 
 class DatabaseConnection:
@@ -142,44 +85,8 @@ class DatabaseConnection:
     is_search_stored = False
 
     @staticmethod
-    def store_result2(cur, user_input_phrase_for_search, found_result, mimetype, refrence, searchid):
-        is_result_string = isinstance(found_result, str)
-
-        cur.execute('select PHRASEID from EXISTING_PHRASES where PHRASESTRING=?;', (user_input_phrase_for_search,))
-        phrase_id = cur.fetchone()  # 0 false  1 true
-        if (phrase_id != None):
-            phrase_id = phrase_id[0]
-        else:
-            cur.execute('select gen_id(EXISTING_PHRASES_PHRASEID_GEN, 1) from rdb$database;')
-            phrase_id = cur.fetchone()[0]
-            cur.execute('insert into EXISTING_PHRASES (PHRASEID,PHRASESTRING,LANGID) values(?,?,?);',
-                        (phrase_id, user_input_phrase_for_search, 0))
-
-        cur.execute('select DROWID from ENTITIESRELATEDPHRASES where (PHRASEID=? and ENTID=?);',
-                    (phrase_id, _user_search_entity))
-        drowid = cur.fetchone()
-        if (drowid != None):
-            drowid = drowid[0]
-        else:
-            cur.execute('select gen_id(ENTSRELATEDPHRAS_ROWID_GEN, 1)from rdb$database;')
-            drowid = cur.fetchone()[0]
-            cur.execute('insert into ENTITIESRELATEDPHRASES (ENTID,PHRASEID,DROWID) values(?,?,?);',
-                        (_user_search_entity, phrase_id, drowid))
-
-        # cur.execute('select gen_id(SEARCHS_SEARCHID_GEN, 1)from rdb$database;')
-        if (not DatabaseConnection.is_search_stored):
-            cur.execute('insert into SEARCHS (SEARCHID,ENT_PHRASEID,REFERENCE_ADDRESS,SEARCH_TIME) values(?,?,?,?);',
-                        (searchid, drowid, refrence, datetime.datetime.now()))
-            DatabaseConnection.is_search_stored = True
-        if (is_result_string):
-            cur.execute("insert into RESULTS (SEARCHID,RESULT,MIMETYPE) values (?,?,?);",
-                        (searchid, found_result.encode(encoding='utf8', errors='ignore'), mimetype))
-        else:  # is image
-            cur.execute("insert into RESULTS (SEARCHID,RESULT,MIMETYPE) values (?,?,?);",
-                        (searchid, found_result, mimetype))
-
-    @staticmethod
     def store_result(user_input_phrase_for_search, found_result, mimetype, refrence, searchid):
+        _user_search_entity = 142
         con = fdb.connect(dsn=DatabaseConnection.DATA_BASE_DIR, user='SYSDBA', password='masterkey')
         cur = con.cursor()
         is_result_string = isinstance(found_result, str)
@@ -237,18 +144,18 @@ class DatabaseConnection:
         pass
 
     @staticmethod
-    def download_save_pdf_to_db2(response, src, mimetype, cur):
-
-        refrence = response.request
-        main_word = response.cb_kwargs['main']
-        searchid = response.cb_kwargs['search_id']
+    def download_img(src, i, img_format, main_word):
+        img_directory_path = os.path.join(DatabaseConnection.BASE_DIR, "images", "imgs")
+        writing_file = open(img_directory_path + "\\{}_{}.{}".format(main_word, i, img_format), "wb")
         res = requests.get(src)
-        DatabaseConnection.store_result2(cur, main_word, res.content, mimetype, refrence, searchid)
+        writing_file.write(res.content)
+        writing_file.close()
 
     @staticmethod
     def download_save_img_to_db(response):
-        con = fdb.connect(dsn=DatabaseConnection.DATA_BASE_DIR, user='SYSDBA', password='masterkey')
-        cur = con.cursor()
+        main_word = response.cb_kwargs['main']
+        search_id = response.cb_kwargs['search_id']
+        refrence = response.request
         img_directory_path = os.path.join(DatabaseConnection.BASE_DIR, "images")
         bad_imgs_lines = open(img_directory_path + "\\bad.txt", "r")
         bad_urls = bad_imgs_lines.readlines()
@@ -256,18 +163,29 @@ class DatabaseConnection:
         bad_imgs_lines.close()
 
         imgs = ResponseController.get_images(response)
-
-        for i in range(len(imgs)):
-            img = imgs[i]
+        useful_imgs = []
+        useful_img_index = 0
+        for img in imgs:
             src = img['src']
-            img_format = img['format']
             if bool(re.search("check", src, flags=re.RegexFlag.IGNORECASE)):
                 continue
             if src not in bad_urls:
-                mimetype = "image/" + img_format
-                threading.Thread(target=DatabaseConnection.download_save_pdf_to_db2,
-                                 args=(response, src, mimetype,cur, )).start()
-        con.commit()
+                useful_img_index += 1
+                arg = (img['src'], useful_img_index, img['format'], main_word,)
+                img['address'] = img_directory_path + "\\imgs\\{}_{}.{}".format(main_word, useful_img_index, img['format'])
+                img['dl_thread'] = threading.Thread(target=DatabaseConnection.download_img, args=arg)
+                useful_imgs.append(img)
+        for img in useful_imgs:
+            img['dl_thread'].start()
+        for img in useful_imgs:
+            img['dl_thread'].join()
+        for img in useful_imgs:
+            mimetype = "image/{}".format(img['format'])
+            reading_file = open(img['address'], 'rb')
+            found_result = reading_file.read()
+            reading_file.close()
+            DatabaseConnection.store_result(main_word, found_result, mimetype, refrence, search_id)
+            os.remove(img['address'])
 
 
 class ResponseController:
