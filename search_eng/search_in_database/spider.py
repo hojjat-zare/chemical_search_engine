@@ -13,8 +13,6 @@ import re
 from time import sleep, time
 
 
-
-
 def get_target_words():
     return []
 
@@ -69,12 +67,12 @@ class Detector(scrapy.Spider):
 
         # if is_page_valid:
         words_and_useful_tags_dict = ResponseController.get_useful_tag2(response, words, ignore_case=True)
-        threading.Thread(target=DatabaseConnection.save_useful_tags, args=(words_and_useful_tags_dict, response,)).start()
+        threading.Thread(target=DatabaseConnection.save_useful_tags,
+                         args=(words_and_useful_tags_dict, response,)).start()
         # else:
         # logging.critical(invalid_page_message)
         if do_download_images:
             threading.Thread(target=DatabaseConnection.download_save_img_to_db, args=(response,)).start()
-
 
 
 class DatabaseConnection:
@@ -126,16 +124,45 @@ class DatabaseConnection:
         con.commit()
 
     @staticmethod
+    def add_images(response):
+        img_directory_path = os.path.join(DatabaseConnection.BASE_DIR, "images")
+        bad_imgs_lines = open(img_directory_path + "\\bad.txt", "r")
+        bad_urls = bad_imgs_lines.readlines()
+        bad_urls = [urls.strip() for urls in bad_urls]
+        bad_imgs_lines.close()
+        imgs = ResponseController.get_images(response)
+        final = ""
+        for img in imgs:
+            src = img['src']
+            if bool(re.search("check", src, flags=re.RegexFlag.IGNORECASE)):
+                continue
+            if src not in bad_urls:
+                tag = '<img src="{}" alt="{} picture"'.format(src, response.cb_kwargs['main'])
+                tag += '<hr>'
+                final += tag
+        return final
+
+    @staticmethod
     def save_useful_tags(words_and_useful_tags_dict, response):
         refrence = response.request
         main_word = response.cb_kwargs['main']
         search_id = response.cb_kwargs['search_id']
         final_body = '<h1>"{}":</h1>'.format(main_word)
         for word in words_and_useful_tags_dict:
+            if len(words_and_useful_tags_dict[word]['useful_tags']) == 0:
+                continue
             title = "<h2>{}:</h2>".format(word.replace("&", "+"))
             tags_of_this_word = words_and_useful_tags_dict[word]['useful_tags']
-            string_tags = title + "<br>".join(tags_of_this_word)
-            final_body += string_tags
+            try:
+                string_tags = title + "<br>".join(tags_of_this_word)
+                final_body += string_tags
+            except:
+                print(type(tags_of_this_word))
+                print(len(tags_of_this_word))
+                for string in tags_of_this_word:
+                    print(type(string))
+                    print(string)
+        final_body += DatabaseConnection.add_images(response)
         DatabaseConnection.store_result(main_word, final_body, 'text/html', refrence, search_id)
 
     @staticmethod
@@ -171,7 +198,8 @@ class DatabaseConnection:
             if src not in bad_urls:
                 useful_img_index += 1
                 arg = (img['src'], useful_img_index, img['format'], main_word,)
-                img['address'] = img_directory_path + "\\imgs\\{}_{}.{}".format(main_word, useful_img_index, img['format'])
+                img['address'] = img_directory_path + "\\imgs\\{}_{}.{}".format(main_word, useful_img_index,
+                                                                                img['format'])
                 img['dl_thread'] = threading.Thread(target=DatabaseConnection.download_img, args=arg)
                 useful_imgs.append(img)
         for img in useful_imgs:
