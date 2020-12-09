@@ -155,6 +155,17 @@ class PropertyOfEntity:
     def get_property_id(self):
         return self._property.entid
 
+    def get_table_name_of_property(self):
+        type_of_prop_id = EntityRelationEntity.objects.get(eid1 = self._property.entid, relationid = id_of_drived_from).eid2_id
+        if(type_of_prop_id in [id_of_double_unitless ,  id_of_double_with_unit]):
+            return 'entsdoublepropsvalues'
+        elif(type_of_prop_id == id_of_blob):
+            return 'entsblobpropsvalues'
+        elif(type_of_prop_id == id_of_string):
+            return 'entsstringpropsvalues'
+        elif(type_of_prop_id in [id_of_entity_property, id_of_integer_unitless, id_of_integer_with_unit]):
+            return 'entsintegerpropsvalues'
+
     def get_property_value(self):
         type_of_prop_id = EntityRelationEntity.objects.get(eid1 = self._property.entid, relationid = id_of_drived_from).eid2_id
         properties = None

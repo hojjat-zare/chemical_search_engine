@@ -6,11 +6,22 @@ from django.contrib.admin.options import get_content_type_for_model
 from django.template.response import TemplateResponse
 IS_POPUP_VAR = '_popup'
 TO_FIELD_VAR = '_to_field'
+from django.urls import reverse
+from django.utils.http import urlencode
+from .tools import PropertyOfEntity
+from django.utils.text import (
+    capfirst, format_lazy, get_text_list, smart_split, unescape_string_literal,
+)
+from functools import reduce
+import operator
+from django.contrib.admin.utils import lookup_needs_distinct
+id_of_has = 8
+
 #################### register all models automatically #################
 app = apps.get_app_config('search_in_database')
 # tables_with_multi_column_primary_key = ['entitiesrelatedphrases','entitiesalternatenames','entityrelationentity','entsblobpropsvalues','entsdoublepropsvalues','entsintegerpropsvalues','entsstringpropsvalues']
 for model_name, model in app.models.items():
-    if(not str(model_name) in ['results','entsblobpropsvalues','entityrelationentity','entities']):
+    if(not str(model_name) in ['results','entsblobpropsvalues','entityrelationentity','entities','entsdoublepropsvalues','entsintegerpropsvalues','entsstringpropsvalues']):
         admin.site.register(model)
 ########################################################################
 
@@ -76,10 +87,77 @@ class ResultsAdmin(Has_blob_field_Admin):
 class EntsBlobPropsValuesAdmin(Has_blob_field_Admin):
     list_display = ('__str__','mimetype','blob_value')
 
-@admin.register(EntityRelationEntity)
-class EntityRelationEntityAdmin(admin.ModelAdmin):
-    list_display = ('get_eid1','get_relationid','get_eid2')
 
 @admin.register(Entities)
 class EntitiesAdmin(admin.ModelAdmin):
-	list_display = ('mainname','enttypeid')
+    list_display = ('mainname','enttypeid')
+    search_fields = ('mainname',)
+
+
+class HasExactSearchWithQuotation(admin.ModelAdmin):
+
+    def get_search_results(self, request, queryset, search_term):
+        """
+        Returns a tuple containing a queryset to implement the search,
+        and a boolean indicating if the results may contain duplicates.
+        """
+        # Apply keyword searches.
+        def construct_search(field_name):
+            if field_name.startswith('^'):
+                return "%s__istartswith" % field_name[1:]
+            elif field_name.startswith('='):
+                return "%s__iexact" % field_name[1:]
+            elif field_name.startswith('@'):
+                return "%s__search" % field_name[1:]
+            else:
+                return "%s__icontains" % field_name
+
+        use_distinct = False
+        search_fields = self.get_search_fields(request)
+        if search_fields and search_term:
+            orm_lookups = [construct_search(str(search_field))
+                           for search_field in search_fields]
+            for bit in smart_split(search_term):
+                if bit.startswith(('"', "'")):
+                    bit = unescape_string_literal(bit)
+                or_queries = [models.Q(**{orm_lookup: bit})
+                              for orm_lookup in orm_lookups]
+                queryset = queryset.filter(reduce(operator.or_, or_queries))
+            if not use_distinct:
+                for search_spec in orm_lookups:
+                    if lookup_needs_distinct(self.opts, search_spec):
+                        use_distinct = True
+                        break
+
+        return queryset, use_distinct
+
+@admin.register(EntityRelationEntity)
+class EntityRelationEntityAdmin(HasExactSearchWithQuotation):
+    list_display = ('get_eid1','link_to_property','get_eid2')
+    search_fields = ('^eid1__mainname', )
+
+    def link_to_property(self,obj):
+        from django.utils.html import format_html
+        if(obj.relationid_id == id_of_has):
+            table_name = PropertyOfEntity(obj.eid1,obj.eid2).get_table_name_of_property()
+            url = (reverse('admin:search_in_database_{}_changelist'.format(table_name))+ '?q="{}"'.format(obj.eid1.mainname))
+            return format_html('<a href="{}">has</a>', url)
+        return obj.get_relationid()
+    link_to_property.short_description = "show_all_props"
+    link_to_property.admin_order_field = 'relationid'
+
+@admin.register(EntsDoublePropsValues)
+class EntsDoublePropsValuesAdmin(HasExactSearchWithQuotation):
+    list_display = ('get_prop_owner_eid_mainname','get_prop_eid_mainname','drowid','dvalue')
+    search_fields = ('^prop_owner_eid__mainname',)
+    # raw_id_fields = ("prop_owner_eid",)
+
+@admin.register(EntsStringPropsValues)
+class EntsStringPropsValuesAdmin(HasExactSearchWithQuotation):
+    list_display = ('get_prop_owner_eid_mainname','get_prop_eid_mainname','drowid','dvalue')
+    search_fields = ('^prop_owner_eid__mainname',)
+
+@admin.register(EntsIntegerPropsValues)
+class EntsIntegerPropsValuesAdmin(HasExactSearchWithQuotation):
+    list_display = ('get_prop_owner_eid_mainname','get_prop_eid_mainname','drowid','dvalue')
+    search_fields = ('^prop_owner_eid__mainname',)

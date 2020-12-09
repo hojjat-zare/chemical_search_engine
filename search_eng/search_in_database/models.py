@@ -201,6 +201,14 @@ class EntsDoublePropsValues(models.Model):
     def get_primary_key(self):
         return [self.prop_owner_eid.entid, self.prop_eid.entid,self.drowid]
 
+    def get_prop_owner_eid_mainname(self):
+        return self.prop_owner_eid.mainname
+
+    def get_prop_eid_mainname(self):
+        return self.prop_eid.mainname
+    get_prop_owner_eid_mainname.admin_order_field = 'prop_owner_eid'
+    get_prop_eid_mainname.admin_order_field = 'prop_eid'
+
     def __str__(self):
         return self.prop_owner_eid.mainname + "." + self.prop_eid.mainname + "[{}]".format(self.drowid) + "=" + str(self.dvalue)
 
@@ -223,6 +231,14 @@ class EntsIntegerPropsValues(models.Model):
 
     def get_primary_key(self):
         return [self.prop_owner_eid.entid, self.prop_eid.entid,self.drowid]
+
+    def get_prop_owner_eid_mainname(self):
+        return self.prop_owner_eid.mainname
+
+    def get_prop_eid_mainname(self):
+        return self.prop_eid.mainname
+    get_prop_owner_eid_mainname.admin_order_field = 'prop_owner_eid'
+    get_prop_eid_mainname.admin_order_field = 'prop_eid'
 
     def __str__(self):
         return self.prop_owner_eid.mainname + "." + self.prop_eid.mainname + "[{}]".format(self.drowid) + "=" + str(self.dvalue)
@@ -247,6 +263,14 @@ class EntsStringPropsValues(models.Model):
 
     def get_primary_key(self):
         return [self.prop_owner_eid.entid, self.prop_eid.entid,self.drowid,self.langid.langid]
+
+    def get_prop_owner_eid_mainname(self):
+        return self.prop_owner_eid.mainname
+
+    def get_prop_eid_mainname(self):
+        return self.prop_eid.mainname
+    get_prop_owner_eid_mainname.admin_order_field = 'prop_owner_eid'
+    get_prop_eid_mainname.admin_order_field = 'prop_eid'
 
     def __str__(self):
         return self.prop_owner_eid.mainname + "." + self.prop_eid.mainname + "[{}]".format(self.drowid) + "=" + str(self.dvalue)
