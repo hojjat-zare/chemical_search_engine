@@ -14,6 +14,7 @@ id_of_integer_unitless = 11
 id_of_string = 12
 id_of_blob = 13
 id_of_integer_with_unit = 14
+id_of_dependent_instance = 7
 
 # Typesofentities
 id_of_property_type = 4
@@ -38,7 +39,7 @@ def get_result_for_search(sentence):
     return encapsulated_result
 
 def get_result_for_entity(entity_mainname):
-    typeid_map_to_name = {id_of_concept_type:'concept',id_of_property_type:'property',id_of_instance_type:'instance'}
+    typeid_map_to_name = {id_of_concept_type:'concept',id_of_property_type:'property',id_of_instance_type:'instance',id_of_dependent_instance:'instance'}
     entity = Entities.objects.get(mainname=entity_mainname)
     all_props_of_entity = AllPropertiesOfEntity(entity).get_all_propes_in_dictionary_form()
     return [{'entity_name':entity.mainname, 'type':typeid_map_to_name[entity.enttypeid_id], 'data':all_props_of_entity}]

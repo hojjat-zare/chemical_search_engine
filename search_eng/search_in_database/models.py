@@ -11,6 +11,8 @@ from django.db import models
 # from fdb.fbcore import BlobReader
 from builtins import bytes
 import fdb
+id_of_drived_from = 7
+id_of_entity_property = 4
 
 
 class Entities(models.Model):
@@ -239,6 +241,16 @@ class EntsIntegerPropsValues(models.Model):
         return self.prop_eid.mainname
     get_prop_owner_eid_mainname.admin_order_field = 'prop_owner_eid'
     get_prop_eid_mainname.admin_order_field = 'prop_eid'
+
+
+    def get_dvalue_equivalent_entity_if_exist(self):
+        type_of_property = EntityRelationEntity.objects.get(eid1=self.prop_eid,relationid=id_of_drived_from).eid2_id
+        if(type_of_property == id_of_entity_property):
+            if(self.dvalue != None):
+                return Entities.objects.get(entid=self.dvalue).mainname
+            else:
+                return None
+        return self.dvalue
 
     def __str__(self):
         return self.prop_owner_eid.mainname + "." + self.prop_eid.mainname + "[{}]".format(self.drowid) + "=" + str(self.dvalue)
