@@ -1,6 +1,6 @@
 margin = ({top: 10, right: 120, bottom: 10, left: 40});
 width = 900;
-dy = width / 6;
+dy = width / 4.2;
 dx = 30;
 tree = d3.tree().nodeSize([dx, dy]);
 diagonal = d3.linkHorizontal().x(d => d.y).y(d => d.x)
