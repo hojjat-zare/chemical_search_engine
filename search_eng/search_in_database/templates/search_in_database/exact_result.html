@@ -12,7 +12,7 @@
 
 {% block scripts %}
   <script type="text/javascript">
-    None = 'none';
+    None = '';
     results = {{results|safe|default_if_none:''}}
   </script>
   <script type="text/javascript" src={% static "search_in_database/js/data_tree.js" %}></script>

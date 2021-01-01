@@ -1,6 +1,6 @@
 margin = ({top: 10, right: 120, bottom: 10, left: 40});
 width = 900;
-dy = width / 4.2;
+dy = width / 5;
 dx = 30;
 tree = d3.tree().nodeSize([dx, dy]);
 diagonal = d3.linkHorizontal().x(d => d.y).y(d => d.x)
@@ -79,7 +79,7 @@ function draw() {
   const svg = d3.select("svg")
       .attr("viewBox", [-margin.left, -margin.top, width, dx])
       .style("width","5100px")
-      .style("font", "10px sans-serif")
+      .style("font", "8px sans-serif")
       .style("user-select", "none");
 
   const gLink = svg.append("g")
