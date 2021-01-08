@@ -193,6 +193,7 @@ class PropertyOfEntity:
                     equivalent_entity = Entities.objects.get(pk=prop.dvalue)
                     all_props_of_entity = AllPropertiesOfEntity(equivalent_entity).get_all_propes_in_dictionary_form()
                     value.append(all_props_of_entity)
+                    value.append({'entity_name':equivalent_entity.mainname,'data':all_props_of_entity,'type':'instance'})
                 else:
                     value.append({'entity_name':None,'data':None,'type':'instance'})
             return{prop_type_map[type_of_prop_id]:{self.get_property_mainname():{'value':value}}}
