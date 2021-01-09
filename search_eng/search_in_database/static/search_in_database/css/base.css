@@ -12,6 +12,16 @@
   background-color: #f1f1f1;
 }
 
+#innerLogo{
+margin-right: 10%;
+}
+
+#produced{
+  float: left;
+  margin-left: 3px;
+  font-size: 13px;
+}
+
 body {
     font-family: Arial, Helvetica, sans-serif;
     margin: 0;
