@@ -14,12 +14,13 @@ id_of_integer_unitless = 11
 id_of_string = 12
 id_of_blob = 13
 id_of_integer_with_unit = 14
-id_of_dependent_instance = 7
 
 # Typesofentities
 id_of_property_type = 4
 id_of_concept_type = 1
 id_of_instance_type = 6
+id_of_dependent_instance = 7
+id_of_primitive_property = 5
 
 
 
@@ -39,7 +40,7 @@ def get_result_for_search(sentence):
     return encapsulated_result
 
 def get_result_for_entity(entity_mainname):
-    typeid_map_to_name = {id_of_concept_type:'concept',id_of_property_type:'property',id_of_instance_type:'instance',id_of_dependent_instance:'instance'}
+    typeid_map_to_name = {id_of_concept_type:'concept',id_of_property_type:'property',id_of_primitive_property:'property',id_of_instance_type:'instance',id_of_dependent_instance:'instance'}
     entity = Entities.objects.get(mainname=entity_mainname)
     all_props_of_entity = AllPropertiesOfEntity(entity).get_all_propes_in_dictionary_form()
     return [{'entity_name':entity.mainname, 'type':typeid_map_to_name[entity.enttypeid_id], 'data':all_props_of_entity}]
@@ -98,9 +99,9 @@ class AllPropertiesOfEntity:
         all_propes = {'integer_props':integer_props,'entity_props':entity_props}
         unit_of_property = None
         for ent_prop in self._integer_props:
-            type_of_prop = EntsIntegerPropsValues.objects.filter(prop_owner_eid = ent_prop.prop_eid , prop_eid = id_of_typeOfValue)
+            # type_of_prop = EntsIntegerPropsValues.objects.filter(prop_owner_eid = ent_prop.prop_eid , prop_eid = id_of_typeOfValue)
             if(ent_prop.drowid == 0):
-                if(len(type_of_prop) == 0):  # means property is integer not id of an entity
+                if(ent_prop.prop_eid.enttypeid_id == id_of_primitive_property):  # means property is integer not id of an entity
                     unit_of_property = EntsStringPropsValues.objects.filter(prop_owner_eid=ent_prop.prop_eid,prop_eid=id_of_unit)
                     if(len(unit_of_property)==0):  # means property has not unit
                         integer_props[ent_prop.prop_eid.mainname] = {'value':[ent_prop.dvalue],'unit':None}
@@ -114,7 +115,7 @@ class AllPropertiesOfEntity:
                     else:
                         entity_props[ent_prop.prop_eid.mainname] = {'value':[]}
             else:
-                if(len(type_of_prop) == 0):  # means property is integer not id of an entity
+                if(ent_prop.prop_eid.enttypeid_id == id_of_primitive_property):  # means property is integer not id of an entity
                     unit_of_property = EntsStringPropsValues.objects.filter(prop_owner_eid=ent_prop.prop_eid,prop_eid=id_of_unit)
                     # if(len(unit_of_property)==0):  # means property has not unit
                     #     integer_with_unit_props[ent_prop.prop_eid.mainname]['value'].append(ent_prop.dvalue)
@@ -249,6 +250,8 @@ class ObjectRelatedString:
                 return 2
             if(entity.enttypeid_id==id_of_property_type):
                 return 3
+            if(entity.enttypeid_id==id_of_primitive_property):
+                return 4
         sorted_list = list(self._entities)
         sorted_list.sort(key=manual_sort)
         return sorted_list
@@ -285,7 +288,7 @@ class WordRelatedStrings(ObjectRelatedString):
         word = self._object
         query_to_ents_alter_names = EntitiesAlternateNames.objects.filter(alternatename__contains = word).values('eid')
         query_to_ents_rel_phr = Entitiesrelatedphrases.objects.filter(phraseid__phrasestring__contains=word).values('entid')
-        query_to_get_entities = Entities.objects.filter(Q(enttypeid__in = [id_of_concept_type,id_of_property_type,id_of_instance_type]) & (Q(mainname__contains = word) | Q(entid__in =query_to_ents_rel_phr) | Q(entid__in=query_to_ents_alter_names)) )
+        query_to_get_entities = Entities.objects.filter(Q(enttypeid__in = [id_of_concept_type,id_of_property_type,id_of_instance_type,id_of_primitive_property]) & (Q(mainname__contains = word) | Q(entid__in =query_to_ents_rel_phr) | Q(entid__in=query_to_ents_alter_names)) )
         self._entities = query_to_get_entities
 
     def get_related_words_for_scrapy_site_evaluation(self):
@@ -402,7 +405,7 @@ class SentenceRelatedEntities:
     def get_primary_result(self,modified_sentence,pairs_of_property_instance):
         result_candidates = ResultCandidates()
         query_for_whole_sentence = WordRelatedStrings(modified_sentence)
-        typeid_map_to_name = {id_of_concept_type:'concept',id_of_property_type:'property',id_of_instance_type:'instance'}
+        typeid_map_to_name = {id_of_concept_type:'concept',id_of_property_type:'property',id_of_instance_type:'instance',id_of_primitive_property:'property'}
         for pair in self.get_pairs_of_property_instance():
             result_candidates.add_result('property_of_instance',pair['instance'],10,pair['property'])
         if(query_for_whole_sentence.does_exist_entity()):
@@ -442,7 +445,7 @@ class ResultCandidates:
 
     def add_result(self,type,entity,rate,property=None):
         # entitt_enttypeid_map = {'instance':6,'concept':1,'property':4}
-        if(entity.enttypeid_id != id_of_property_type):
+        if(entity.enttypeid_id not in [id_of_property_type,id_of_primitive_property]):
             result_element = ResultElement(type,entity,rate, property)
             operation_has_done = self.increase_rate_of(result_element,rate)
             if(not operation_has_done):
