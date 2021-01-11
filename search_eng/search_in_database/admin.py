@@ -161,20 +161,14 @@ class EntityRelationEntityAdmin(HasExactSearchWithQuotation):
         """
         obj.save()
         if(obj.relationid_id == id_of_is_instance_of and obj.eid2_id == id_of_component):
-            phase = Entities(mainname='{} room phase'.format(obj.eid1.mainname),enttypeid_id=dependent_instance)
-            antoin = Entities(mainname='{} antoin coefficients'.format(obj.eid1.mainname),enttypeid_id=dependent_instance)
-            heatcap = Entities(mainname='{} heat cap coefficients'.format(obj.eid1.mainname),enttypeid_id=dependent_instance)
-            specific_props = Entities(mainname='{} aaaa properties'.format(obj.eid1.mainname),enttypeid_id=dependent_instance)
-            phase.save()
-            antoin.save()
-            heatcap.save()
-            specific_props.save()
-            EntityRelationEntity(eid1=antoin,relationid_id=id_of_drived_from,eid2_id=id_of_component_antoin_coefficients).save()
-            EntityRelationEntity(eid1=heatcap,relationid_id=id_of_drived_from,eid2_id=id_of_heat_capacity_coefficients_for_ideal_gas).save()
+            phase,isCreated = Entities.objects.get_or_create(mainname='{} room phase'.format(obj.eid1.mainname),enttypeid_id=dependent_instance)
+            antoin ,isCreated= Entities.objects.get_or_create(mainname='{} antoin coefficients'.format(obj.eid1.mainname),enttypeid_id=dependent_instance)
+            heatcap ,isCreated= Entities.objects.get_or_create(mainname='{} heat cap coefficients'.format(obj.eid1.mainname),enttypeid_id=dependent_instance)
+            EntityRelationEntity.objects.get_or_create(eid1=antoin,relationid_id=id_of_drived_from,eid2_id=id_of_component_antoin_coefficients)
+            EntityRelationEntity.objects.get_or_create(eid1=heatcap,relationid_id=id_of_drived_from,eid2_id=id_of_heat_capacity_coefficients_for_ideal_gas)
             EntsIntegerPropsValues.objects.filter(prop_owner_eid=obj.eid1,prop_eid_id=id_of_pahse,drowid=0).update(dvalue=phase.entid)
             EntsIntegerPropsValues.objects.filter(prop_owner_eid=obj.eid1,prop_eid_id=id_of_antoin,drowid=0).update(dvalue=antoin.entid)
             EntsIntegerPropsValues.objects.filter(prop_owner_eid=obj.eid1,prop_eid_id=id_of_ideal_heat_cap,drowid=0).update(dvalue=heatcap.entid)
-            EntsIntegerPropsValues.objects.filter(prop_owner_eid=obj.eid1,prop_eid_id=id_of_specific_props,drowid=0).update(dvalue=specific_props.entid)
 
 @admin.register(EntsDoublePropsValues)
 class EntsDoublePropsValuesAdmin(HasExactSearchWithQuotation):
